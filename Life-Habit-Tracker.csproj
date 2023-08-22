@@ -25,4 +25,8 @@
     <PackageReference Include="Telegram.Bot" Version="19.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LifeHabitTracker.BusinessLogicLayer\LifeHabitTracker.BusinessLogicLayer.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -6,6 +6,8 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
+using System.Text.Json.Nodes;
+using System.Text.Json;
 
 namespace TelegramBotExperiments
 {
@@ -16,10 +18,12 @@ namespace TelegramBotExperiments
         public static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             // Некоторые действия
-            Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(update));
+            /*string json =Newtonsoft.Json.JsonConvert.SerializeObject(update);
+            JsonObject restoredJson = JsonSerializer.Deserialize<JsonObject>(json);*/
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             { 
                 var message = update.Message;
+                Console.WriteLine($"Cooбщение от пользователя: {message.Text}");
                 if (message.Text.ToLower() == "/start")
                 {
                     await botClient.SendTextMessageAsync(message.Chat, "Добро пожаловать на борт, добрый путник!");
@@ -56,3 +60,24 @@ namespace TelegramBotExperiments
         }
     }
 }
+/*
+{ "update_id":376654527,
+  "message":{ 
+        "message_id":10,
+        "from":{ 
+            "id":722520401,
+            "is_bot":false,
+            "first_name":"Сан",
+            "last_name":"Сеич",
+            "username":"SavinCrew",
+            "language_code":"ru"},
+        "date":1692790284,
+        "chat":{ 
+            "id":722520401,
+            "type":"private",
+            "username":"SavinCrew",
+            "first_name":"Сан",
+            "last_name":"Сеич"},
+        "text":"алоха"} 
+}*/
+

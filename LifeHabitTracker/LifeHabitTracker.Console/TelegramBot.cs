@@ -14,6 +14,7 @@ namespace LifeHabitTrackerConsole
         const string token = "6694819520:AAGeqWeAEHH3m7kJ4jphSq6IjOrWU_zSh64";
         static ITelegramBotClient bot = new TelegramBotClient(token);
 
+        //Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
         private static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
@@ -29,12 +30,14 @@ namespace LifeHabitTrackerConsole
             }
         }
 
+        //Логирование ошибки при взаимодействии пользователя с ботом
         private static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             Console.WriteLine(JsonConvert.SerializeObject(exception));
         }
 
-        public static async Task Launch()
+        //Запуск Бота
+        public async Task Launch()
         {
             Task<User> botName = bot.GetMeAsync();
             await botName;

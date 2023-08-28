@@ -29,13 +29,14 @@ namespace LifeHabitTrackerConsole
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
                 var message = update.Message;
-                Console.WriteLine($"Cooбщение от пользователя: {message?.Text}");
+                var username = message.From.Username;
+                Console.WriteLine($"Cooбщение от пользователя {username}: {message?.Text}");
                 if (message?.Text?.ToLower() == "/start")
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, "Добро пожаловать на борт, добрый путник!");
+                    await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать на борт,{username}");
                     return;
                 }
-                await botClient.SendTextMessageAsync(message.Chat, "Привет-привет!!");
+                await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username}");
             }
         }
 

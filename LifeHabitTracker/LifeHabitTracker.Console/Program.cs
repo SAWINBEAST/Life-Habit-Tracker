@@ -1,22 +1,25 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
+using Telegram.Bot.Types;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LifeHabitTrackerConsole
 { 
 
     class Program
     {
-
         static async Task Main(string[] args)
         {
             Console.WriteLine($"Приложение запущено.");
 
-            IServiceCollection? services = GetServiceCollection();
-            ServiceProvider? serviceProvider = services.BuildServiceProvider();
-            IBot? botService = serviceProvider.GetService<IBot>();
+            var services = GetServiceCollection();
+            var serviceProvider = services.BuildServiceProvider();
+            var botService = serviceProvider.GetService<IBot>();
             await botService.Launch();
             
             Console.ReadLine();

@@ -6,16 +6,25 @@ using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Polling;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace LifeHabitTrackerConsole
 {
+    /// <inheritdoc cref="IBot"/>.
     internal class TelegramBot : IBot
     {
-        const string token = "6694819520:AAGeqWeAEHH3m7kJ4jphSq6IjOrWU_zSh64";
-        static ITelegramBotClient bot = new TelegramBotClient(token);
+        private const string Token = "6694819520:AAGeqWeAEHH3m7kJ4jphSq6IjOrWU_zSh64";
+        private readonly ITelegramBotClient bot = new TelegramBotClient(Token);
 
-        //Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
-        private static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        /// <inheritdoc/>.
+        /// <summary>
+        /// Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
+        /// </summary>
+        /// <param name="botClient"></param>
+        /// <param name="update"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
@@ -30,13 +39,24 @@ namespace LifeHabitTrackerConsole
             }
         }
 
-        //Логирование ошибки при взаимодействии пользователя с ботом
-        private static async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+        /// <inheritdoc/>.
+        /// <summary>
+        /// Логирование ошибки при взаимодействии пользователя с ботом
+        /// </summary>
+        /// <param name="botClient"></param>
+        /// <param name="exception"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             Console.WriteLine(JsonConvert.SerializeObject(exception));
         }
 
-        //Запуск Бота
+        /// <inheritdoc/>.
+        /// <summary>
+        /// Запуск Бота
+        /// </summary>
+        /// <returns></returns>
         public async Task Launch()
         {
             Task<User> botName = bot.GetMeAsync();

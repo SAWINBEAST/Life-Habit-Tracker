@@ -8,15 +8,24 @@ namespace LifeHabitTrackerConsole
 {
     internal interface IBot
     {
-        static ITelegramBotClient bot;
+        static readonly ITelegramBotClient bot;
 
-        //Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
-        static Task HandleUpdateAsync() { return (Task)bot; }
+        /// <summary>
+        /// Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
+        /// </summary>
+        /// <returns></returns>
+        Task HandleUpdateAsync() { return (Task)bot;}
 
-        //Логирование ошибки при взаимодействии пользователя с ботом
-        static Task HandleErrorAsync() { return (Task)bot; }
+        /// <summary>
+        /// Логирование ошибки при взаимодействии пользователя с ботом
+        /// </summary>
+        /// <returns></returns>
+        Task HandleErrorAsync() { return (Task)bot; }
 
-        //Запуск Бота
+        /// <summary>
+        /// Запуск Бота
+        /// </summary>
+        /// <returns></returns>
         Task Launch() { return (Task)bot; }
     }
 }

@@ -16,7 +16,6 @@ namespace LifeHabitTrackerConsole
         private const string Token = "6694819520:AAGeqWeAEHH3m7kJ4jphSq6IjOrWU_zSh64";
         private readonly ITelegramBotClient bot = new TelegramBotClient(Token);
 
-        /// <inheritdoc/>.
         /// <summary>
         /// Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
         /// </summary>
@@ -40,7 +39,6 @@ namespace LifeHabitTrackerConsole
             }
         }
 
-        /// <inheritdoc/>.
         /// <summary>
         /// Логирование ошибки при взаимодействии пользователя с ботом
         /// </summary>

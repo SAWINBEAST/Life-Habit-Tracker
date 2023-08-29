@@ -1,12 +1,4 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Telegram.Bot;
-using Telegram.Bot.Types;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace LifeHabitTrackerConsole
 { 
@@ -21,7 +13,10 @@ namespace LifeHabitTrackerConsole
             var serviceProvider = services.BuildServiceProvider();
             var botService = serviceProvider.GetService<IBot>();
             await botService.Launch();
-            
+
+            //Может так сделать ? Но будет менее читабельно
+            //await GetServiceCollection().BuildServiceProvider().GetService<IBot>().Launch();
+
             Console.ReadLine();
         }
 

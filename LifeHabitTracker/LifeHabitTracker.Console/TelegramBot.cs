@@ -1,20 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Telegram.Bot;
+﻿using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Polling;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace LifeHabitTrackerConsole
 {
     /// <inheritdoc cref="IBot"/>.
     internal class TelegramBot : IBot
     {
+        /// <summary>
+        /// API-токен бота телеграм
+        /// </summary>
         private const string Token = "6694819520:AAGeqWeAEHH3m7kJ4jphSq6IjOrWU_zSh64";
-        private readonly ITelegramBotClient bot = new TelegramBotClient(Token);
+
+        /// <summary>
+        /// Объект клиента бота Телеграм
+        /// </summary>
+        private readonly ITelegramBotClient _bot = new TelegramBotClient(Token);
 
         /// <summary>
         /// Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
@@ -51,14 +53,14 @@ namespace LifeHabitTrackerConsole
             Console.WriteLine(JsonConvert.SerializeObject(exception));
         }
 
-        /// <inheritdoc/>.
+        /// <inheritdoc/>
         /// <summary>
         /// Запуск Бота
         /// </summary>
         /// <returns></returns>
         public async Task Launch()
         {
-            Task<User> botName = bot.GetMeAsync();
+            Task<User> botName = _bot.GetMeAsync();
             await botName;
             Console.WriteLine("Запущен бот " + botName.Result.FirstName);
 
@@ -68,7 +70,7 @@ namespace LifeHabitTrackerConsole
             {
                 AllowedUpdates = { }
             };
-            bot.StartReceiving(
+            _bot.StartReceiving(
                 HandleUpdateAsync,
                 HandleErrorAsync,
                 receiverOptions,

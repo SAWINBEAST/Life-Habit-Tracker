@@ -54,15 +54,10 @@ namespace LifeHabitTrackerConsole
         }
 
         /// <inheritdoc/>
-        /// <summary>
-        /// Запуск Бота
-        /// </summary>
-        /// <returns></returns>
-        public async Task Launch()
+        public async Task LaunchAsync()
         {
-            Task<User> botName = _bot.GetMeAsync();
-            await botName;
-            Console.WriteLine("Запущен бот " + botName.Result.FirstName);
+            var botName = await _bot.GetMeAsync();
+            Console.WriteLine("Запущен бот " + botName.FirstName);
 
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;

@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace LifeHabitTrackerConsole
-{ 
+using LifeHabitTrackerConsole;
 
     class Program
     {
@@ -10,13 +9,11 @@ namespace LifeHabitTrackerConsole
             Console.WriteLine($"Приложение запущено.");
 
             var services = GetServiceCollection();
-            var serviceProvider = services.BuildServiceProvider();
+            using var serviceProvider = services.BuildServiceProvider();
             var botService = serviceProvider.GetService<IBot>();
-            await botService.Launch();
+            await botService.LaunchAsync();
 
-            //Может так сделать ? Но будет менее читабельно
-            //await GetServiceCollection().BuildServiceProvider().GetService<IBot>().Launch();
-
+            
             Console.ReadLine();
         }
 
@@ -25,5 +22,5 @@ namespace LifeHabitTrackerConsole
                     .AddSingleton<IBot,TelegramBot>();
 
     }
-}
+
 

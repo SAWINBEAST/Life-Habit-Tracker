@@ -2,6 +2,7 @@
 using Telegram.Bot.Types;
 using Telegram.Bot.Polling;
 using Newtonsoft.Json;
+using LifeHabitTracker.BusinessLogicLayer;
 
 namespace LifeHabitTrackerConsole
 {
@@ -37,7 +38,22 @@ namespace LifeHabitTrackerConsole
                     await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать на борт,{username}");
                     return;
                 }
-                await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username}");
+                else if(message?.Text?.ToLower() == "/создать привычку")
+                {
+                    await botClient.SendTextMessageAsync(message.Chat, $"Сейчас создадим");
+                    var habitCreator = new HabitCreator();
+                    var habit = habitCreator.CreateHabit();
+                    var habitInfo = habit.GetInfo();
+                    foreach(object item in habitInfo)
+                    {
+                        await botClient.SendTextMessageAsync(message.Chat, $"- {item} -");
+                    }
+                    return;
+                }
+                else
+                {
+                    await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username}");
+                }
             }
         }
 

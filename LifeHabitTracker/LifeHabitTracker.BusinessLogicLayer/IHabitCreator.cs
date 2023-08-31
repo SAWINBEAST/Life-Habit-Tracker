@@ -10,7 +10,7 @@ namespace LifeHabitTracker.BusinessLogicLayer
         /// Создание новой сущности привычки
         /// </summary>
         /// <returns></returns>
-        Task CreateHabit();
+        Habit CreateHabit();
 
         /// <summary>
         /// Удалить существующую сущность привычки

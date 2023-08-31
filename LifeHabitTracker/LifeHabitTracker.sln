@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeHabitTracker.Console", "LifeHabitTracker.Console\LifeHabitTracker.Console.csproj", "{4459D373-3A6C-4246-9CDF-1ECED8D20B1E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeHabitTracker.Console", "LifeHabitTracker.Console\LifeHabitTracker.Console.csproj", "{4459D373-3A6C-4246-9CDF-1ECED8D20B1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeHabitTracker.BusinessLogicLayer", "LifeHabitTracker.BusinessLogicLayer\LifeHabitTracker.BusinessLogicLayer.csproj", "{DDF5A297-5347-4854-A111-6F68A1629E55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeHabitTracker.BusinessLogicLayer", "LifeHabitTracker.BusinessLogicLayer\LifeHabitTracker.BusinessLogicLayer.csproj", "{DDF5A297-5347-4854-A111-6F68A1629E55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeHabitTracker.DataAccessLayer", "DataAccessLayer\LifeHabitTracker.DataAccessLayer.csproj", "{6A18B40E-975B-4A5A-887F-0037AE44C802}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{DDF5A297-5347-4854-A111-6F68A1629E55}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDF5A297-5347-4854-A111-6F68A1629E55}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDF5A297-5347-4854-A111-6F68A1629E55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A18B40E-975B-4A5A-887F-0037AE44C802}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A18B40E-975B-4A5A-887F-0037AE44C802}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A18B40E-975B-4A5A-887F-0037AE44C802}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A18B40E-975B-4A5A-887F-0037AE44C802}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,7 @@ namespace LifeHabitTracker.BusinessLogicLayer
         /// <summary>
         /// Рассказывает о привычке. Что она из себя представляет, какие есть составляющие
         /// </summary>
-        Task GetInfo();
+        List<object> GetInfo();
 
         /// <summary>
         /// Выдает напоминание в Бот, что нужно выполнить ее или какую-то ее часть(Составляющую). Выдает в определенную дату

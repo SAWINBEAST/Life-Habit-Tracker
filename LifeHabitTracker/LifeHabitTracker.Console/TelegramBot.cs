@@ -35,20 +35,13 @@ namespace LifeHabitTrackerConsole
                 Console.WriteLine($"Cooбщение от пользователя {username}: {message?.Text}");
                 if (message?.Text?.ToLower() == "/start")
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать на борт,{username}");
+                    await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
                     return;
                 }
                 else if(message?.Text?.ToLower() == "/создать привычку")
                 {
                     await botClient.SendTextMessageAsync(message.Chat, $"Сейчас создадим");
-                    var habitCreator = new HabitCreator();
-                    var habit = habitCreator.CreateHabit();
-                    var habitInfo = habit.GetInfo();
-                    foreach(object item in habitInfo)
-                    {
-                        await botClient.SendTextMessageAsync(message.Chat, $"- {item} -");
-                    }
-                    return;
+
                 }
                 else
                 {
@@ -81,6 +74,8 @@ namespace LifeHabitTrackerConsole
             {
                 AllowedUpdates = { }
             };
+
+            //начать получать
             _bot.StartReceiving(
                 HandleUpdateAsync,
                 HandleErrorAsync,

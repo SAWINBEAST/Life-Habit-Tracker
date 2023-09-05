@@ -3,6 +3,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Polling;
 using Newtonsoft.Json;
 using LifeHabitTracker.BusinessLogicLayer;
+using System.Threading.Channels;
 
 namespace LifeHabitTrackerConsole
 {
@@ -26,29 +27,78 @@ namespace LifeHabitTrackerConsole
         /// <param name="update"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        private static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
+                
                 var message = update.Message;
                 var username = message.From.Username;
-                Console.WriteLine($"Cooбщение от пользователя {username}: {message?.Text}");
-                if (message?.Text?.ToLower() == "/start")
-                {
-                    await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
-                    return;
-                }
-                else if(message?.Text?.ToLower() == "/создать привычку")
-                {
-                    await botClient.SendTextMessageAsync(message.Chat, $"Сейчас создадим");
 
+                Console.WriteLine($"Cooбщение от пользователя {username}: {message?.Text}");
+
+                    //ниже прописаны временные заглушки в виде булева значения:
+
+                if(true /*Проверка объекта Caretaker*/ ) //Чтобы понять, мы сейчас создаём новую привычку или записываем данные в привычку ?
+                {
+                    if (message.Text.StartsWith("/"))
+                    {
+                        if (message?.Text?.ToLower() == "/start")
+                        {
+                            await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
+
+                            //вот тут прописать логику выпадания меню. См. заметки в ТГ
+                            return;
+                        }
+                        else if (message?.Text?.ToLower() == "/создать")
+                        {
+                            await botClient.SendTextMessageAsync(message.Chat, $"Сейчас создадим");
+
+                            await botClient.SendTextMessageAsync(message.Chat, $"Введите название Привычки");
+
+                        }
+                        //Вот тут прописать логику других команд, используя switch case
+                    }
+                    else
+                    {
+                        await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username} :)\nВведи команду, используя \"/\"");
+                    }
                 }
                 else
                 {
-                    await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username}");
+                    if(true /*проверка наличия введённого имени через Хранитель имени*/)
+                    {
+                        //Получение данных и запись будут тут
+
+                        await botClient.SendTextMessageAsync(message.Chat, $"Теперь введите её тип (хорошая/плохая)");
+                    }
+                    else if(true /*проверка наличия введённого типа через Хранитель типа*/ )
+                    {
+                        //Получение данных и запись будут тут
+                        await botClient.SendTextMessageAsync(message.Chat, $"А теперь введите её описание");
+                    }
+                    else if(true /*проверка наличия введённого описания через Хранитель описания*/ )
+                    {
+                        //Получение данных и запись будут тут
+
+                        await botClient.SendTextMessageAsync(message.Chat, $"По каким дням или датам вы хотите получать напоминания ?");
+                    }
+                    else if (true /*проверка наличия введённой даты через Хранитель даты*/ )
+                    {
+                        //Получение данных и запись будут тут
+
+                        await botClient.SendTextMessageAsync(message.Chat, $"Прекрасно. Привычка создана!");
+
+                        //удаление Хранителей будет тут
+                    }
+
+                        
                 }
+
+                
             }
         }
+
 
         /// <summary>
         /// Логирование ошибки при взаимодействии пользователя с ботом
@@ -74,6 +124,7 @@ namespace LifeHabitTrackerConsole
             {
                 AllowedUpdates = { }
             };
+
 
             //начать получать
             _bot.StartReceiving(

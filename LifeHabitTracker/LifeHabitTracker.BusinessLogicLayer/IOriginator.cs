@@ -7,14 +7,15 @@ using System.Threading.Tasks;
 namespace LifeHabitTracker.BusinessLogicLayer
 {
     /// <summary>
-    /// Интерфейс получателя контекста от бота
+    ///  Интерфейс состояния работы с ботом + Создатель хранителя
     /// </summary>
-    internal interface IContext
+    public interface IOriginator
     {
         /// <summary>
-        /// Метод получение Контекста от Бота
+        /// Сохранение состояния
         /// </summary>
         /// <returns></returns>
-        Task GetContext();
+        public Memento CreateMemento();
+
     }
 }

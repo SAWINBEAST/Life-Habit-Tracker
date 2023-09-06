@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace LifeHabitTracker.BusinessLogicLayer
 {
     /// <inheritdoc cref="IHabitService"/>.
-    public class HabitService:IHabitService
+    public class HabitService : IHabitService
     {
         //Это дичь какая-то. Надо разделить HabitService и Habit. Понятное дело, что потом у меня Привычки будут храниться в БД, Но временно же надо что-то сделать, чтобы программа хоть что-то выдавала.
         public List<HabitService> habits  = new List<HabitService>();   //я понимаю, что это всё не сохранится. Просто хочу, чтобы программа что-то выдавала
@@ -19,9 +19,18 @@ namespace LifeHabitTracker.BusinessLogicLayer
 
         public DateTime Date { get; set; } = DateTime.Now.AddDays(1);
 
-        public HabitService() {
-            Console.WriteLine("Создана тестовая привычка");
+        public HabitService()
+        {
+/*            Console.WriteLine("Создана тестовая привычка");
+*/        }
+
+        /// <inheritdoc/>
+        public void SetName(string name)
+        {
+            Name = name;
         }
+
+
 
         public HabitService(string name, string desc, string type, DateTime date ) {
             Name = name;

@@ -12,16 +12,26 @@ namespace LifeHabitTracker.BusinessLogicLayer
     {
         public string State {  get; set; }
 
-       
-        public Originator(Memento memento)
+
+        /// <inheritdoc/>
+        public Memento CreateMemento(string state)
+        {
+            return new Memento(state);
+        }
+
+        /// <summary>
+        /// Записывает выведенное из Хранилица состояние в промежуточное свойство
+        /// </summary>
+        /// <param name="memento"></param>
+        public void SetMemento(Memento memento)
         {
             State = memento.State;
         }
 
-        /// <inheritdoc/>
-        public Memento CreateMemento()
+
+        public string GetMemento() 
         {
-            return new Memento(State);
+            return State;
         }
 
 

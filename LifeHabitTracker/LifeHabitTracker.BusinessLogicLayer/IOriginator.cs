@@ -15,7 +15,7 @@ namespace LifeHabitTracker.BusinessLogicLayer
         /// Сохранение состояния
         /// </summary>
         /// <returns></returns>
-        public Memento CreateMemento();
+        public Memento CreateMemento(string state);
 
     }
 }

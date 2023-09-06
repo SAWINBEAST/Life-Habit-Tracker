@@ -10,6 +10,11 @@ namespace LifeHabitTrackerConsole
     /// <inheritdoc cref="IBot"/>.
     internal class TelegramBot : IBot
     {
+        IHabitService habitService;
+        IOriginator originator;
+        ICaretaker caretaker;
+        //IMemento memento;
+
         /// <summary>
         /// API-токен бота телеграм
         /// </summary>
@@ -20,6 +25,14 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         private readonly ITelegramBotClient _bot = new TelegramBotClient(Token);
 
+        public TelegramBot(IHabitService habitService, ICaretaker caretaker, IOriginator originator /*,IMemento memento*/)
+        {
+            this.habitService = habitService;
+            this.originator = originator;
+            this.caretaker = caretaker;
+            //this.memento = memento;
+        }
+
         /// <summary>
         /// Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
         /// </summary>
@@ -27,7 +40,7 @@ namespace LifeHabitTrackerConsole
         /// <param name="update"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        private static async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+        private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
@@ -37,28 +50,40 @@ namespace LifeHabitTrackerConsole
 
                 Console.WriteLine($"Cooбщение от пользователя {username}: {message?.Text}");
 
-                    //ниже прописаны временные заглушки в виде булева значения:
-
-                if(true /*Проверка объекта Caretaker*/ ) //Чтобы понять, мы сейчас создаём новую привычку или записываем данные в привычку ?
+                var currentState = originator.CreateMemento(message.Text);
+                if (caretaker.GetUserState(username).State == null)
                 {
-                    if (message.Text.StartsWith("/"))
+                    caretaker.AddUserState(username, currentState);
+                }
+
+                var receivedState = caretaker.GetUserState(username);
+                
+                if(receivedState.State.StartsWith("/"))
+                {
+                    //caretaker.RemoveUserState(username);
+
+
+                    if (message?.Text?.ToLower() == "/start")
                     {
-                        if (message?.Text?.ToLower() == "/start")
-                        {
-                            await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
+                        await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
+                        caretaker.RemoveUserState(username);
+                        caretaker.AddUserState(username, currentState);
 
-                            //вот тут прописать логику выпадания меню. См. заметки в ТГ
-                            return;
-                        }
-                        else if (message?.Text?.ToLower() == "/создать")
-                        {
-                            await botClient.SendTextMessageAsync(message.Chat, $"Сейчас создадим");
 
-                            await botClient.SendTextMessageAsync(message.Chat, $"Введите название Привычки");
-
-                        }
-                        //Вот тут прописать логику других команд, используя switch case
+                        //вот тут прописать логику выпадания меню. См. заметки в ТГ
+                        return;
                     }
+                    else if (message?.Text?.ToLower() == "/создать")
+                    {
+                        await botClient.SendTextMessageAsync(message.Chat, $"Сейчас создадим");
+
+                        await botClient.SendTextMessageAsync(message.Chat, $"Введите название Привычки");
+                        caretaker.RemoveUserState(username);
+                        caretaker.AddUserState(username, currentState);
+                    }
+                    //Вот тут прописать логику других команд, используя switch case
+
+
                     else
                     {
                         await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username} :)\nВведи команду, используя \"/\"");
@@ -66,18 +91,23 @@ namespace LifeHabitTrackerConsole
                 }
                 else
                 {
-                    if(true /*проверка наличия введённого имени через Хранитель имени*/)
+                    if (true /*проверка наличия введённого имени через Хранитель имени*/)
                     {
                         //Получение данных и запись будут тут
+                        habitService.SetName(message.Text);
 
                         await botClient.SendTextMessageAsync(message.Chat, $"Теперь введите её тип (хорошая/плохая)");
+                        caretaker.RemoveUserState(username);
+                        caretaker.AddUserState(username, currentState);
+
+
                     }
-                    else if(true /*проверка наличия введённого типа через Хранитель типа*/ )
+                    else if (true /*проверка наличия введённого типа через Хранитель типа*/ )
                     {
                         //Получение данных и запись будут тут
                         await botClient.SendTextMessageAsync(message.Chat, $"А теперь введите её описание");
                     }
-                    else if(true /*проверка наличия введённого описания через Хранитель описания*/ )
+                    else if (true /*проверка наличия введённого описания через Хранитель описания*/ )
                     {
                         //Получение данных и запись будут тут
 
@@ -92,11 +122,10 @@ namespace LifeHabitTrackerConsole
                         //удаление Хранителей будет тут
                     }
 
-                        
                 }
 
-                
             }
+
         }
 
 

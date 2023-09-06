@@ -11,5 +11,25 @@ namespace LifeHabitTracker.BusinessLogicLayer
     /// </summary>
     public interface ICaretaker
     {
+        /// <summary>
+        /// Добавление нового состояния определенного юзера в словарь
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="state"></param>
+        public void AddUserState(string username, Memento state);
+
+        /// <summary>
+        /// Вывод текущего состояния определенного пользователя
+        /// </summary>
+        /// <param name="username"></param>
+        /// <returns></returns>
+        public Memento GetUserState(string username);
+
+        /// <summary>
+        /// Удаление неактуального состояния определенного пользователя
+        /// </summary>
+        /// <param name="username"></param>
+        public void RemoveUserState(string username);
+
     }
 }

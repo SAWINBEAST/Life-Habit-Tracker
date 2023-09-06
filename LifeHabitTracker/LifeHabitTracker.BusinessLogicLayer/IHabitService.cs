@@ -7,8 +7,14 @@ namespace LifeHabitTracker.BusinessLogicLayer
     /// <summary>
     /// Описывает функционал Привычки
     /// </summary>
-    internal interface IHabitService
+    public interface IHabitService
     {
+        /// <summary>
+        /// Загрузка имени
+        /// </summary>
+        /// <param name="name"></param>
+        public void SetName(string name);
+
         /// <summary>
         /// Создание привычки
         /// </summary>

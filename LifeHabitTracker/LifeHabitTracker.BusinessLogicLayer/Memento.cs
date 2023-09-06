@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 namespace LifeHabitTracker.BusinessLogicLayer
 {
     /// <inheritdoc cref="IMemento"/>
-    public class Memento
+    public class Memento : IMemento
     {
         public string State { get; private set; }
-        public Memento(string state) 
+/*        public string Username { get; private set; }
+*/        public Memento(string state/*, string username*/) 
         {
-            this.State = state;
-        }
+            State = state;
+/*            Username = username;
+*/        }
     }
 }

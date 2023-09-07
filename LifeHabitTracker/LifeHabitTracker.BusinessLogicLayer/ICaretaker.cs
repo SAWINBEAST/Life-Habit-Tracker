@@ -23,7 +23,7 @@ namespace LifeHabitTracker.BusinessLogicLayer
         /// </summary>
         /// <param name="username"></param>
         /// <returns></returns>
-        public Memento GetUserState(string username);
+        public string GetUserState(string username);
 
         /// <summary>
         /// Удаление неактуального состояния определенного пользователя

@@ -51,17 +51,16 @@ namespace LifeHabitTrackerConsole
                 Console.WriteLine($"Cooбщение от пользователя {username}: {message?.Text}");
 
                 var currentState = originator.CreateMemento(message.Text);
-                if (caretaker.GetUserState(username).State == null)
+                if (caretaker.GetUserState(username) == null)
                 {
                     caretaker.AddUserState(username, currentState);
                 }
 
-                var receivedState = caretaker.GetUserState(username);
+                originator.SetMemento(caretaker.GetUserState(username));
+                var receivedState = originator.GetMemento();
                 
-                if(receivedState.State.StartsWith("/"))
+                if(message.Text.StartsWith("/"))         
                 {
-                    //caretaker.RemoveUserState(username);
-
 
                     if (message?.Text?.ToLower() == "/start")
                     {
@@ -84,12 +83,8 @@ namespace LifeHabitTrackerConsole
                     //Вот тут прописать логику других команд, используя switch case
 
 
-                    else
-                    {
-                        await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username} :)\nВведи команду, используя \"/\"");
-                    }
                 }
-                else
+                else if (receivedState == "/создать")
                 {
                     if (true /*проверка наличия введённого имени через Хранитель имени*/)
                     {
@@ -97,8 +92,8 @@ namespace LifeHabitTrackerConsole
                         habitService.SetName(message.Text);
 
                         await botClient.SendTextMessageAsync(message.Chat, $"Теперь введите её тип (хорошая/плохая)");
-                        caretaker.RemoveUserState(username);
-                        caretaker.AddUserState(username, currentState);
+                        //caretaker.RemoveUserState(username);
+                        //caretaker.AddUserState(username, currentState);
 
 
                     }
@@ -123,7 +118,18 @@ namespace LifeHabitTrackerConsole
                     }
 
                 }
-
+                else if(receivedState == "/изменить")
+                {
+                    //логика изменения уже созданной привычки
+                }
+                else if( receivedState== "/привычки")
+                {
+                    //логика выдачи уже созданных привычек
+                }
+                else
+                {
+                    await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username} :)\nВведи команду, используя \"/\"");
+                }
             }
 
         }

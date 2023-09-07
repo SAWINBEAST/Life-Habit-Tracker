@@ -17,5 +17,18 @@ namespace LifeHabitTracker.BusinessLogicLayer
         /// <returns></returns>
         public Memento CreateMemento(string state);
 
+        /// <summary>
+        /// Возвращение дежурного состояния
+        /// </summary>
+        /// <returns></returns>
+        public string GetMemento();
+
+        /// <summary>
+        /// Записывает выведенное из Хранилица состояние в промежуточное свойство
+        /// </summary>
+        /// <param name="memento"></param>
+        public void SetMemento(string memento);
+
+
     }
 }

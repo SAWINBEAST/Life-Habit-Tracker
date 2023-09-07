@@ -19,16 +19,13 @@ namespace LifeHabitTracker.BusinessLogicLayer
             return new Memento(state);
         }
 
-        /// <summary>
-        /// Записывает выведенное из Хранилица состояние в промежуточное свойство
-        /// </summary>
-        /// <param name="memento"></param>
-        public void SetMemento(Memento memento)
+        ///<inheritdoc/>
+        public void SetMemento(string memento)
         {
-            State = memento.State;
+            State = memento;
         }
 
-
+        ///<inheritdoc/>
         public string GetMemento() 
         {
             return State;

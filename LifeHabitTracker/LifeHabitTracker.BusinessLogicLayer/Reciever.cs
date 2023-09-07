@@ -6,15 +6,37 @@ using System.Threading.Tasks;
 
 namespace LifeHabitTracker.BusinessLogicLayer
 {
-    public class Receiver : IReciever
+    /// <inheritdoc cref="IReciever"/>
+    public class Reciever : IReciever
     {
         public bool NameExistence { get; set; } = false;
         public bool TypeExistence { get; set; } = false;
         public bool DescExistence { get; set; } = false;
         public bool DateExistence { get; set; } = false;
 
-        public Receiver() { }
+        public Reciever() { }
 
+        public bool GetNameExistence()
+        {
+            return NameExistence;
+        }
+
+        public bool GetTypeExistence()
+        {
+            return TypeExistence;
+        }
+
+        public bool GetDescExistence()
+        {
+            return DescExistence;
+        }
+
+        public bool GetDateExistence()
+        {
+            return DateExistence;
+        }
+
+        /// <inheritdoc/>
         public void ChangeExistence(int i) 
         {
             switch (i)

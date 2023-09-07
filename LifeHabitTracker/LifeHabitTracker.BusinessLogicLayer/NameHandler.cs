@@ -5,11 +5,23 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace LifeHabitTracker.BusinessLogicLayer
-{
+{    
+    /// <inheritdoc cref="IDataHandler"/>
     public class NameHandler : IDataHandler
     {
-        public NameHandler Successor { get; set; }
-        public void Handle(Receiver receiver)
+        public IDataHandler Successor { get; set; }
+
+        /// <inheritdoc/>
+        public void AppointSuccesor(IDataHandler handler)
+        {
+            if (handler == null)
+            {
+                Successor = handler;
+            }
+        }
+
+        /// <inheritdoc/>
+        public void Handle(Reciever receiver)
         {
             if (receiver.NameExistence == false)
             {

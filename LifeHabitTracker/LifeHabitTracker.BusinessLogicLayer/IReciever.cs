@@ -6,9 +6,26 @@ using System.Threading.Tasks;
 
 namespace LifeHabitTracker.BusinessLogicLayer
 {
-    internal interface IReciever
+    /// <summary>
+    /// Функционал хранителя состояний данных привычки
+    /// </summary>
+    public interface IReciever
     {
+        /// <summary>
+        /// Меняет состояние добавленных данных
+        /// </summary>
+        /// <param name="i"></param>
         public void ChangeExistence(int i);
+
+        public bool GetNameExistence();
+
+        public bool GetTypeExistence();
+
+        public bool GetDescExistence();
+
+        public bool GetDateExistence();
+
+
 
     }
 }

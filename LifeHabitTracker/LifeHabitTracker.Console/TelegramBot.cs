@@ -11,9 +11,16 @@ namespace LifeHabitTrackerConsole
     internal class TelegramBot : IBot
     {
         IHabitService habitService;
+
         IOriginator originator;
         ICaretaker caretaker;
-        //IMemento memento;
+
+        IReciever reciever;
+        IDataHandler nameHandler;
+        IDataHandler typeHandler;
+        IDataHandler descHandler;
+        IDataHandler dateHandler;
+
 
         /// <summary>
         /// API-токен бота телеграм
@@ -25,12 +32,23 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         private readonly ITelegramBotClient _bot = new TelegramBotClient(Token);
 
-        public TelegramBot(IHabitService habitService, ICaretaker caretaker, IOriginator originator /*,IMemento memento*/)
+        public TelegramBot(IHabitService habitService, ICaretaker caretaker, IOriginator originator, IReciever reciever, IDataHandler nameHandler, IDataHandler typeHandler, IDataHandler descHandler, IDataHandler dateHandler)
         {
             this.habitService = habitService;
+
             this.originator = originator;
             this.caretaker = caretaker;
-            //this.memento = memento;
+
+            this.reciever = reciever;
+            this.nameHandler = nameHandler;
+            this.typeHandler = typeHandler;
+            this.descHandler = descHandler;
+            this.dateHandler = dateHandler;
+
+            nameHandler.AppointSuccesor(typeHandler);
+            typeHandler.AppointSuccesor(descHandler);
+            descHandler.AppointSuccesor(dateHandler);
+
         }
 
         /// <summary>
@@ -86,15 +104,17 @@ namespace LifeHabitTrackerConsole
                 }
                 else if (receivedState == "/создать")
                 {
-                    if (true /*проверка наличия введённого имени через Хранитель имени*/)
+                    
+
+
+
+                    if (!reciever.GetNameExistence())
                     {
-                        //Получение данных и запись будут тут
                         habitService.SetName(message.Text);
 
                         await botClient.SendTextMessageAsync(message.Chat, $"Теперь введите её тип (хорошая/плохая)");
-                        //caretaker.RemoveUserState(username);
-                        //caretaker.AddUserState(username, currentState);
 
+                        reciever.ChangeExistence(1);
 
                     }
                     else if (true /*проверка наличия введённого типа через Хранитель типа*/ )

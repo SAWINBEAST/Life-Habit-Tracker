@@ -23,9 +23,15 @@ using LifeHabitTracker.BusinessLogicLayer;
             new ServiceCollection()
                 .AddSingleton<IBot, TelegramBot>()
                 .AddTransient<IHabitService, HabitService>()
-                //.AddTransient<IMemento, Memento>()                
                 .AddTransient<ICaretaker, Caretaker>()
-                .AddTransient<IOriginator, Originator>();
+                .AddTransient<IOriginator, Originator>()
+                .AddTransient<IReciever, Reciever>()
+                .AddTransient<IDataHandler, NameHandler>()
+                .AddTransient<IDataHandler, TypeHandler>()
+                .AddTransient<IDataHandler, DescriptionHandler>()
+                .AddTransient<IDataHandler, DateHandler>();
+       
+
 
     }
 

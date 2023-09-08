@@ -2,8 +2,8 @@
 using Telegram.Bot.Types;
 using Telegram.Bot.Polling;
 using Newtonsoft.Json;
-using LifeHabitTracker.BusinessLogicLayer;
 using System.Threading.Channels;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 
 namespace LifeHabitTrackerConsole
 {
@@ -45,9 +45,9 @@ namespace LifeHabitTrackerConsole
             this.descHandler = descHandler;
             this.dateHandler = dateHandler;
 
-            nameHandler.AppointSuccesor(typeHandler);
-            typeHandler.AppointSuccesor(descHandler);
-            descHandler.AppointSuccesor(dateHandler);
+            this.nameHandler.AppointSuccesor(this.typeHandler);
+            this.typeHandler.AppointSuccesor(this.descHandler);
+            this.descHandler.AppointSuccesor(this.dateHandler);
 
         }
 
@@ -60,6 +60,8 @@ namespace LifeHabitTrackerConsole
         /// <returns></returns>
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
+
+
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
                 
@@ -104,37 +106,37 @@ namespace LifeHabitTrackerConsole
                 }
                 else if (receivedState == "/создать")
                 {
-                    
+                    //самый важный момент //Начало цепочки 
+                    //Видимо, тут надо сделать await, так как исходя из тестов с точкой останова, метод Handle не успевает сработать.
+                    nameHandler.Handle(reciever, habitService, message.Text);
 
 
 
-                    if (!reciever.GetNameExistence())
+
+                    if (!reciever.GetTypeExistence())
                     {
-                        habitService.SetName(message.Text);
+                        await botClient.SendTextMessageAsync(message.Chat, $"Название привычки успешно записано)");
 
-                        await botClient.SendTextMessageAsync(message.Chat, $"Теперь введите её тип (хорошая/плохая)");
-
-                        reciever.ChangeExistence(1);
+                        await botClient.SendTextMessageAsync(message.Chat, $"Теперь введите её тип (хорошая/плохая).");
 
                     }
-                    else if (true /*проверка наличия введённого типа через Хранитель типа*/ )
+                    else if (!reciever.GetDescExistence())
                     {
-                        //Получение данных и запись будут тут
+                        await botClient.SendTextMessageAsync(message.Chat, $"Тип привычки успешно записан)");
+
                         await botClient.SendTextMessageAsync(message.Chat, $"А теперь введите её описание");
                     }
-                    else if (true /*проверка наличия введённого описания через Хранитель описания*/ )
+                    else if (!reciever.GetDateExistence())
                     {
-                        //Получение данных и запись будут тут
+                        await botClient.SendTextMessageAsync(message.Chat, $"Описание привычки успешно записано)");
 
                         await botClient.SendTextMessageAsync(message.Chat, $"По каким дням или датам вы хотите получать напоминания ?");
                     }
-                    else if (true /*проверка наличия введённой даты через Хранитель даты*/ )
+                    else if (reciever.GetDateExistence())
                     {
-                        //Получение данных и запись будут тут
-
+                        caretaker.RemoveUserState(username);
+                        caretaker.AddUserState(username, currentState);
                         await botClient.SendTextMessageAsync(message.Chat, $"Прекрасно. Привычка создана!");
-
-                        //удаление Хранителей будет тут
                     }
 
                 }
@@ -144,7 +146,9 @@ namespace LifeHabitTrackerConsole
                 }
                 else if( receivedState== "/привычки")
                 {
-                    //логика выдачи уже созданных привычек
+                    var existingHabit = habitService.GetInfo();
+                    await botClient.SendTextMessageAsync(message.Chat, $"Ваша привычка:\n{existingHabit}");
+
                 }
                 else
                 {

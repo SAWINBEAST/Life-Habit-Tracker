@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 
-namespace LifeHabitTracker.BusinessLogicLayer
+namespace LifeHabitTracker.BusinessLogicLayer.Impls
 {
     /// <inheritdoc cref="IReciever"/>
     public class Reciever : IReciever
@@ -16,40 +17,48 @@ namespace LifeHabitTracker.BusinessLogicLayer
 
         public Reciever() { }
 
+        /// <inheritdoc/>
         public bool GetNameExistence()
         {
             return NameExistence;
         }
 
+        /// <inheritdoc/>
         public bool GetTypeExistence()
         {
             return TypeExistence;
         }
 
+        /// <inheritdoc/>
         public bool GetDescExistence()
         {
             return DescExistence;
         }
 
+        /// <inheritdoc/>
         public bool GetDateExistence()
         {
             return DateExistence;
         }
 
         /// <inheritdoc/>
-        public void ChangeExistence(int i) 
+        public void ChangeExistence(int i)
         {
             switch (i)
             {
-                case 1: NameExistence = true; 
+                case 1:
+                    NameExistence = true;
                     break;
-                case 2: TypeExistence = true;
+                case 2:
+                    TypeExistence = true;
                     break;
-                case 3: DescExistence = true;   
+                case 3:
+                    DescExistence = true;
                     break;
-                case 4: DateExistence = true;   
+                case 4:
+                    DateExistence = true;
                     break;
             }
-        }   
+        }
     }
 }

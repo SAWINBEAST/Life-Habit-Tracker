@@ -4,13 +4,14 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 
-namespace LifeHabitTracker.BusinessLogicLayer
+namespace LifeHabitTracker.BusinessLogicLayer.Impls
 {
     /// <inheritdoc cref="IOriginator"/>.
     public class Originator : IOriginator
     {
-        public string State {  get; set; }
+        public string State { get; set; }
 
 
         /// <inheritdoc/>
@@ -26,7 +27,7 @@ namespace LifeHabitTracker.BusinessLogicLayer
         }
 
         ///<inheritdoc/>
-        public string GetMemento() 
+        public string GetMemento()
         {
             return State;
         }

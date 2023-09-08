@@ -1,9 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
 using LifeHabitTrackerConsole;
-using LifeHabitTracker.BusinessLogicLayer;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
+using LifeHabitTracker.BusinessLogicLayer.Impls;
 
-    class Program
+class Program
     {
         static async Task Main(string[] args)
         {
@@ -21,10 +22,13 @@ using LifeHabitTracker.BusinessLogicLayer;
 
     private static IServiceCollection GetServiceCollection() =>
             new ServiceCollection()
+        //мне кажется какие-то нужно сделать через Scoped //пробовал разные зависимости сделать через скоупд, но лучше не стало
                 .AddSingleton<IBot, TelegramBot>()
                 .AddTransient<IHabitService, HabitService>()
+
                 .AddTransient<ICaretaker, Caretaker>()
                 .AddTransient<IOriginator, Originator>()
+
                 .AddTransient<IReciever, Reciever>()
                 .AddTransient<IDataHandler, NameHandler>()
                 .AddTransient<IDataHandler, TypeHandler>()

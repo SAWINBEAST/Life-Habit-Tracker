@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LifeHabitTracker.BusinessLogicLayer.Impls;
 
-namespace LifeHabitTracker.BusinessLogicLayer
+namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
 {
     /// <summary>
     /// Функционал обработчика событий
@@ -15,7 +16,7 @@ namespace LifeHabitTracker.BusinessLogicLayer
         /// Обрабатывает запроса от бота 
         /// </summary>
         /// <param name="receiver"></param>
-        public void Handle(Reciever receiver);
+        public void Handle(IReciever receiver, IHabitService habitService, string data);
 
         /// <summary>
         /// Добавляет приемника текущему обработчику

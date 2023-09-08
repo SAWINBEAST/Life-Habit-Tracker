@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 
-namespace LifeHabitTracker.BusinessLogicLayer
+namespace LifeHabitTracker.BusinessLogicLayer.Impls
 {
     /// <inheritdoc cref="ICaretaker"/>
-    public class Caretaker:ICaretaker
+    public class Caretaker : ICaretaker
     {
         //Я бы попробовал использовать тут List<Memento> , где у Memento 2 свойства - состояние и юзернэйм. Но тогда будет сложнее находить нужное состояние.
         public Dictionary<string, Memento> UserStates = new Dictionary<string, Memento>();
@@ -17,8 +18,8 @@ namespace LifeHabitTracker.BusinessLogicLayer
         {
             UserStates.Add(username, state);
 
-            foreach(var states in UserStates)
-{
+            foreach (var states in UserStates)
+            {
                 Console.WriteLine($"key: {states.Key}  value: {states.Value.State}");
             }
         }
@@ -33,8 +34,8 @@ namespace LifeHabitTracker.BusinessLogicLayer
         }
 
         /// <inheritdoc/>
-        public void RemoveUserState(string username) 
-        {  
+        public void RemoveUserState(string username)
+        {
             UserStates.Remove(username);
 
             foreach (var states in UserStates)

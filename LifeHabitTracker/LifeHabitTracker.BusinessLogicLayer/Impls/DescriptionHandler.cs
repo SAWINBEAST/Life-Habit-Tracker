@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 
-namespace LifeHabitTracker.BusinessLogicLayer
+namespace LifeHabitTracker.BusinessLogicLayer.Impls
 {
     /// <inheritdoc cref="IDataHandler"/>
     public class DescriptionHandler : IDataHandler
@@ -14,22 +15,24 @@ namespace LifeHabitTracker.BusinessLogicLayer
         /// <inheritdoc/>
         public void AppointSuccesor(IDataHandler handler)
         {
-            if (handler == null)
+            if (handler != null)
             {
                 Successor = handler;
             }
         }
+
         /// <inheritdoc/>
-        public void Handle(Reciever receiver)
+        public void Handle(IReciever receiver, IHabitService habitService, string data)
         {
-            if (receiver.DescExistence == false)
+            if (receiver.GetDescExistence() == false)
             {
                 Console.WriteLine("Выполняем запись описания");
-                receiver.DescExistence = true;
+                habitService.SetDesc(data);
+                receiver.ChangeExistence(3);
             }
 
             else if (Successor != null)
-                Successor.Handle(receiver);
+                 Successor.Handle(receiver, habitService, data);
         }
     }
 }

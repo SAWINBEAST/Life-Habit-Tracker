@@ -13,7 +13,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
     {
         public string State { get; set; }
 
-
         /// <inheritdoc/>
         public Memento CreateMemento(string state)
         {

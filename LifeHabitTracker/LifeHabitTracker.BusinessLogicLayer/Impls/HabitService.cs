@@ -20,8 +20,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
 
         public HabitService()
         {
-            /*            Console.WriteLine("Создана тестовая привычка");
-            */
         }
 
         /// <inheritdoc/>
@@ -46,25 +44,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
         public void SetDate(string date)
         {
             Date = date;
-        }
-
-
-
-        public HabitService(string name, string desc, string type, string date)
-        {
-            Name = name;
-            Description = desc;
-            Type = type;
-            Date = date;
-        }
-
-        /// <inheritdoc/>
-        public void CreateHabit(string name, string desc, string type, string date)
-        {
-            var habit = new HabitService(name, desc, type, date);
-            habits.Add(habit);
-
-            Console.WriteLine($"Создана привычка \"{name}\"");
         }
 
         /// <inheritdoc/>

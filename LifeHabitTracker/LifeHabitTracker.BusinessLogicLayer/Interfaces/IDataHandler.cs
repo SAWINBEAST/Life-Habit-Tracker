@@ -8,7 +8,7 @@ using LifeHabitTracker.BusinessLogicLayer.Impls;
 namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
 {
     /// <summary>
-    /// Функционал обработчика событий
+    /// Общий Функционал обработчика событий
     /// </summary>
     public interface IDataHandler
     {

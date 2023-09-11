@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
 {
+    /// <summary>
+    /// Функционал обработчика событий
+    /// </summary>
     public interface ITypeHandler
     {
-        /// <summary>
-        /// Функционал обработчика событий
-        /// </summary>
-        
             /// <summary>
             /// Функционал обработчика событий
             /// </summary>

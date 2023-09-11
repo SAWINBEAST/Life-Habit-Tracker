@@ -10,9 +10,8 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
     /// <inheritdoc cref="ICaretaker"/>
     public class Caretaker : ICaretaker
     {
-        //Я бы попробовал использовать тут List<Memento> , где у Memento 2 свойства - состояние и юзернэйм. Но тогда будет сложнее находить нужное состояние.
         public Dictionary<string, Memento> UserStates = new Dictionary<string, Memento>();
-        public Dictionary<string, Memento> HabitCreateStates = new Dictionary<string, Memento>();
+
         /// <inheritdoc/>
         public void AddUserState(string username, Memento state)
         {
@@ -20,7 +19,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
 
             foreach (var states in UserStates)
             {
-                Console.WriteLine($"key: {states.Key}  value: {states.Value.State}");
+                Console.WriteLine($"Добавлено новое состояние:\n - key: {states.Key}  value: {states.Value.State} -");
             }
         }
 
@@ -40,7 +39,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
 
             foreach (var states in UserStates)
             {
-                Console.WriteLine($"key: {states.Key}  value: {states.Value.State}");
+                Console.WriteLine($"Удалено старое состояние:\n - key: {states.Key}  value: {states.Value.State} -");
             }
         }
 

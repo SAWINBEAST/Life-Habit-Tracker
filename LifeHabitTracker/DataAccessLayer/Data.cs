@@ -8,7 +8,7 @@ using System.Text;
 
 namespace LifeHabitTracker.DataAccessLayer
 {
-    internal class Data
+    public class Data
     {
     }
 }

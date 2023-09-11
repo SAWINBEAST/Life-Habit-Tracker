@@ -11,13 +11,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
     public class Memento : IMemento
     {
         public string State { get; private set; }
-        /*        public string Username { get; private set; }
-        */
-        public Memento(string state/*, string username*/)
+        public Memento(string state)
         {
             State = state;
-            /*            Username = username;
-            */
         }
     }
 }

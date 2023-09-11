@@ -34,13 +34,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
         /// <param name="name"></param>
         public void SetDate(string date);
 
-
-        /// <summary>
-        /// Создание привычки
-        /// </summary>
-        /// <returns></returns>
-        void CreateHabit(string name, string desc, string type, string date);
-
         /// <summary>
         /// Рассказывает о привычке. Что она из себя представляет, какие есть составляющие
         /// </summary>

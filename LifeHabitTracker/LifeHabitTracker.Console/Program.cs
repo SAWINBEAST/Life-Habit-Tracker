@@ -24,16 +24,16 @@ class Program
             new ServiceCollection()
         //мне кажется какие-то нужно сделать через Scoped //пробовал разные зависимости сделать через скоупд, но лучше не стало
                 .AddSingleton<IBot, TelegramBot>()
-                .AddTransient<IHabitService, HabitService>()
+                .AddScoped<IHabitService, HabitService>()
 
                 .AddTransient<ICaretaker, Caretaker>()
                 .AddTransient<IOriginator, Originator>()
 
-                .AddTransient<IReciever, Reciever>()
-                .AddTransient<IDataHandler, NameHandler>()
-                .AddTransient<IDataHandler, TypeHandler>()
-                .AddTransient<IDataHandler, DescriptionHandler>()
-                .AddTransient<IDataHandler, DateHandler>();
+                .AddScoped<IReciever, Reciever>()
+                .AddTransient<INameHandler, NameHandler>()
+                .AddTransient<ITypeHandler, TypeHandler>()
+                .AddTransient<IDescHandler, DescriptionHandler>()
+                .AddTransient<IDateHandler, DateHandler>();
        
 
 

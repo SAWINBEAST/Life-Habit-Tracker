@@ -32,7 +32,7 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         private readonly ITelegramBotClient _bot = new TelegramBotClient(Token);
 
-        public TelegramBot(IHabitService habitService, ICaretaker caretaker, IOriginator originator, IReciever reciever, IDataHandler nameHandler, IDataHandler typeHandler, IDataHandler descHandler, IDataHandler dateHandler)
+        public TelegramBot(IHabitService habitService, ICaretaker caretaker, IOriginator originator, IReciever reciever, INameHandler nameHandler, ITypeHandler typeHandler, IDescHandler descHandler, IDateHandler dateHandler)
         {
             this.habitService = habitService;
 
@@ -40,10 +40,10 @@ namespace LifeHabitTrackerConsole
             this.caretaker = caretaker;
 
             this.reciever = reciever;
-            this.nameHandler = nameHandler;
-            this.typeHandler = typeHandler;
-            this.descHandler = descHandler;
-            this.dateHandler = dateHandler;
+            this.nameHandler = (IDataHandler)nameHandler;
+            this.typeHandler = (IDataHandler)typeHandler;
+            this.descHandler = (IDataHandler)descHandler;
+            this.dateHandler = (IDataHandler)dateHandler;
 
             this.nameHandler.AppointSuccesor(this.typeHandler);
             this.typeHandler.AppointSuccesor(this.descHandler);
@@ -78,7 +78,7 @@ namespace LifeHabitTrackerConsole
 
                 originator.SetMemento(caretaker.GetUserState(username));
                 var receivedState = originator.GetMemento();
-                
+
                 if(message.Text.StartsWith("/"))         
                 {
 
@@ -86,7 +86,6 @@ namespace LifeHabitTrackerConsole
                     {
                         await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
                         caretaker.RemoveUserState(username);
-                        caretaker.AddUserState(username, currentState);
 
 
                         //вот тут прописать логику выпадания меню. См. заметки в ТГ
@@ -100,7 +99,14 @@ namespace LifeHabitTrackerConsole
                         caretaker.RemoveUserState(username);
                         caretaker.AddUserState(username, currentState);
                     }
-                    //Вот тут прописать логику других команд, используя switch case
+                    else if (message?.Text?.ToLower() == "/привычки")
+                    {
+                        var existingHabit = habitService.GetInfo();
+                        await botClient.SendTextMessageAsync(message.Chat, $"Ваша привычка:\n{existingHabit}");
+                        caretaker.RemoveUserState(username);
+                    }
+
+                        //Вот тут прописать логику других команд, используя switch case
 
 
                 }
@@ -108,7 +114,7 @@ namespace LifeHabitTrackerConsole
                 {
                     //самый важный момент //Начало цепочки 
                     //Видимо, тут надо сделать await, так как исходя из тестов с точкой останова, метод Handle не успевает сработать.
-                    nameHandler.Handle(reciever, habitService, message.Text);
+                    await nameHandler.Handle(reciever, habitService, message.Text);
 
 
 
@@ -135,7 +141,6 @@ namespace LifeHabitTrackerConsole
                     else if (reciever.GetDateExistence())
                     {
                         caretaker.RemoveUserState(username);
-                        caretaker.AddUserState(username, currentState);
                         await botClient.SendTextMessageAsync(message.Chat, $"Прекрасно. Привычка создана!");
                     }
 
@@ -144,10 +149,13 @@ namespace LifeHabitTrackerConsole
                 {
                     //логика изменения уже созданной привычки
                 }
+                
+                //временно не используется
                 else if( receivedState== "/привычки")
                 {
                     var existingHabit = habitService.GetInfo();
                     await botClient.SendTextMessageAsync(message.Chat, $"Ваша привычка:\n{existingHabit}");
+                    caretaker.RemoveUserState(username);
 
                 }
                 else

@@ -8,7 +8,7 @@ using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 namespace LifeHabitTracker.BusinessLogicLayer.Impls
 {
     /// <inheritdoc cref="IDataHandler"/>
-    public class TypeHandler : IDataHandler
+    public class TypeHandler : ITypeHandler, IDataHandler
     {
         public IDataHandler Successor { get; set; }
 
@@ -22,7 +22,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
         }
 
         /// <inheritdoc/>
-        public void Handle(IReciever receiver, IHabitService habitService, string data)
+        public async Task Handle(IReciever receiver, IHabitService habitService, string data)
         {
             if (receiver.GetTypeExistence() == false)
 
@@ -33,7 +33,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
             }
 
             else if (Successor != null)
-                 Successor.Handle(receiver, habitService, data);
+                 await Successor.Handle(receiver, habitService, data);
         }
     }
 }

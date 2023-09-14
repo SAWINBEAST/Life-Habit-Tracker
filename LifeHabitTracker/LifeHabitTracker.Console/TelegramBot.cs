@@ -3,24 +3,21 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Polling;
 using Newtonsoft.Json;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
+using LifeHabitTracker.BusinessLogicLayer.Impls.General;
 
 namespace LifeHabitTrackerConsole
 {
     /// <inheritdoc cref="IBot"/>.
-    internal class TelegramBot : IBot
+    public class TelegramBot : IBot
     {
         //Объекты внешних классов логики программы
-        IHabitService habitService;
 
         IOriginator originator;
         ICaretaker caretaker;
-
-        IReciever reciever;
-        IDataHandler nameHandler;
-        IDataHandler typeHandler;
-        IDataHandler descHandler;
-        IDataHandler dateHandler;
-
+        IContextHabitCreation context;
 
         /// <summary>
         /// API-токен бота телеграм
@@ -32,23 +29,11 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         private readonly ITelegramBotClient _bot = new TelegramBotClient(Token);
 
-        public TelegramBot(IHabitService habitService, ICaretaker caretaker, IOriginator originator, IReciever reciever, INameHandler nameHandler, ITypeHandler typeHandler, IDescHandler descHandler, IDateHandler dateHandler)
+        public TelegramBot(ICaretaker caretaker, IOriginator originator, IContextHabitCreation context )
         {
-            this.habitService = habitService;
-
             this.originator = originator;
             this.caretaker = caretaker;
-
-            this.reciever = reciever;
-            this.nameHandler = (IDataHandler)nameHandler;
-            this.typeHandler = (IDataHandler)typeHandler;
-            this.descHandler = (IDataHandler)descHandler;
-            this.dateHandler = (IDataHandler)dateHandler;
-
-            //Создание Цепочки обязанностей. Соединение звеньев
-            this.nameHandler.AppointSuccesor(this.typeHandler);
-            this.typeHandler.AppointSuccesor(this.descHandler);
-            this.descHandler.AppointSuccesor(this.dateHandler);
+            this.context = context;
 
         }
 
@@ -72,42 +57,54 @@ namespace LifeHabitTrackerConsole
 
                 //Фиксируем текущее состояние работы клиента с ботом. При необходимости записываем его в Смотрителя(хранителя)
                 var currentState = originator.CreateMemento(message.Text);
-                if (caretaker.GetUserState(username) == null)
+
+                //Узнаем, была ли у нас до этого момента команда
+                string? previousState = null; 
+
+                if (message.Text.StartsWith("/"))   //это можно убрать внутрь метода addUserState
+                {
+                    previousState = caretaker.GetUserState(username);
+                    caretaker.RemoveUserState(username);
                     caretaker.AddUserState(username, currentState);
-                
+
+                }    
 
                 //Достаем из хранителя актуальное состояние работы с ботом, если в текущий момент ведется работа по определённой команде,
                 //которую ранее, скорее всего, не записали, так как состояние уже существовало. 
                 originator.SetMemento(caretaker.GetUserState(username));
                 var receivedState = originator.GetMemento();
 
-                //При ввода команды со слешем, нам нужно начать работу с новой командой,
-                //перезаписать состояние работы с ботом в хрпнителе
-                //И правильно ответить на запрос клиента
-                if (message.Text.StartsWith("/"))
-                {
-                    switch (message?.Text?.ToLower())
-                    {
-                        case "/start":
-                            await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
 
+                if (receivedState != null)
+                {
+                    if (previousState != null)  //на последнем этапе его нужно удалить
+                        await botClient.SendTextMessageAsync(message.Chat, $"Произошел сброс команды, начинаем заново.");
+
+                    switch (receivedState)
+                    {
+                        case Constant.StartCommand:
+
+                            await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
                             caretaker.RemoveUserState(username);
+
                             //вот тут прописать логику выпадания меню. См. заметки в ТГ
                             break;
 
-                        case "/создать":
-                            await botClient.SendTextMessageAsync(message.Chat, $"Сейчас создадим");
-                            await botClient.SendTextMessageAsync(message.Chat, $"Введите название Привычки");
+                        case Constant.CreateCommand:
 
-                            caretaker.RemoveUserState(username);
-                            caretaker.AddUserState(username, currentState);
+                            await botClient.SendTextMessageAsync(message.Chat, context.RequestWriteValue(message.Text));
+
+                            context.RequestNextState();
+
+                            //ВАЖНО
+                            //после завершения записи привычки мне нужно удалить состояние.
+                            //В классах состояния у меня нет доступа к объекту caretaker.я не знаю, как мне его удалить.
+                            //Это важно, потому что контекст создания привычки у меня остается и после завершения создания привычки.
                             break;
 
-                        case "/привычки":
-                            await botClient.SendTextMessageAsync(message.Chat, $"Ваша привычка: Какую привычку вы хотите посмотреть ?");
+                        case Constant.GetHabitCommand:
+                            await botClient.SendTextMessageAsync(message.Chat, $"- {context.GetUsedHabit().Name} -\n- {context.GetUsedHabit().Desc} -");
 
-                            caretaker.RemoveUserState(username);
-                            caretaker.AddUserState(username, currentState);
                             break;
 
                             //Остальные команды :
@@ -121,52 +118,6 @@ namespace LifeHabitTrackerConsole
                 }
 
 
-                //Работа с простым текстом и данными для определенной команды.
-                //Определить логику работы помогает текущее состояние работы с ботом, записанное ранее.
-                switch (receivedState)
-                {
-                    case "/создать":
-                        //Начало цепочки 
-                        await nameHandler.Handle(reciever, habitService, message.Text);
-
-                        //Дерево Ифов, так как в зависимости от успешной записи данных клиентом
-                        //нужно вывести ответ в чат, и запросить ввод новый данных.
-                        if (!reciever.GetTypeExistence())
-                        {
-                            await botClient.SendTextMessageAsync(message.Chat, $"Название привычки успешно записано)");
-                            await botClient.SendTextMessageAsync(message.Chat, $"Теперь введите её тип (хорошая/плохая).");
-
-                        }
-                        else if (!reciever.GetDescExistence())
-                        {
-                            await botClient.SendTextMessageAsync(message.Chat, $"Тип привычки успешно записан)");
-                            await botClient.SendTextMessageAsync(message.Chat, $"А теперь введите её описание");
-                        }
-                        else if (!reciever.GetDateExistence())
-                        {
-                            await botClient.SendTextMessageAsync(message.Chat, $"Описание привычки успешно записано)");
-                            await botClient.SendTextMessageAsync(message.Chat, $"По каким дням или датам вы хотите получать напоминания ?");
-                        }
-                        else if (reciever.GetDateExistence())
-                        {
-                            caretaker.RemoveUserState(username);
-                            await botClient.SendTextMessageAsync(message.Chat, $"Прекрасно. Привычка создана!");
-                        }
-
-                        break;
-
-                    case "/привычки":
-                        //тут будет работа с БД и выгрузка нужной привычки
-                        //а пока что, выгрузка только что введённой привычки из оперативной памяти
-                        var existingHabit = habitService.GetInfo();
-                        await botClient.SendTextMessageAsync(message.Chat, $"Ваша привычка:\n{existingHabit}");
-
-                        caretaker.RemoveUserState(username);
-                        break;
-
-                   
-                        //Остальные состояния и логика работа в них :
-                }
                
                
             }

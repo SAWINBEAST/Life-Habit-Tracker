@@ -1,15 +1,22 @@
-﻿using System;
+﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
+namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit
 {
     /// <summary>
     /// Описывает функционал Привычки
     /// </summary>
     public interface IHabitService
     {
+        /// <summary>
+        /// Взятие привычки для её дальнейшего использования
+        /// </summary>
+        /// <param name="habit"></param>
+        public void TakeHabit(Habit habit);
+
         /// <summary>
         /// Загрузка имени
         /// </summary>

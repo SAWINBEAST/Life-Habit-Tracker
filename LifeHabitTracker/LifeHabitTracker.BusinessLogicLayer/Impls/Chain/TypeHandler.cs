@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Impls
+namespace LifeHabitTracker.BusinessLogicLayer.Impls.Chain
 {
-    /// <inheritdoc cref="IDescHandler"/>
-    public class DescriptionHandler : IDescHandler, IDataHandler
+    /// <inheritdoc cref="IDataHandler"/>
+    public class TypeHandler : ITypeHandler, IDataHandler
     {
         public IDataHandler Successor { get; set; }
 
@@ -24,11 +25,12 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
         /// <inheritdoc/>
         public async Task Handle(IReciever receiver, IHabitService habitService, string data)
         {
-            if (receiver.GetDescExistence() == false)
+            if (receiver.GetTypeExistence() == false)
+
             {
-                Console.WriteLine("Выполняем запись описания");
-                habitService.SetDesc(data);
-                receiver.ChangeExistence(3);
+                Console.WriteLine("Выполняем запись типа");
+                habitService.SetType(data);
+                receiver.ChangeExistence(2);
             }
 
             else if (Successor != null)

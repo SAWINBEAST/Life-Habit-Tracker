@@ -2,6 +2,11 @@
 using LifeHabitTrackerConsole;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Impls;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
+using LifeHabitTracker.BusinessLogicLayer.Impls.State;
+using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+using LifeHabitTracker.BusinessLogicLayer.Impls.General;
 
 class Program
     {
@@ -23,17 +28,14 @@ class Program
     private static IServiceCollection GetServiceCollection() =>
             new ServiceCollection()
                 .AddSingleton<IBot, TelegramBot>()
-                .AddScoped<IHabitService, HabitService>()
 
                 .AddTransient<ICaretaker, Caretaker>()
                 .AddTransient<IOriginator, Originator>()
 
-                .AddScoped<IReciever, Reciever>()
-                .AddTransient<INameHandler, NameHandler>()
-                .AddTransient<ITypeHandler, TypeHandler>()
-                .AddTransient<IDescHandler, DescriptionHandler>()
-                .AddTransient<IDateHandler, DateHandler>();
-       
+                .AddScoped<IContextHabitCreation, ContextHabitCreation>()
+                .AddScoped<IState, InitialState>();
+
+                       
     }
 
 

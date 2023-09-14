@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
+namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain
 {
     /// <summary>
     /// Функционал хранителя состояний данных привычки

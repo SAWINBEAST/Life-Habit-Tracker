@@ -3,21 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LifeHabitTracker.BusinessLogicLayer.Impls;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
+namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain
 {
     /// <summary>
-    /// Общий Функционал обработчика событий
+    /// Функционал обработчика событий
     /// </summary>
-    public interface IDataHandler
+    public interface IDescHandler
     {
+        /// <summary>
+        /// Функционал обработчика событий
+        /// </summary>
         /// <summary>
         /// Обрабатывает запроса от бота 
         /// </summary>
         /// <param name="receiver"></param>
         public Task Handle(IReciever receiver, IHabitService habitService, string data);
-        
+
         /// <summary>
         /// Добавляет приемника текущему обработчику
         /// </summary>

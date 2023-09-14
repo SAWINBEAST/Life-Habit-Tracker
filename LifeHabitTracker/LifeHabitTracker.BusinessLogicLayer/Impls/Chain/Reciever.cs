@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Impls
+namespace LifeHabitTracker.BusinessLogicLayer.Impls.Chain
 {
     /// <inheritdoc cref="IReciever"/>
     public class Reciever : IReciever

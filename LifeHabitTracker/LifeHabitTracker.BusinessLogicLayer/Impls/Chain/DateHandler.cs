@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Impls
+namespace LifeHabitTracker.BusinessLogicLayer.Impls.Chain
 {
     /// <inheritdoc cref="IDateHandler"/>
     public class DateHandler : IDateHandler, IDataHandler
-    { 
+    {
         public IDataHandler Successor { get; set; }
 
         /// <inheritdoc/>
@@ -33,7 +34,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
 
             else if (Successor != null)
                 await Successor.Handle(receiver, habitService, data);
-            
+
         }
     }
 }

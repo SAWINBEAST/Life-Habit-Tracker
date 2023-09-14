@@ -35,7 +35,8 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
         /// <inheritdoc/>
         public void RemoveUserState(string username)
         {
-            UserStates.Remove(username);
+            if (UserStates.ContainsKey(username))
+                UserStates.Remove(username);
 
             foreach (var states in UserStates)
             {

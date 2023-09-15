@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
+﻿using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain
 {

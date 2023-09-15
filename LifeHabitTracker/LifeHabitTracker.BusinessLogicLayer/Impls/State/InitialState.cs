@@ -1,37 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
+﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
-    public class InitialState : IState
+    public class InitialState : IHabitCreationState
     {
-        private ContextHabitCreation _context;
-
-        public const string nextState = "Название привычки";
-
-        public InitialState() { }
-
-        public void SetContext(ContextHabitCreation context)
+        public string GetDataRequest()
         {
-            this._context = context;
+            throw new NotImplementedException();
         }
 
-        public void HandleNextState()
+        public (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
-            this._context.TransitionTo(new NameState());
+            throw new NotImplementedException();
         }
-
-        public string HandleWriteValue(string data)
-        {
-            Console.WriteLine("Начали создавать привычку");
-            var stub = data;
-            return $"Введите {nextState}.";
-        }
-
-
     }
 }

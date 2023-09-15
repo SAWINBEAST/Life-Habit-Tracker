@@ -1,24 +1,18 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Types;
-using Telegram.Bot.Polling;
+﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
+using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
+using LifeHabitTrackerConsole.Entities;
 using Newtonsoft.Json;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
-using LifeHabitTracker.BusinessLogicLayer.Impls.General;
+using Telegram.Bot;
+using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
 
 namespace LifeHabitTrackerConsole
 {
     /// <inheritdoc cref="IBot"/>.
     public class TelegramBot : IBot
     {
-        //Объекты внешних классов логики программы
-
-        IOriginator originator;
-        ICaretaker caretaker;
-        IContextHabitCreation context;
-
         /// <summary>
         /// API-токен бота телеграм
         /// </summary>
@@ -29,12 +23,20 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         private readonly ITelegramBotClient _bot = new TelegramBotClient(Token);
 
-        public TelegramBot(ICaretaker caretaker, IOriginator originator, IContextHabitCreation context )
-        {
-            this.originator = originator;
-            this.caretaker = caretaker;
-            this.context = context;
+        /// <summary>
+        /// Хранитель контекстов
+        /// </summary>
+        private readonly IHabitContextCaretaker _habitContextCaretaker;
 
+        /// <summary>
+        /// Сервис привычек
+        /// </summary>
+        private readonly IHabitService _habitService;
+
+        public TelegramBot(IHabitContextCaretaker habitContextCaretaker, IHabitService habitService)
+        {
+            _habitContextCaretaker = habitContextCaretaker;
+            _habitService = habitService;
         }
 
         /// <summary>
@@ -53,77 +55,93 @@ namespace LifeHabitTrackerConsole
                 var message = update.Message;
                 var username = message.From.Username;
 
-                Console.WriteLine($"Cooбщение от пользователя {username}: {message?.Text}");
+                if (string.IsNullOrEmpty(message?.Text))
+                    return;
 
-                //Фиксируем текущее состояние работы клиента с ботом. При необходимости записываем его в Смотрителя(хранителя)
-                var currentState = originator.CreateMemento(message.Text);
+                var messageText = message.Text;
+
+                Console.WriteLine($"Cooбщение от пользователя {username}: {messageText}");
 
                 //Узнаем, была ли у нас до этого момента команда
-                string? previousState = null; 
+                var context = _habitContextCaretaker.GetContext(username); 
 
-                if (message.Text.StartsWith("/"))   //это можно убрать внутрь метода addUserState
+                if (messageText.StartsWith("/") && context is not null)   //это можно убрать внутрь метода addUserState
                 {
-                    previousState = caretaker.GetUserState(username);
-                    caretaker.RemoveUserState(username);
-                    caretaker.AddUserState(username, currentState);
-
-                }    
-
-                //Достаем из хранителя актуальное состояние работы с ботом, если в текущий момент ведется работа по определённой команде,
-                //которую ранее, скорее всего, не записали, так как состояние уже существовало. 
-                originator.SetMemento(caretaker.GetUserState(username));
-                var receivedState = originator.GetMemento();
-
-
-                if (receivedState != null)
-                {
-                    if (previousState != null)  //на последнем этапе его нужно удалить
-                        await botClient.SendTextMessageAsync(message.Chat, $"Произошел сброс команды, начинаем заново.");
-
-                    switch (receivedState)
-                    {
-                        case Constant.StartCommand:
-
-                            await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать в Привычковную,{username}");
-                            caretaker.RemoveUserState(username);
-
-                            //вот тут прописать логику выпадания меню. См. заметки в ТГ
-                            break;
-
-                        case Constant.CreateCommand:
-
-                            await botClient.SendTextMessageAsync(message.Chat, context.RequestWriteValue(message.Text));
-
-                            context.RequestNextState();
-
-                            //ВАЖНО
-                            //после завершения записи привычки мне нужно удалить состояние.
-                            //В классах состояния у меня нет доступа к объекту caretaker.я не знаю, как мне его удалить.
-                            //Это важно, потому что контекст создания привычки у меня остается и после завершения создания привычки.
-                            break;
-
-                        case Constant.GetHabitCommand:
-                            await botClient.SendTextMessageAsync(message.Chat, $"- {context.GetUsedHabit().Name} -\n- {context.GetUsedHabit().Desc} -");
-
-                            break;
-
-                            //Остальные команды :
-                    }
-                    return;
-                }
-                //вывод дефолтного сообщения в чат, на случай неправильного вода клиента
-                else if (receivedState == null) 
-                {
-                    await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username} :)\nВведи команду, используя \"/\"");
+                    _habitContextCaretaker.RemoveContext(username);
+                    await botClient.SendTextMessageAsync(message.Chat, "Вы вышли из процесса.");
                 }
 
-
-               
-               
+                switch (messageText)
+                {
+                    case Command.Start:
+                        await HandleStartCommandAsync(message.Chat, username);
+                        //вот тут прописать логику выпадания меню. См. заметки в ТГ
+                        break;
+                    case Command.CreateHabit:
+                        await HandleCreateHabitCommandAsync(message.Chat, username, cancellationToken);
+                        break;
+                    case Command.Habits:
+                        var habitNames = _habitService.GetHabits().Select(x => x.Name);
+                        await botClient.SendTextMessageAsync(message.Chat, $"Привычки:\n{string.Join("\n", habitNames)}");
+                        break;
+                    default:
+                        if (context is not null)
+                        {
+                            await context.HandleUserResponseAsync(messageText, cancellationToken);
+                            return;
+                        }
+                        await botClient.SendTextMessageAsync(message.Chat, "Команда не распознана.");
+                        break;
+                }
             }
-
         }
 
+        /// <summary>
+        /// Обработать команду старта
+        /// </summary>
+        /// <param name="chat">Информация по чату</param>
+        /// <param name="username">Имя пользователя</param>
+        /// <returns></returns>
+        private async Task HandleStartCommandAsync(Chat chat, string username)
+            => await _bot.SendTextMessageAsync(chat, $"Добро пожаловать в Привычковную, {username}");
+
+        /// <summary>
+        /// Обработать команду по созданию привычки
+        /// </summary>
+        /// <param name="chat">Информация по чату</param>
+        /// <param name="username">Имя пользователя</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
+        private async Task HandleCreateHabitCommandAsync(Chat chat, string username, CancellationToken cancellationToken)
+        {
+            var chatInfo = new ChatInfo(chat.Id, username);
+            var context = _habitContextCaretaker.CreateContext(chatInfo, HandleHabitCreationInfoAsync);
+            await context.StartContextAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Обработать информацию по созданию привычки
+        /// </summary>
+        /// <param name="chatInfo">Информация по чату</param>
+        /// <param name="message">Информационное сообщение</param>
+        /// <param name="isFinish">Признак того, что процесс создания завершён (true)</param>
+        /// <param name="habit">Данные по создаваемой привычке</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns></returns>
+        private async Task HandleHabitCreationInfoAsync(ChatInfo chatInfo, string message, bool isFinish, Habit habit, CancellationToken cancellationToken)
+        {
+            var messageInfo = await _bot.SendTextMessageAsync(chatInfo.ChatId, message, cancellationToken: cancellationToken);
+            if (isFinish)
+            {
+                await _bot.SendTextMessageAsync(chatInfo.ChatId, 
+                    _habitService.AddHabit(habit)
+                        ? "Привычка успешно добавлена!"
+                        : "Не удалось добавить привычку", 
+                    replyToMessageId: messageInfo.MessageId, 
+                    cancellationToken: cancellationToken);
+                _habitContextCaretaker.RemoveContext(chatInfo.UserName);
+            }
+        }
 
         /// <summary>
         /// Логирование ошибки при взаимодействии пользователя с ботом

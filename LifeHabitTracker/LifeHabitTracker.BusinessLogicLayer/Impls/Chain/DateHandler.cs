@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.IChain;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Chain
 {

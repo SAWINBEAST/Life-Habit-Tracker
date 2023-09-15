@@ -1,37 +1,18 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
-    public class DateState : IState
+    public class DateState : IHabitCreationState
     {
-        private ContextHabitCreation _context;
-
-        public const string nextState = "Все данные введены.";
-
-        public void SetContext(ContextHabitCreation context)
+        public string GetDataRequest()
         {
-            this._context = context;
+            throw new NotImplementedException();
         }
 
-        public void HandleNextState()
+        public (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
-            //Вот тут мне надо удалить мой контекст, так как привычка создана.
-            this._context.TransitionTo(new InitialState());
+            throw new NotImplementedException();
         }
-
-        public string HandleWriteValue(string data)
-        {
-            Console.WriteLine("Выполняем запись даты");
-            _context.habit.Date = data;
-            return $"{nextState}";
-        }
-
     }
 }

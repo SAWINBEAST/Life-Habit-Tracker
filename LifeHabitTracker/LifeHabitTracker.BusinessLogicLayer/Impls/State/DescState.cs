@@ -1,36 +1,18 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
-    public class DescState : IState
+    public class DescState : IHabitCreationState
     {
-        private ContextHabitCreation _context;
-
-        public const string nextState = "Дату привычки";
-
-
-        public void SetContext(ContextHabitCreation context)
+        public string GetDataRequest()
         {
-            this._context = context;
+            throw new NotImplementedException();
         }
 
-        public void HandleNextState()
+        public (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
-            this._context.TransitionTo(new DateState());
+            throw new NotImplementedException();
         }
-
-        public string HandleWriteValue(string data)
-        {
-            Console.WriteLine("Выполняем запись описания");
-            _context.habit.Desc = data;
-            return $"Введите {nextState}.";
-        }
-
     }
 }

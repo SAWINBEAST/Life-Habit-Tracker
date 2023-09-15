@@ -1,32 +1,29 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
-
-    public class NameState : IState
+    /// <summary>
+    /// Состояние получения наименования привычки
+    /// </summary>
+    public class NameState : HabitCreationState
     {
-        private ContextHabitCreation _context;
+        public NameState() => DataRequestMessage = "Ввведите наименование привычки.";
 
-        public const string nextState = "Тип привычки";
-
-        public void SetContext(ContextHabitCreation context)
+        /// <inheritdoc/>
+        public override (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
-            this._context = context;
+            Console.WriteLine($"Введённые данные для наименования привычки: {data}");
+
+            if (data.Length > 27)
+                return ("Наименование привычки должно быть не более 27 символов. Попробуйте ещё раз.", false);
+
+            habit.Name = data;
+            context.State = TransitionToNewState();
+            return ($"Наименование привычки: {data}.\n{context.State.GetDataRequest()}", false);
         }
 
-        public void HandleNextState()
-        {
-            this._context.TransitionTo(new TypeState());
-        }
-
-        public string HandleWriteValue(string data)
-        {
-            Console.WriteLine("Выполняем запись имени");
-            _context.habit.Name = data;
-            return $"Введите {nextState}.";
-        }
-
-
+        /// <inheritdoc/>
+        protected override IHabitCreationState TransitionToNewState() => new TypeState();
     }
 }

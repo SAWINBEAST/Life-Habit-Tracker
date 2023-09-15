@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit;
+﻿using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 {
@@ -31,7 +26,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <inheritdoc/>
         public void SetDesc(string desc)
         {
-            CurrentHabit.Desc = desc;
+            CurrentHabit.Description = desc;
         }
 
         /// <inheritdoc/>
@@ -43,9 +38,14 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <inheritdoc/>
         public string GetInfo()
         {
-            var info = $"-{CurrentHabit.Name}-\n-{CurrentHabit.Desc}-\n-{CurrentHabit.Type}-\n-{CurrentHabit.Date}-";
+            var info = $"-{CurrentHabit.Name}-\n-{CurrentHabit.Description}-\n-{CurrentHabit.Type}-\n-{CurrentHabit.Date}-";
             return info;
         }
 
+        /// <inheritdoc/>
+        public bool AddHabit(Habit habit) => true;
+
+        /// <inheritdoc/>
+        public IReadOnlyCollection<Habit> GetHabits() => new Habit[] { new Habit() };
     }
 }

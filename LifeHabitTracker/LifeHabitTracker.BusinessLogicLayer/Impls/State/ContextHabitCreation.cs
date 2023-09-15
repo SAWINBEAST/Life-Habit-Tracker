@@ -1,69 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
 using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
     /// <summary>
     /// Контекст определяет интерфейс, представляющий интерес для клиентов. Онтакже хранит ссылку на экземпляр подкласса Состояния, который отображаеттекущее состояние Контекста
     /// </summary>
-    public class ContextHabitCreation: IContextHabitCreation
+    public class ContextHabitCreation : IContextHabitCreation
     {
         /// <summary>
-        /// Ссылка на текущее состояние Контекста.
+        /// 
         /// </summary>
-        private IState _state = null;
+        private event Func<ChatInfo, string, bool, Habit, CancellationToken, Task> DataCompleted;
 
-        public Habit habit = new Habit();
-
-
-        public ContextHabitCreation(IState state)
+        public ContextHabitCreation(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc)
         {
-            this.TransitionTo(state);
-        } 
-
-        /// <summary>
-        ///  Изменение Состояния объекта во время выполнения.
-        /// </summary>
-        /// <param name="state"></param>
-        public void TransitionTo(IState state)
-        {
-            Console.WriteLine($"Context: Transition to {state.GetType().Name}.");
-            this._state = state;
-            this._state.SetContext(this);
+            Habit = new Habit();
+            State = new NameState();
+            ChatInfo = chatInfo;
+            DataCompleted += handleRequestFunc;
         }
 
         /// <summary>
-        /// Делегирование части своего поведения текущему объекту состояния.
+        /// Создаваемая привычка
         /// </summary>
-        public void RequestNextState()
+        public Habit Habit { get; }
+
+        /// <inheritdoc/>
+        public IHabitCreationState State { get; set; }
+
+        /// <summary>
+        /// Данные чата, в рамках которого существует контекст
+        /// </summary>
+        public ChatInfo ChatInfo { get; }
+
+        /// <inheritdoc/>
+        public async Task StartContextAsync(CancellationToken cancellationToken)
+            => await DataCompleted(ChatInfo, State.GetDataRequest(), false, null, cancellationToken);
+
+        /// <inheritdoc/>
+        public async Task HandleUserResponseAsync(string userResponse, CancellationToken cancellationToken)
         {
-            this._state.HandleNextState();
+            var (infoMessage, isFinish) = State.HandleData(this, userResponse, Habit);
+            await DataCompleted(ChatInfo, infoMessage, isFinish, Habit, cancellationToken);
         }
-
-        public string RequestWriteValue(string message)
-        {
-            return this._state.HandleWriteValue(message);
-        }
-
-        public Habit GetUsedHabit()
-        {
-            return habit;
-        }
-
-       /* public string IsEmpty()
-        {
-            if (habit.Name == null)
-                return "Сейчас создадим. \n\nВведите название Привычки";
-            else
-                return null;
-
-        }*/
     }
-
-
 }

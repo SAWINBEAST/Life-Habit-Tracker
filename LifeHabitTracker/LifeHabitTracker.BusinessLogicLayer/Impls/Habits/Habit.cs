@@ -1,20 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
+﻿namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 {
+    /// <summary>
+    /// Привычка
+    /// </summary>
     public class Habit
     {
+        /// <summary>
+        /// Наименование
+        /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// Тип
+        /// </summary>
         public string Type { get; set; }
-        public string Desc { get; set; }
+
+        /// <summary>
+        /// Описание
+        /// </summary>
+        public string Description { get; set; }
+
+        /// <summary>
+        /// Дни выполнения привычки
+        /// </summary>
         public string Date { get; set; }
-        //public DateTime Date { get; set; } = DateTime.Now.AddDays(1);
-
-
 
     }
 }

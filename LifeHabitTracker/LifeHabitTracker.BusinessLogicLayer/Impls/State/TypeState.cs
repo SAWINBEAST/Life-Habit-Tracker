@@ -1,38 +1,23 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.IState;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
-    public class TypeState : IState
+    /// <summary>
+    /// 
+    /// </summary>
+    public class TypeState : HabitCreationState
     {
+        public TypeState() => DataRequestMessage = "Ввведите тип привычки.";
 
-        private ContextHabitCreation _context;
-
-        public const string nextState = "Описание привычки";
-
-
-        public void SetContext(ContextHabitCreation context)
+        public override (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
-            this._context = context;
+            throw new NotImplementedException();
         }
 
-        public void HandleNextState()
+        protected override IHabitCreationState TransitionToNewState()
         {
-            this._context.TransitionTo(new DescState());
+            throw new NotImplementedException();
         }
-
-        public string HandleWriteValue(string data)
-        {
-            Console.WriteLine("Выполняем запись типа");
-            _context.habit.Type = data;
-            return $"Введите {nextState}.";
-        }
-
     }
 }

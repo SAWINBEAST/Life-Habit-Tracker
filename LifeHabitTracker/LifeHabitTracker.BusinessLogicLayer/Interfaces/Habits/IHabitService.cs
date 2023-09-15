@@ -1,16 +1,25 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Xml.Linq;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.IHabit
+namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
 {
     /// <summary>
     /// Описывает функционал Привычки
     /// </summary>
     public interface IHabitService
     {
+        /// <summary>
+        /// Добавить привычку
+        /// </summary>
+        /// <param name="habit">Добавляемая привычка</param>
+        /// <returns>True - привычка успешно добавлена, False - привычку не удалось добавить</returns>
+        public bool AddHabit(Habit habit);
+
+        /// <summary>
+        /// Получить привычки
+        /// </summary>
+        /// <returns>Привычки</returns>
+        public IReadOnlyCollection<Habit> GetHabits();
+
         /// <summary>
         /// Взятие привычки для её дальнейшего использования
         /// </summary>

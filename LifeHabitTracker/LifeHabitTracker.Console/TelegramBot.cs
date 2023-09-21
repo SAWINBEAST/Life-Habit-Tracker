@@ -1,7 +1,6 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
 using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTrackerConsole.Entities;
 using Newtonsoft.Json;
 using Telegram.Bot;
@@ -65,7 +64,7 @@ namespace LifeHabitTrackerConsole
                 //Узнаем, была ли у нас до этого момента команда
                 var context = _habitContextCaretaker.GetContext(username); 
 
-                if (messageText.StartsWith("/") && context is not null)   //это можно убрать внутрь метода addUserState
+                if (messageText.StartsWith("/") && context is not null)   
                 {
                     _habitContextCaretaker.RemoveContext(username);
                     await botClient.SendTextMessageAsync(message.Chat, "Вы вышли из процесса.");
@@ -96,6 +95,7 @@ namespace LifeHabitTrackerConsole
             }
         }
 
+
         /// <summary>
         /// Обработать команду старта
         /// </summary>
@@ -104,6 +104,7 @@ namespace LifeHabitTrackerConsole
         /// <returns></returns>
         private async Task HandleStartCommandAsync(Chat chat, string username)
             => await _bot.SendTextMessageAsync(chat, $"Добро пожаловать в Привычковную, {username}");
+
 
         /// <summary>
         /// Обработать команду по созданию привычки
@@ -118,6 +119,7 @@ namespace LifeHabitTrackerConsole
             var context = _habitContextCaretaker.CreateContext(chatInfo, HandleHabitCreationInfoAsync);
             await context.StartContextAsync(cancellationToken);
         }
+
 
         /// <summary>
         /// Обработать информацию по созданию привычки
@@ -139,9 +141,11 @@ namespace LifeHabitTrackerConsole
                         : "Не удалось добавить привычку", 
                     replyToMessageId: messageInfo.MessageId, 
                     cancellationToken: cancellationToken);
+
                 _habitContextCaretaker.RemoveContext(chatInfo.UserName);
             }
         }
+
 
         /// <summary>
         /// Логирование ошибки при взаимодействии пользователя с ботом
@@ -156,6 +160,7 @@ namespace LifeHabitTrackerConsole
             await botClient.SendTextMessageAsync(botClient.BotId, "В нашей работе произошла ошибка. Мы уже решаем её");
 
         }
+
 
         /// <inheritdoc/>
         public async Task LaunchAsync()

@@ -1,7 +1,6 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Impls.State;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTrackerConsole;
 using Microsoft.Extensions.DependencyInjection;
 

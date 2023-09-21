@@ -17,8 +17,11 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         public IContextHabitCreation CreateContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc)
         {
             var newContext = new ContextHabitCreation(chatInfo, handleRequestFunc);
+
             _usersHabitContexts.Add(chatInfo.UserName, newContext);
+
             Console.WriteLine($"Для {chatInfo.UserName} создан контекст процесса создания привычки. Идентификатор чата, в рамках которого существует контекст: {chatInfo.ChatId}.");
+
             return newContext;
             // Такой вариант априори неправильный, так как ты при каждом новом контексте проходишься по всему словарю (а представь, что у тебя миллион пользователей в процессе создания привычки)
             /*foreach (var userContext in _usersHabitContexts)
@@ -30,8 +33,8 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <inheritdoc/>
         public IContextHabitCreation? GetContext(string username)
             => _usersHabitContexts.ContainsKey(username)
-            ? _usersHabitContexts[username]
-            : null;
+                ? _usersHabitContexts[username]
+                : null;
 
         /// <inheritdoc/>
         public void RemoveContext(string username)

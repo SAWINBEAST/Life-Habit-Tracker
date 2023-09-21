@@ -9,18 +9,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
     /// </summary>
     public class ContextHabitCreation : IContextHabitCreation
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        private event Func<ChatInfo, string, bool, Habit, CancellationToken, Task> DataCompleted;
-
-        public ContextHabitCreation(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc)
-        {
-            Habit = new Habit();
-            State = new NameState();
-            ChatInfo = chatInfo;
-            DataCompleted += handleRequestFunc;
-        }
 
         /// <summary>
         /// Создаваемая привычка
@@ -34,6 +22,19 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         /// Данные чата, в рамках которого существует контекст
         /// </summary>
         public ChatInfo ChatInfo { get; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private event Func<ChatInfo, string, bool, Habit, CancellationToken, Task> DataCompleted;
+
+        public ContextHabitCreation(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc)
+        {
+            Habit = new Habit();
+            State = new NameState();
+            ChatInfo = chatInfo;
+            DataCompleted += handleRequestFunc;
+        }
 
         /// <inheritdoc/>
         public async Task StartContextAsync(CancellationToken cancellationToken)

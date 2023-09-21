@@ -19,11 +19,13 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
                 return ("Наименование привычки должно быть не более 27 символов. Попробуйте ещё раз.", false);
 
             habit.Name = data;
+
             context.State = TransitionToNewState();
+
             return ($"Наименование привычки: {data}.\n{context.State.GetDataRequest()}", false);
         }
 
         /// <inheritdoc/>
-        protected override IHabitCreationState TransitionToNewState() => new TypeState();
+        protected override IHabitCreationState TransitionToNewState() => new DescState();
     }
 }

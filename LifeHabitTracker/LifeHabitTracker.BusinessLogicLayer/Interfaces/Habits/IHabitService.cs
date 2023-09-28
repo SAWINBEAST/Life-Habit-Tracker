@@ -27,6 +27,12 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         public void TakeHabit(Habit habit);
 
         /// <summary>
+        /// Рассказывает о привычке. Что она из себя представляет, какие есть составляющие
+        /// </summary>
+        string GetInfo();
+
+        /*
+        /// <summary>
         /// Загрузка имени
         /// </summary>
         /// <param name="name"></param>
@@ -49,10 +55,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         /// </summary>
         /// <param name="name"></param>
         public void SetDate(string date);
-
-        /// <summary>
-        /// Рассказывает о привычке. Что она из себя представляет, какие есть составляющие
-        /// </summary>
-        string GetInfo();
+*/
     }
 }

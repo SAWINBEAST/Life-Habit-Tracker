@@ -12,6 +12,21 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         }
 
         /// <inheritdoc/>
+        public string GetInfo()
+        {
+            var info = $"-{CurrentHabit.Name}-\n-{CurrentHabit.Description}-\n-{CurrentHabit.Type}-\n-{CurrentHabit.Date}-";
+            return info;
+        }
+
+        /// <inheritdoc/>
+        /// временная заглушка. Потом тут будет добавление в БД
+        public bool AddHabit(Habit habit) => true;
+
+        /// <inheritdoc/>
+        public IReadOnlyCollection<Habit> GetHabits() => new Habit[] { new Habit() };
+
+/*
+        /// <inheritdoc/>
         public void SetName(string name)
         {
             CurrentHabit.Name = name;
@@ -34,19 +49,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         {
             CurrentHabit.Date = date;
         }
-
-        /// <inheritdoc/>
-        public string GetInfo()
-        {
-            var info = $"-{CurrentHabit.Name}-\n-{CurrentHabit.Description}-\n-{CurrentHabit.Type}-\n-{CurrentHabit.Date}-";
-            return info;
-        }
-
-        /// <inheritdoc/>
-        /// временная заглушка. Потом тут будет добавление в БД
-        public bool AddHabit(Habit habit) => true;
-
-        /// <inheritdoc/>
-        public IReadOnlyCollection<Habit> GetHabits() => new Habit[] { new Habit() };
+*/
     }
 }

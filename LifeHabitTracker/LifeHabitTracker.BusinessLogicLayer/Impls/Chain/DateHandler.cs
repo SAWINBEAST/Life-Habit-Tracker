@@ -22,9 +22,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Chain
         {
             if (receiver.GetDateExistence() == false)
             {
-                Console.WriteLine("Выполняем запись даты");
+/*                Console.WriteLine("Выполняем запись даты");
                 habitService.SetDate(data);
-                receiver.ChangeExistence(4);
+                receiver.ChangeExistence(4);*/
             }
 
             else if (Successor != null)

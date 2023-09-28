@@ -23,9 +23,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Chain
             if (receiver.GetTypeExistence() == false)
 
             {
-                Console.WriteLine("Выполняем запись типа");
+/*                Console.WriteLine("Выполняем запись типа");
                 habitService.SetType(data);
-                receiver.ChangeExistence(2);
+                receiver.ChangeExistence(2);*/
             }
 
             else if (Successor != null)

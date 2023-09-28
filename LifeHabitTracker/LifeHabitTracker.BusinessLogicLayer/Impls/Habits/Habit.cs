@@ -1,4 +1,6 @@
-﻿namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
+﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
+
+namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 {
     /// <summary>
     /// Привычка
@@ -23,7 +25,7 @@
         /// <summary>
         /// Дни выполнения привычки
         /// </summary>
-        public string Date { get; set; }
+        public ReminderDate Date { get; set; }
 
     }
 }

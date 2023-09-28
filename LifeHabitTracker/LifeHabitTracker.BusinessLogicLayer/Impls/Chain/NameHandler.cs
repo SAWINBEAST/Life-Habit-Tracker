@@ -23,9 +23,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Chain
         {
             if (receiver.GetNameExistence() == false)
             {
-                Console.WriteLine("Выполняем запись имени");
+/*                Console.WriteLine("Выполняем запись имени");
                 habitService.SetName(data);
-                receiver.ChangeExistence(1);
+                receiver.ChangeExistence(1);*/
             }
 
             else if (Successor != null)

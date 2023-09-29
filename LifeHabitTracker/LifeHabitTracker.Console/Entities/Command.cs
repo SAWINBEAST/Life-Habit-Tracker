@@ -13,7 +13,7 @@
         /// <summary>
         /// Создание
         /// </summary>
-        public const string CreateHabit = "/createHabit";
+        public const string CreateHabit = "/createhabit";
 
         /// <summary>
         /// Получить привычки

@@ -81,16 +81,29 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
                 //тут может произойти ошибка
                 days = resultDay.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (string day in days)
+                for(int i = 0; i < days.Length; i++)    //(string day in days)
                 {
-                        if (!dayTemplates.Contains(day.ToLower()))
+                        if (!dayTemplates.Contains(days[i].ToLower()))
                         {
                             return ($"Вы ввели дни в Некорректной форме." +
                                     $"\nПроверьте раннее введённые данные и Сравните их с шаблоном: Пн,Ср,Пт" +
                                     $"\nВы также можете выбрать \"Будни\",\"Выходные\",\"Ежедневно\"." +
                                     $"\nВведите дни и время заново, пожалуйста :)", false);
                         }
+
+                    if (i > 0)
+                    {
+                        for (int j = 0; j < i; j++)
+                        {
+                            if (days[i] == days[j])
+                            {
+                                return ("Похоже, что вы ввели несколько одинаковых дней недели.\nВводите только уникальные названия дней.\nНапример: Чт,Пт,Вс", false);
+                            }
+                        }
+                    }
                         
+
+
                 }
 
 
@@ -106,24 +119,29 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
                     //тут может произойти ошибка
                     hoursAndMins = time.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
 
+
                     if (int.TryParse(hoursAndMins[0], out int hours))
                     {
-                        if (hours < 0 && hours > 23)
+                        if (hours < 0 || hours > 23)
                         {
-                            return ("Проверьте корректность введённого времени. Нужно ввести по шаблону, например 18:38 или 9:00", false);
+                            return ("Проверьте корректность введённого времени.\nТакого часа в сутках не существует.\nТакже, напоминаем, что время нужно ввести по шаблону.\nНапример 18:38 или 9:00", false);
                         }
                     }
+                    else return ("Ой-ой. По-моему, вы ввели не числовое значение в часе, а что-то другое.\nПерепроверьте введённые данные.\nШаблон: 18:38 или 9:00 ", false);
+
 
 
                     if (int.TryParse(hoursAndMins[1], out int minutes))
                     {
-                        if (minutes < 0 && minutes > 59)
+                        if (minutes < 0 || minutes > 59)
                         {
-                            return ("Проверьте корректность введённого времени. Нужно ввести по шаблону, например 18:38 или 9:00", false);
+                            return ("Проверьте корректность введённого времени.\nТаких минут в часе не существует.\nТакже, напоминаем, что время нужно ввести по шаблону.\nНапример 18:38 или 9:00", false);
                         }
                     }
+                    else return ("Ой-ой. По-моему, вы ввели не числовое значение в минутах, а что-то другое.\nПерепроверьте введённые данные.\nШаблон: 18:38 или 9:00 ", false);
+
                 }
-                    
+
 
             }
             else

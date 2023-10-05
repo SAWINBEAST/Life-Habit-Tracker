@@ -1,35 +1,30 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 using LifeHabitTracker.BusinessLogicLayer.Entities;
-using static System.Net.Mime.MediaTypeNames;
 using System.Text.RegularExpressions;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {    
-     /// <summary>
-     /// Состояние получения даты напоминания привычки
-     /// </summary>
+    /// <summary>
+    /// Состояние получения даты напоминания привычки
+    /// </summary>
     public class DateState : HabitCreationState
     {
         /// <summary>
-        /// Объект дней и времени
-        /// </summary>
-        ReminderDate fullDate;
-
-        /// <summary>
         /// Шаблоны названий дней для напоминания
         /// </summary>
-        readonly List<string> dayTemplates = new List<string>(){DayOfWeekInfo.Monday, DayOfWeekInfo.MondayFull, 
-                                                                DayOfWeekInfo.Tuesday, DayOfWeekInfo.TuesdayFull, 
-                                                                DayOfWeekInfo.Wednesday, DayOfWeekInfo.WednesdayFull, 
-                                                                DayOfWeekInfo.Thursday, DayOfWeekInfo.ThursdayFull, 
-                                                                DayOfWeekInfo.Friday, DayOfWeekInfo.FridayFull, 
-                                                                DayOfWeekInfo.Saturday, DayOfWeekInfo.SaturdayFull, 
-                                                                DayOfWeekInfo.Sunday, DayOfWeekInfo.SundayFull, 
-                                                                DayOfWeekInfo.Weekdays, DayOfWeekInfo.Weekend, 
-                                                                DayOfWeekInfo.Daily, DayOfWeekInfo.Everyday };
-
-
+        private readonly IList<string> _dayTemplates = new List<string>
+        {
+            DayOfWeekInfo.Monday, DayOfWeekInfo.MondayFull, 
+            DayOfWeekInfo.Tuesday, DayOfWeekInfo.TuesdayFull, 
+            DayOfWeekInfo.Wednesday, DayOfWeekInfo.WednesdayFull, 
+            DayOfWeekInfo.Thursday, DayOfWeekInfo.ThursdayFull, 
+            DayOfWeekInfo.Friday, DayOfWeekInfo.FridayFull, 
+            DayOfWeekInfo.Saturday, DayOfWeekInfo.SaturdayFull, 
+            DayOfWeekInfo.Sunday, DayOfWeekInfo.SundayFull, 
+            DayOfWeekInfo.Weekdays, DayOfWeekInfo.Weekend, 
+            DayOfWeekInfo.Daily, DayOfWeekInfo.Everyday 
+        };
 
         //меганепрактичный вариант, мне кажется. Но проще для записи. Есть подробная инструкция.
         public DateState() => DataRequestMessage = "\nВвведите Дни недели (через запятую) и Время напоминания о привычке." +
@@ -43,135 +38,70 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
                                                     "\nДни:Будни" +
                                                     "\nВремя:8:00,12:00,18:00";
 
-
-
         /// <inheritdoc/>
         public override (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
-            /// Переменные для парсинга и проверки данных и времени напоминания
-            string[] daysAndTime;
-            string[] days;
-            string[] times;
-            string[] hoursAndMins;
-            string resultDay;
-            string resultTime;
-
-
-            /// Регулярное выражение для проверки введённой даты
-            /// ?? ^
-            string patternDay = @"^дни:";
-            string patternTime = @"^время:";
-            string targetEmpty = "";
-
-            Regex regexDay = new Regex(patternDay);
-            Regex regexTime = new Regex(patternTime);
-
-
-            // RegexOptions.IgnorePatternWhitespace  //RegexOptions.Multiline //RegexOptions.IgnoreCase
-           
-
-            daysAndTime = data.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-                
-            if (daysAndTime[0] != null && daysAndTime[1] != null)
-            {
-                ///Проверка Дней
-                resultDay = regexDay.Replace(daysAndTime[0].ToLower(), targetEmpty);
-
-                //тут может произойти ошибка
-                days = resultDay.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                for(int i = 0; i < days.Length; i++)    //(string day in days)
-                {
-                        if (!dayTemplates.Contains(days[i].ToLower()))
-                        {
-                            return ($"Вы ввели дни в Некорректной форме." +
-                                    $"\nПроверьте раннее введённые данные и Сравните их с шаблоном: Пн,Ср,Пт" +
-                                    $"\nВы также можете выбрать \"Будни\",\"Выходные\",\"Ежедневно\"." +
-                                    $"\nВведите дни и время заново, пожалуйста :)", false);
-                        }
-
-                    if (i > 0)
-                    {
-                        for (int j = 0; j < i; j++)
-                        {
-                            if (days[i] == days[j])
-                            {
-                                return ("Похоже, что вы ввели несколько одинаковых дней недели.\nВводите только уникальные названия дней.\nНапример: Чт,Пт,Вс", false);
-                            }
-                        }
-                    }
-                        
-
-
-                }
-
-
-
-                ///Проверка времени
-                resultTime = regexTime.Replace(daysAndTime[1].ToLower(), targetEmpty);
-
-                //тут может произойти ошибка
-                times = resultTime.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (string time in times)
-                {
-                    //тут может произойти ошибка
-                    hoursAndMins = time.Split(new char[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
-
-
-                    if (int.TryParse(hoursAndMins[0], out int hours))
-                    {
-                        if (hours < 0 || hours > 23)
-                        {
-                            return ("Проверьте корректность введённого времени.\nТакого часа в сутках не существует.\nТакже, напоминаем, что время нужно ввести по шаблону.\nНапример 18:38 или 9:00", false);
-                        }
-                    }
-                    else return ("Ой-ой. По-моему, вы ввели не числовое значение в часе, а что-то другое.\nПерепроверьте введённые данные.\nШаблон: 18:38 или 9:00 ", false);
-
-
-
-                    if (int.TryParse(hoursAndMins[1], out int minutes))
-                    {
-                        if (minutes < 0 || minutes > 59)
-                        {
-                            return ("Проверьте корректность введённого времени.\nТаких минут в часе не существует.\nТакже, напоминаем, что время нужно ввести по шаблону.\nНапример 18:38 или 9:00", false);
-                        }
-                    }
-                    else return ("Ой-ой. По-моему, вы ввели не числовое значение в минутах, а что-то другое.\nПерепроверьте введённые данные.\nШаблон: 18:38 или 9:00 ", false);
-
-                }
-
-
-            }
-            else
-            {
-                return ("Похоже, что вы не забыли ввести время напоминания. " +
-                        "Либо же дни недели. Пожалуйста, перепроверьте введённые данные и сравните их с шаблоном", false);
-
-            }
-
-            fullDate = new ReminderDate(days, times);
-
-            habit.Date = fullDate;
+            // Регулярное выражение для проверки введённой даты
+            const string patternDay = "дни:";
+            const string patternTime = "время:";
 
             Console.WriteLine($"Введённые данные для Даты напоминания о привычке: {data}");
 
-            //здесь будет лажа, скорее всего. Так что это можно будет упразднить. и вообще убрать переменную fulldate
-            return ($"Дни напоминания о привычке: {resultDay}.\nВремя напоминания о привычке {resultTime}", true);
+            var daysAndTime = data.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            if (daysAndTime[0] != null && daysAndTime[1] != null)
+            {
+                // Проверка Дней
+                if (!TryParseDays(daysAndTime[0].ToLower().Replace(patternDay, string.Empty), out var days))
+                    return ($"Вы ввели дни в Некорректной форме." +
+                            $"\nПроверьте раннее введённые данные и Сравните их с шаблоном: Пн,Ср,Пт" +
+                            $"\nВы также можете выбрать \"Будни\",\"Выходные\",\"Ежедневно\"." +
+                            $"\nВведите дни и время заново, пожалуйста :)", false);
 
-            
-           
+                // Проверка времени
+                if (!TryParseTimes(daysAndTime[1].ToLower().Replace(patternTime, string.Empty), out var times))
+                    return ("Проверьте корректность введённого времени.\nНапоминаем, что время нужно ввести по шаблону.\nНапример 18:38 или 9:00", false);
+
+                habit.Date = new ReminderDate(days, times);
+                return ($"Дни напоминания о привычке: {string.Join(',', days)}.\nВремя напоминания о привычке: {string.Join(',', times)}", true);
+            }
+
+            return ("Похоже, что вы не забыли ввести время напоминания. " +
+                        "Либо же дни недели. Пожалуйста, перепроверьте введённые данные и сравните их с шаблоном", false);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resultDay"></param>
+        /// <param name="days"></param>
+        /// <returns></returns>
+        private bool TryParseDays(string resultDay, out IReadOnlyCollection<string> days)
+        {
+            days = resultDay.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            days = days.Distinct().ToArray();
+            foreach (var day in days)
+                if (!_dayTemplates.Contains(day.ToLower()))
+                    return false;
+            return true;
+        }
 
-
-
-
-
-        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="resultTime"></param>
+        /// <param name="times"></param>
+        /// <returns></returns>
+        private static bool TryParseTimes(string resultTime, out IReadOnlyCollection<string> times)
+        {
+            times = resultTime.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            times = times.Distinct().ToArray();
+            foreach (var time in times)
+                if (!DateTime.TryParse(time, out _))
+                    return false;
+            return true;
+        }
 
         /// <inheritdoc/>
-        protected override IHabitCreationState TransitionToNewState() => null;
+        protected override IHabitCreationState TransitionToNewState() => throw new NotImplementedException("Не реализовано");
     }
 }

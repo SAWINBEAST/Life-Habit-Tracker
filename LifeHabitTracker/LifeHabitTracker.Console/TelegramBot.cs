@@ -95,7 +95,6 @@ namespace LifeHabitTrackerConsole
             }
         }
 
-
         /// <summary>
         /// Обработать команду старта
         /// </summary>
@@ -104,7 +103,6 @@ namespace LifeHabitTrackerConsole
         /// <returns></returns>
         private async Task HandleStartCommandAsync(Chat chat, string username)
             => await _bot.SendTextMessageAsync(chat, $"Добро пожаловать в Привычковную, {username}");
-
 
         /// <summary>
         /// Обработать команду по созданию привычки
@@ -119,7 +117,6 @@ namespace LifeHabitTrackerConsole
             var context = _habitContextCaretaker.CreateContext(chatInfo, HandleHabitCreationInfoAsync);
             await context.StartContextAsync(cancellationToken);
         }
-
 
         /// <summary>
         /// Обработать информацию по созданию привычки
@@ -146,7 +143,6 @@ namespace LifeHabitTrackerConsole
             }
         }
 
-
         /// <summary>
         /// Логирование ошибки при взаимодействии пользователя с ботом
         /// </summary>
@@ -160,7 +156,6 @@ namespace LifeHabitTrackerConsole
             await botClient.SendTextMessageAsync(botClient.BotId, "В нашей работе произошла ошибка. Мы уже решаем её");
 
         }
-
 
         /// <inheritdoc/>
         public async Task LaunchAsync()
@@ -185,6 +180,5 @@ namespace LifeHabitTrackerConsole
                 cancellationToken
             );
         }
-        
     }
 }

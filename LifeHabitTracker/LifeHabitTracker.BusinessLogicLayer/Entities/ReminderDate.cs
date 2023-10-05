@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Entities
 {
-    public record ReminderDate (string[] day, string[] time);
+    public record ReminderDate (IReadOnlyCollection<string> day, IReadOnlyCollection<string> time);
 }

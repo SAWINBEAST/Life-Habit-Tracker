@@ -14,27 +14,23 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         /// <inheritdoc/>
         public override (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
+            const string goodHabit = "хорошая";
+            const string badHabit = "плохая";
+
             Console.WriteLine($"Введённые данные для Типа привычки: {data}");
 
-            switch(data.ToLower())
+            if (data != goodHabit && data != badHabit)
+                return("Существует два типа привычки: Хорошая и Плохая. \nПопробуйте ещё раз)", false);
+
+            habit.Type = data;
+
+            if (data == goodHabit)
             {
-                case "хорошая":
-                    habit.Type = data;
-
-                    context.State = TransitionToNewState();
-
-                    return ($"Тип привычки: {data}.\n{context.State.GetDataRequest()}", false);
-
-                case "плохая":
-                    habit.Type = data;
-
-                    return ($"Тип привычки: {data}.", true);
-
-                default:
-                    return ("Существует два типа привычки: Хорошая и Плохая. \nПопробуйте ещё раз)", false);
-
+                context.State = TransitionToNewState();
+                return ($"Тип привычки: {data}.\n{context.State.GetDataRequest()}", false);
             }
-           
+
+            return($"Тип привычки: {data}.", true);
         }
 
         /// <inheritdoc/>

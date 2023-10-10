@@ -15,7 +15,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.State
         /// <summary>
         /// Запустить работу контекста
         /// </summary>
-        /// <param name="cancellationToken">Токен омтены</param>
+        /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
         public Task StartContextAsync(CancellationToken cancellationToken);
 
@@ -23,7 +23,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.State
         /// Обработать ответ пользователя в рамках создания привычки
         /// </summary>
         /// <param name="userResponse">Ответ пользователя</param>
-        /// <param name="cancellationToken">Токен омтены</param>
+        /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
         public Task HandleUserResponseAsync(string userResponse, CancellationToken cancellationToken);
     }

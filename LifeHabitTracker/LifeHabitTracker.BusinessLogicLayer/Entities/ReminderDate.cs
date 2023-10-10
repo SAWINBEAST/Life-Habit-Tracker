@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace LifeHabitTracker.BusinessLogicLayer.Entities
 {
+   /// <summary>
+   /// Полная запись даты для напоминания  
+   /// </summary>
+   /// <param name="day"></param>
+   /// <param name="time"></param>
     public record ReminderDate (IReadOnlyCollection<string> day, IReadOnlyCollection<string> time);
 }

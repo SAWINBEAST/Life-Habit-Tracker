@@ -5,7 +5,8 @@ using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
     /// <summary>
-    /// Контекст определяет интерфейс, представляющий интерес для клиентов. Онтакже хранит ссылку на экземпляр подкласса Состояния, который отображаеттекущее состояние Контекста
+    /// Контекст определяет интерфейс, представляющий интерес для клиентов. 
+    /// Он также хранит ссылку на экземпляр подкласса Состояния, который отображает текущее состояние Контекста.
     /// </summary>
     public class ContextHabitCreation : IContextHabitCreation
     {
@@ -24,7 +25,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         public ChatInfo ChatInfo { get; }
 
         /// <summary>
-        /// 
+        /// Ссылка на обработчика запроса со стороны сервера, который будет вызываться после обработки полученных от пользователя данных
         /// </summary>
         private event Func<ChatInfo, string, bool, Habit, CancellationToken, Task> DataCompleted;
 

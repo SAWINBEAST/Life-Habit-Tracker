@@ -3,7 +3,7 @@
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 {
     /// <summary>
-    /// Привычка
+    /// Сущность привычки
     /// </summary>
     public class Habit
     {
@@ -23,7 +23,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         public string Description { get; set; }
 
         /// <summary>
-        /// Дни выполнения привычки
+        /// Даты выполнения привычки
         /// </summary>
         public ReminderDate Date { get; set; }
 

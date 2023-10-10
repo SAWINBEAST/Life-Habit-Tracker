@@ -26,10 +26,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
             DayOfWeekInfo.Daily, DayOfWeekInfo.Everyday 
         };
 
-        //меганепрактичный вариант, мне кажется. Но проще для записи. Есть подробная инструкция.
         public DateState() => DataRequestMessage = "\nВвведите Дни недели (через запятую) и Время напоминания о привычке." +
                                                     "\nСначала введите Дни, используя ключевое слово \"Дни:\"." +
-                                                    "\nПосле введите Время, используя ключевое слово \"Часы:\"." +
+                                                    "\nПосле введите Время, используя ключевое слово \"Время:\"." +
                                                     "\nВы также можете выбрать \"Будни\",\"Выходные\",\"Ежедневно\"." +
                                                     "\n\nНапример:" +
                                                     "\nДни:Пн,Ср,Пт" +
@@ -41,23 +40,31 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         /// <inheritdoc/>
         public override (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
-            // Регулярное выражение для проверки введённой даты
+            /// <summary>
+            /// Регулярное выражение для проверки введённой даты
+            /// <summary>
             const string patternDay = "дни:";
             const string patternTime = "время:";
 
             Console.WriteLine($"Введённые данные для Даты напоминания о привычке: {data}");
 
-            var daysAndTime = data.Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var daysAndTime = data.Replace(" ",string.Empty)
+                                  .Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
             if (daysAndTime[0] != null && daysAndTime[1] != null)
             {
-                // Проверка Дней
+                /// <summary>
+                /// Проверка корректности введённых дней
+                /// <summary>
                 if (!TryParseDays(daysAndTime[0].ToLower().Replace(patternDay, string.Empty), out var days))
                     return ($"Вы ввели дни в Некорректной форме." +
                             $"\nПроверьте раннее введённые данные и Сравните их с шаблоном: Пн,Ср,Пт" +
                             $"\nВы также можете выбрать \"Будни\",\"Выходные\",\"Ежедневно\"." +
                             $"\nВведите дни и время заново, пожалуйста :)", false);
 
-                // Проверка времени
+                /// <summary>
+                /// Проверка корректности введённого времени
+                /// <summary>
                 if (!TryParseTimes(daysAndTime[1].ToLower().Replace(patternTime, string.Empty), out var times))
                     return ("Проверьте корректность введённого времени.\nНапоминаем, что время нужно ввести по шаблону.\nНапример 18:38 или 9:00", false);
 
@@ -70,26 +77,26 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         }
 
         /// <summary>
-        /// 
+        /// Проверка корректности введённых дней
         /// </summary>
-        /// <param name="resultDay"></param>
-        /// <param name="days"></param>
+        /// <param name="resultDay">Перечисление дней через запятую</param>
+        /// <param name="days">Отредактированный массив дней недели</param>
         /// <returns></returns>
         private bool TryParseDays(string resultDay, out IReadOnlyCollection<string> days)
         {
             days = resultDay.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             days = days.Distinct().ToArray();
             foreach (var day in days)
-                if (!_dayTemplates.Contains(day.ToLower()))
+                if (!_dayTemplates.Contains(day))
                     return false;
             return true;
         }
 
         /// <summary>
-        /// 
+        /// Проверка корректности введённого времени
         /// </summary>
-        /// <param name="resultTime"></param>
-        /// <param name="times"></param>
+        /// <param name="resultTime">Перечисление времени через запятую</param>
+        /// <param name="times">Отредактированный массив времени</param>
         /// <returns></returns>
         private static bool TryParseTimes(string resultTime, out IReadOnlyCollection<string> times)
         {
@@ -102,6 +109,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         }
 
         /// <inheritdoc/>
-        protected override IHabitCreationState TransitionToNewState() => throw new NotImplementedException("Не реализовано");
+        protected override IHabitCreationState TransitionToNewState() => throw new NotImplementedException("Продолжение Не реализовано. Это последнее звено.");
     }
 }

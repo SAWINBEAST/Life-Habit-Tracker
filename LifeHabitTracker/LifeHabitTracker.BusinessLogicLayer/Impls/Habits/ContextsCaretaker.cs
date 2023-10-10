@@ -23,11 +23,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
             Console.WriteLine($"Для {chatInfo.UserName} создан контекст процесса создания привычки. Идентификатор чата, в рамках которого существует контекст: {chatInfo.ChatId}.");
 
             return newContext;
-            // Такой вариант априори неправильный, так как ты при каждом новом контексте проходишься по всему словарю (а представь, что у тебя миллион пользователей в процессе создания привычки)
-            /*foreach (var userContext in _usersHabitContexts)
-            {
-                Console.WriteLine($"Добавлено новое состояние.");
-            }*/
         }
 
         /// <inheritdoc/>

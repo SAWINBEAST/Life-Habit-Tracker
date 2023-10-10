@@ -41,16 +41,14 @@ namespace LifeHabitTrackerConsole
         /// <summary>
         /// Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
         /// </summary>
-        /// <param name="botClient"></param>
-        /// <param name="update"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="botClient">Ссылка на телеграмм-бота </param>
+        /// <param name="update">Информация о полученном сообщении и его отправителе</param>
+        /// <param name="cancellationToken">Токен для отмены выполнения операции</param>
+        /// <returns>Результат выполнения команды ботом + отправленное сообщение клиенту</returns>
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            //Проверка типа обновления от бота
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
-                //создаем новые переменные от частоиспользуемых свойств обновления
                 var message = update.Message;
                 var username = message.From.Username;
 
@@ -61,7 +59,6 @@ namespace LifeHabitTrackerConsole
 
                 Console.WriteLine($"Cooбщение от пользователя {username}: {messageText}");
 
-                //Узнаем, была ли у нас до этого момента команда
                 var context = _habitContextCaretaker.GetContext(username); 
 
                 if (messageText.StartsWith("/") && context is not null)   
@@ -74,7 +71,7 @@ namespace LifeHabitTrackerConsole
                 {
                     case Command.Start:
                         await HandleStartCommandAsync(message.Chat, username);
-                        //вот тут прописать логику выпадания меню. См. заметки в ТГ
+                        ///вот тут прописать логику выпадания меню. См. заметки в ТГ
                         break;
                     case Command.CreateHabit:
                         await HandleCreateHabitCommandAsync(message.Chat, username, cancellationToken);
@@ -100,7 +97,7 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         /// <param name="chat">Информация по чату</param>
         /// <param name="username">Имя пользователя</param>
-        /// <returns></returns>
+        /// <returns>Успешно отправленное сообщение клиенту</returns>
         private async Task HandleStartCommandAsync(Chat chat, string username)
             => await _bot.SendTextMessageAsync(chat, $"Добро пожаловать в Привычковную, {username}");
 
@@ -110,7 +107,7 @@ namespace LifeHabitTrackerConsole
         /// <param name="chat">Информация по чату</param>
         /// <param name="username">Имя пользователя</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
+        /// <returns>Успешное выполнение контекста работы</returns>
         private async Task HandleCreateHabitCommandAsync(Chat chat, string username, CancellationToken cancellationToken)
         {
             var chatInfo = new ChatInfo(chat.Id, username);
@@ -126,7 +123,7 @@ namespace LifeHabitTrackerConsole
         /// <param name="isFinish">Признак того, что процесс создания завершён (true)</param>
         /// <param name="habit">Данные по создаваемой привычке</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
+        /// <returns>Результат выполнения очередного состояния команды</returns>
         private async Task HandleHabitCreationInfoAsync(ChatInfo chatInfo, string message, bool isFinish, Habit habit, CancellationToken cancellationToken)
         {
             var messageInfo = await _bot.SendTextMessageAsync(chatInfo.ChatId, message, cancellationToken: cancellationToken);
@@ -149,7 +146,7 @@ namespace LifeHabitTrackerConsole
         /// <param name="botClient"></param>
         /// <param name="exception"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>Предупреждение о сбое в программе</returns>
         private async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Произошла ошибка:\n{JsonConvert.SerializeObject(exception)}");
@@ -163,7 +160,6 @@ namespace LifeHabitTrackerConsole
             var botName = await _bot.GetMeAsync();
             Console.WriteLine("Запущен бот " + botName.FirstName);
 
-            //Подготовка нужных параметров для метода Запуска Бота
             var cts = new CancellationTokenSource();
             var cancellationToken = cts.Token;
             var receiverOptions = new ReceiverOptions
@@ -172,7 +168,6 @@ namespace LifeHabitTrackerConsole
             };
 
 
-            //Начало получения обновлений от бота
             _bot.StartReceiving(
                 HandleUpdateAsync,
                 HandleErrorAsync,

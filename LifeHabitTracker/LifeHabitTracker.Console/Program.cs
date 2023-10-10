@@ -10,11 +10,12 @@ class Program
     {
         Console.WriteLine($"Приложение запущено.");
 
-        //Создание провайдера сервисов
+        /// <summary>
+        /// Создание провайдера сервисов
+        /// <summary>
         var services = GetServiceCollection();
         using var serviceProvider = services.BuildServiceProvider();
 
-        //Запись бота
         var botService = serviceProvider.GetService<IBot>();
         await botService.LaunchAsync();
 

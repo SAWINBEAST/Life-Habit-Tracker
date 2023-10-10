@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace LifeHabitTracker.BusinessLogicLayer.Entities
 {
+    /// <summary>
+    /// Хранитель названий дней недели 
+    /// </summary>
     public class DayOfWeekInfo
     {
         public const string Monday = "пн";
@@ -34,7 +32,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Entities
 
         public const string Daily = "ежедневно";
         public const string Everyday = "каждый день";
-
 
     }
 }

@@ -31,30 +31,5 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         /// </summary>
         string GetInfo();
 
-        /*
-        /// <summary>
-        /// Загрузка имени
-        /// </summary>
-        /// <param name="name"></param>
-        public void SetName(string name);
-
-        /// <summary>
-        /// Загрузка типа
-        /// </summary>
-        /// <param name="name"></param>
-        public void SetType(string type);
-
-        /// <summary>
-        /// Загрузка описания
-        /// </summary>
-        /// <param name="name"></param>
-        public void SetDesc(string desc);
-
-        /// <summary>
-        /// Загрузка даты
-        /// </summary>
-        /// <param name="name"></param>
-        public void SetDate(string date);
-*/
     }
 }

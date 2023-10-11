@@ -71,7 +71,7 @@ namespace LifeHabitTrackerConsole
                 {
                     case Command.Start:
                         await HandleStartCommandAsync(message.Chat, username);
-                        ///вот тут прописать логику выпадания меню. См. заметки в ТГ
+                        //TODO: прописать логику выпадания меню. Для красоты. См. заметки в ТГ
                         break;
                     case Command.CreateHabit:
                         await HandleCreateHabitCommandAsync(message.Chat, username, cancellationToken);

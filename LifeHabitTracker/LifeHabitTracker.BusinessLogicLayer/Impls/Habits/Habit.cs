@@ -8,17 +8,17 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
     public class Habit
     {
         /// <summary>
-        /// Наименование
+        /// Наименование привычки
         /// </summary>
         public string Name { get; set; }
 
         /// <summary>
-        /// Тип
+        /// Тип привычки
         /// </summary>
         public string Type { get; set; }
 
         /// <summary>
-        /// Описание
+        /// Описание привычки
         /// </summary>
         public string Description { get; set; }
 

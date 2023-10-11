@@ -3,6 +3,9 @@ using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
+    /// <summary>
+    /// Состояние получения описания привычки
+    /// </summary>
     public class DescState : HabitCreationState
     {
         public DescState() => DataRequestMessage = "Ввведите Описание привычки.";

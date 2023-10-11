@@ -5,7 +5,12 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
     /// <inheritdoc cref="IHabitService"/>.
     public class HabitService : IHabitService
     {
+        /// <summary>
+        /// Текущая привычка для дальнейшей обработки
+        /// </summary>
         public Habit CurrentHabit = new Habit();
+
+        /// <inheritdoc/>
         public void  TakeHabit(Habit habit)
         {
             CurrentHabit = habit;

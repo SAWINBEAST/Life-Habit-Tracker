@@ -8,7 +8,7 @@
         /// <summary>
         /// Запуск Бота
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Успешно выполненные отлов запроса и его последующая обработка</returns>
         Task LaunchAsync();
     }
 }

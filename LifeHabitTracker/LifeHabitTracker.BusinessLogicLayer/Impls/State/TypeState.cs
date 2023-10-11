@@ -14,9 +14,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         /// <inheritdoc/>
         public override (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)
         {
-            /// <summary>
-            /// Возможные типы привычки
-            /// <summary>
+
             const string goodHabit = "хорошая";
             const string badHabit = "плохая";
 

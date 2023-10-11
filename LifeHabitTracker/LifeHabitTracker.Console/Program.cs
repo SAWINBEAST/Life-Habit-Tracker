@@ -10,9 +10,6 @@ class Program
     {
         Console.WriteLine($"Приложение запущено.");
 
-        /// <summary>
-        /// Создание провайдера сервисов
-        /// <summary>
         var services = GetServiceCollection();
         using var serviceProvider = services.BuildServiceProvider();
 

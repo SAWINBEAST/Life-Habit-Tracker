@@ -6,6 +6,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Entities
     /// </summary>
     public class DayOfWeekInfo
     {
+        /// <summary>
+        /// Шаблоны названий дней для напоминания
+        /// </summary>
         public const string Monday = "пн";
         public const string MondayFull = "понедельник";
 

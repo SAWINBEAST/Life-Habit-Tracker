@@ -1,12 +1,16 @@
-﻿using Telegram.Bot;
-using Telegram.Bot.Types;
-using Telegram.Bot.Polling;
+﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
+using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
+using LifeHabitTrackerConsole.Entities;
 using Newtonsoft.Json;
+using Telegram.Bot;
+using Telegram.Bot.Polling;
+using Telegram.Bot.Types;
 
 namespace LifeHabitTrackerConsole
 {
     /// <inheritdoc cref="IBot"/>.
-    internal class TelegramBot : IBot
+    public class TelegramBot : IBot
     {
         /// <summary>
         /// API-токен бота телеграм
@@ -19,25 +23,120 @@ namespace LifeHabitTrackerConsole
         private readonly ITelegramBotClient _bot = new TelegramBotClient(Token);
 
         /// <summary>
+        /// Хранитель контекстов
+        /// </summary>
+        private readonly IHabitContextCaretaker _habitContextCaretaker;
+
+        /// <summary>
+        /// Сервис привычек
+        /// </summary>
+        private readonly IHabitService _habitService;
+
+        public TelegramBot(IHabitContextCaretaker habitContextCaretaker, IHabitService habitService)
+        {
+            _habitContextCaretaker = habitContextCaretaker;
+            _habitService = habitService;
+        }
+
+        /// <summary>
         /// Логика выдачи ответа Бота на введённую команду + Логирование введённой команды
         /// </summary>
-        /// <param name="botClient"></param>
-        /// <param name="update"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <param name="botClient">Ссылка на телеграмм-бота </param>
+        /// <param name="update">Информация о полученном сообщении и его отправителе</param>
+        /// <param name="cancellationToken">Токен для отмены выполнения операции</param>
+        /// <returns>Результат выполнения команды ботом + отправленное сообщение клиенту</returns>
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
             {
                 var message = update.Message;
                 var username = message.From.Username;
-                Console.WriteLine($"Cooбщение от пользователя {username}: {message?.Text}");
-                if (message?.Text?.ToLower() == "/start")
-                {
-                    await botClient.SendTextMessageAsync(message.Chat, $"Добро пожаловать на борт,{username}");
+
+                if (string.IsNullOrEmpty(message?.Text))
                     return;
+
+                var messageText = message.Text;
+
+                Console.WriteLine($"Cooбщение от пользователя {username}: {messageText}");
+
+                var context = _habitContextCaretaker.GetContext(username); 
+
+                if (messageText.StartsWith("/") && context is not null)   
+                {
+                    _habitContextCaretaker.RemoveContext(username);
+                    await botClient.SendTextMessageAsync(message.Chat, "Вы вышли из процесса.");
                 }
-                await botClient.SendTextMessageAsync(message.Chat, $"Привет-привет, {username}");
+
+                switch (messageText)
+                {
+                    case Command.Start:
+                        await HandleStartCommandAsync(message.Chat, username);
+                        //TODO: прописать логику выпадания меню. Для красоты. См. заметки в ТГ
+                        break;
+                    case Command.CreateHabit:
+                        await HandleCreateHabitCommandAsync(message.Chat, username, cancellationToken);
+                        break;
+                    case Command.Habits:
+                        var habitNames = _habitService.GetHabits().Select(x => x.Name);
+                        await botClient.SendTextMessageAsync(message.Chat, $"Привычки:\n{string.Join("\n", habitNames)}");
+                        break;
+                    default:
+                        if (context is not null)
+                        {
+                            await context.HandleUserResponseAsync(messageText, cancellationToken);
+                            return;
+                        }
+                        await botClient.SendTextMessageAsync(message.Chat, "Команда не распознана.");
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработать команду старта
+        /// </summary>
+        /// <param name="chat">Информация по чату</param>
+        /// <param name="username">Имя пользователя</param>
+        /// <returns>Успешно отправленное сообщение клиенту</returns>
+        private async Task HandleStartCommandAsync(Chat chat, string username)
+            => await _bot.SendTextMessageAsync(chat, $"Добро пожаловать в Привычковную, {username}");
+
+        /// <summary>
+        /// Обработать команду по созданию привычки
+        /// </summary>
+        /// <param name="chat">Информация по чату</param>
+        /// <param name="username">Имя пользователя</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Успешное выполнение контекста работы</returns>
+        private async Task HandleCreateHabitCommandAsync(Chat chat, string username, CancellationToken cancellationToken)
+        {
+            var chatInfo = new ChatInfo(chat.Id, username);
+            var context = _habitContextCaretaker.CreateContext(chatInfo, HandleHabitCreationInfoAsync);
+            await context.StartContextAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Обработать информацию по созданию привычки
+        /// </summary>
+        /// <param name="chatInfo">Информация по чату</param>
+        /// <param name="message">Информационное сообщение</param>
+        /// <param name="isFinish">Признак того, что процесс создания завершён (true)</param>
+        /// <param name="habit">Данные по создаваемой привычке</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        /// <returns>Результат выполнения очередного состояния команды</returns>
+        private async Task HandleHabitCreationInfoAsync(ChatInfo chatInfo, string message, bool isFinish, Habit habit, CancellationToken cancellationToken)
+        {
+            var messageInfo = await _bot.SendTextMessageAsync(chatInfo.ChatId, message, cancellationToken: cancellationToken);
+            if (isFinish)
+            {
+                await _bot.SendTextMessageAsync(chatInfo.ChatId, 
+                    _habitService.AddHabit(habit)
+                        ? "Привычка успешно добавлена!"
+                        : "Не удалось добавить привычку", 
+                    replyToMessageId: messageInfo.MessageId, 
+                    cancellationToken: cancellationToken);
+
+                _habitContextCaretaker.RemoveContext(chatInfo.UserName);
             }
         }
 
@@ -47,10 +146,12 @@ namespace LifeHabitTrackerConsole
         /// <param name="botClient"></param>
         /// <param name="exception"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns></returns>
+        /// <returns>Предупреждение о сбое в программе</returns>
         private async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
-            Console.WriteLine(JsonConvert.SerializeObject(exception));
+            Console.WriteLine($"Произошла ошибка:\n{JsonConvert.SerializeObject(exception)}");
+            await botClient.SendTextMessageAsync(botClient.BotId, "В нашей работе произошла ошибка. Мы уже решаем её");
+
         }
 
         /// <inheritdoc/>
@@ -65,6 +166,8 @@ namespace LifeHabitTrackerConsole
             {
                 AllowedUpdates = { }
             };
+
+
             _bot.StartReceiving(
                 HandleUpdateAsync,
                 HandleErrorAsync,
@@ -72,6 +175,5 @@ namespace LifeHabitTrackerConsole
                 cancellationToken
             );
         }
-        
     }
 }

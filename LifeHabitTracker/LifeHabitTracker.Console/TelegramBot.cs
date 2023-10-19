@@ -7,6 +7,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 
+
 namespace LifeHabitTrackerConsole
 {
     /// <inheritdoc cref="IBot"/>.
@@ -44,7 +45,6 @@ namespace LifeHabitTrackerConsole
         /// <param name="botClient">Ссылка на телеграмм-бота </param>
         /// <param name="update">Информация о полученном сообщении и его отправителе</param>
         /// <param name="cancellationToken">Токен для отмены выполнения операции</param>
-        /// <returns>Результат выполнения команды ботом + отправленное сообщение клиенту</returns>
         private async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             if (update.Type == Telegram.Bot.Types.Enums.UpdateType.Message)
@@ -97,17 +97,15 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         /// <param name="chat">Информация по чату</param>
         /// <param name="username">Имя пользователя</param>
-        /// <returns>Успешно отправленное сообщение клиенту</returns>
         private async Task HandleStartCommandAsync(Chat chat, string username)
             => await _bot.SendTextMessageAsync(chat, $"Добро пожаловать в Привычковную, {username}");
 
         /// <summary>
-        /// Обработать команду по созданию привычки
+        /// Обработать команду по созданию привычки <see cref="Habit"/>
         /// </summary>
         /// <param name="chat">Информация по чату</param>
         /// <param name="username">Имя пользователя</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns>Успешное выполнение контекста работы</returns>
         private async Task HandleCreateHabitCommandAsync(Chat chat, string username, CancellationToken cancellationToken)
         {
             var chatInfo = new ChatInfo(chat.Id, username);
@@ -123,7 +121,6 @@ namespace LifeHabitTrackerConsole
         /// <param name="isFinish">Признак того, что процесс создания завершён (true)</param>
         /// <param name="habit">Данные по создаваемой привычке</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns>Результат выполнения очередного состояния команды</returns>
         private async Task HandleHabitCreationInfoAsync(ChatInfo chatInfo, string message, bool isFinish, Habit habit, CancellationToken cancellationToken)
         {
             var messageInfo = await _bot.SendTextMessageAsync(chatInfo.ChatId, message, cancellationToken: cancellationToken);
@@ -146,7 +143,6 @@ namespace LifeHabitTrackerConsole
         /// <param name="botClient"></param>
         /// <param name="exception"></param>
         /// <param name="cancellationToken"></param>
-        /// <returns>Предупреждение о сбое в программе</returns>
         private async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             Console.WriteLine($"Произошла ошибка:\n{JsonConvert.SerializeObject(exception)}");

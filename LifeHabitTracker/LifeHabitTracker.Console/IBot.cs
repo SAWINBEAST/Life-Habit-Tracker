@@ -8,7 +8,6 @@
         /// <summary>
         /// Запуск Бота
         /// </summary>
-        /// <returns></returns>
         Task LaunchAsync();
     }
 }

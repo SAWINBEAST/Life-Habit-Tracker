@@ -1,10 +1,9 @@
-﻿
-namespace LifeHabitTracker.DataAccessLayer
+﻿namespace LifeHabitTracker.DataAccessLayer.Impls
 {
     /// <summary>
     /// Класс взаимодейтсвия с БД
     /// </summary>
-    public class Data
+    public class DataManage
     {
     }
 }

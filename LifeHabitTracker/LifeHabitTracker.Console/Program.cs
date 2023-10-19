@@ -1,6 +1,8 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Impls.State;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
+using LifeHabitTracker.DataAccessLayer.Impls;
+using LifeHabitTracker.DataAccessLayer.Interfaces;
 using LifeHabitTrackerConsole;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +21,10 @@ class Program
         Console.ReadLine();
     }
 
+    /// <summary>
+    /// Получение нужного функционала(сервисов) для работы бота слабосвязанным путём
+    /// </summary>
+    /// <returns>Коллекция сервисов, осуществляющие работу трекера</returns>
     private static IServiceCollection GetServiceCollection() =>
             new ServiceCollection()
                 .AddSingleton<IBot, TelegramBot>()
@@ -27,6 +33,7 @@ class Program
                 .AddTransient<NameState>()
                 .AddTransient<TypeState>()
                 .AddTransient<DescState>()
-                .AddTransient<DateState>();
+                .AddTransient<DateState>()
+                .AddTransient<IDataManage, DataManage>();
 
 }

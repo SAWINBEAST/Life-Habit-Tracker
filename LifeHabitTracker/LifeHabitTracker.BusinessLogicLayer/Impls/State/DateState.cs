@@ -1,7 +1,6 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 using LifeHabitTracker.BusinessLogicLayer.Entities;
-using System.Text.RegularExpressions;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {    
@@ -65,7 +64,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
                 return ($"Дни напоминания о привычке: {string.Join(',', days)}.\nВремя напоминания о привычке: {string.Join(',', times)}", true);
             }
 
-            return ("Похоже, что вы не забыли ввести время напоминания. " +
+            return ("Похоже, что вы забыли ввести время напоминания. " +
                         "Либо же дни недели. Пожалуйста, перепроверьте введённые данные и сравните их с шаблоном", false);
         }
 

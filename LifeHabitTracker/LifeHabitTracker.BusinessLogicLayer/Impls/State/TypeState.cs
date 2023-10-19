@@ -25,7 +25,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
             if (dataLower != goodHabit && dataLower != badHabit)
                 return("Существует два типа привычки: Хорошая и Плохая. \nПопробуйте ещё раз)", false);
 
-            habit.Type = data;
+            habit.Type = dataLower;
 
             if (dataLower == goodHabit)
             {

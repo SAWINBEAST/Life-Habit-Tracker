@@ -14,6 +14,24 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 
         private readonly IDataManage _dataManager;
 
+        private readonly Dictionary<string, string> _daysTypesOfNames = new Dictionary<string, string>()
+        {
+            {"пн", "monday"},
+            {"понедельник", "monday"},
+            {"вт", "tuesday"},
+            {"вторник", "tuesday"},
+            {"ср", "wednesday"},
+            {"среда", "wednesday"},
+            {"чт", "thursday"},
+            {"четверг", "thursday"},
+            {"пт", "friday"},
+            {"пятница", "friday"},
+            {"сб", "saturday"},
+            {"суббота", "saturday"},
+            {"вс", "sunday"},
+            {"воскресенье", "sunday"}
+        };
+
         public HabitService(IDataManage dataManager)
         {
             _dataManager = dataManager;
@@ -23,7 +41,30 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <inheritdoc/>
         public bool AddHabit(Habit habit)
         {
-            //здесь Обработка данных привычки под тип БД
+            var name = habit.Name;
+            var desc = habit.Description;
+            var type = () => (habit.Type == "хорошая") ? 1 : 0;
+            var times = habit.Date.time;
+            var days = habit.Date.day;
+
+            var daysAndReminds = new Dictionary<string, int>()
+            {
+                {"monday", 0 },
+                {"tuesday", 0 },
+                {"wednesday", 0 },
+                {"thursday", 0 },
+                {"friday", 0 },
+                {"saturday", 0 },
+                {"sunday", 0 }
+            };
+
+
+
+            foreach(var day in days)
+            {
+                if(_daysTypesOfNames.ContainsKey(day));
+            }
+
 
 
 

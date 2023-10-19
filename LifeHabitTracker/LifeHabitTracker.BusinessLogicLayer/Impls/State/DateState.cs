@@ -14,16 +14,17 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         /// </summary>
         private readonly IList<string> _dayTemplates = new List<string>
         {
-            DayOfWeekInfo.Monday, DayOfWeekInfo.MondayFull, 
-            DayOfWeekInfo.Tuesday, DayOfWeekInfo.TuesdayFull, 
-            DayOfWeekInfo.Wednesday, DayOfWeekInfo.WednesdayFull, 
-            DayOfWeekInfo.Thursday, DayOfWeekInfo.ThursdayFull, 
-            DayOfWeekInfo.Friday, DayOfWeekInfo.FridayFull, 
-            DayOfWeekInfo.Saturday, DayOfWeekInfo.SaturdayFull, 
-            DayOfWeekInfo.Sunday, DayOfWeekInfo.SundayFull, 
-            DayOfWeekInfo.Weekdays, DayOfWeekInfo.Weekend, 
-            DayOfWeekInfo.Daily, DayOfWeekInfo.Everyday 
+            DayOfWeekInfo.Monday, DayOfWeekInfo.MondayFull,
+            DayOfWeekInfo.Tuesday, DayOfWeekInfo.TuesdayFull,
+            DayOfWeekInfo.Wednesday, DayOfWeekInfo.WednesdayFull,
+            DayOfWeekInfo.Thursday, DayOfWeekInfo.ThursdayFull,
+            DayOfWeekInfo.Friday, DayOfWeekInfo.FridayFull,
+            DayOfWeekInfo.Saturday, DayOfWeekInfo.SaturdayFull,
+            DayOfWeekInfo.Sunday, DayOfWeekInfo.SundayFull,
+            DayOfWeekInfo.Weekdays, DayOfWeekInfo.Weekend,
+            DayOfWeekInfo.Daily, DayOfWeekInfo.Everyday
         };
+
 
         public DateState() => DataRequestMessage = "\nВвведите Дни недели (через запятую) и Время напоминания о привычке." +
                                                     "\nСначала введите Дни, используя ключевое слово \"Дни:\"." +
@@ -81,6 +82,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
             foreach (var day in days)
                 if (!_dayTemplates.Contains(day))
                     return false;
+          
             return true;
         }
 
@@ -104,3 +106,5 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         protected override IHabitCreationState TransitionToNewState() => throw new NotImplementedException("Продолжение Не реализовано. Это последнее звено.");
     }
 }
+
+

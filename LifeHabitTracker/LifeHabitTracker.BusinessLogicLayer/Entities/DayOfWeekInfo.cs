@@ -36,6 +36,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Entities
         public const string Daily = "ежедневно";
         public const string Everyday = "каждый день";
 
+
     }
 }
 

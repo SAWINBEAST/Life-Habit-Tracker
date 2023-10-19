@@ -14,4 +14,8 @@
     <None Include="C:\Users\Саша\source\repos\Life-Habit-Tracker-Refactor\LifeHabitTracker\LifeHabitTracker.BusinessLogicLayer\.editorconfig" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\DataAccessLayer\LifeHabitTracker.DataAccessLayer.csproj" />
+  </ItemGroup>
+
 </Project>

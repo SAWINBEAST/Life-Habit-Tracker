@@ -9,7 +9,7 @@ namespace LifeHabitTracker.DataAccessLayer.Interfaces
     /// <summary>
     /// Интерфейс взаимодействия сервера с БД
     /// </summary>
-    internal interface IDataManage
+    public interface IDataManage
     {
         /// <summary>
         /// Записать данные о привычке в таблицу

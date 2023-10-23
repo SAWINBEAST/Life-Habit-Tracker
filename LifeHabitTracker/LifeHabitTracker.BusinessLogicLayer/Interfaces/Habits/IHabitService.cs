@@ -12,7 +12,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         /// </summary>
         /// <param name="habit">Добавляемая привычка</param>
         /// <returns>True - привычка успешно добавлена, False - привычку не удалось добавить</returns>
-        public bool AddHabit(Habit habit);
+        public Task<bool> AddHabitAsync(Habit habit, long chatId);
 
         /// <summary>
         /// Получить привычки

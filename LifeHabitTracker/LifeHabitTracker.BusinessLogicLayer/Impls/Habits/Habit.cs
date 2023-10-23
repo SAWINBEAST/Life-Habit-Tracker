@@ -15,7 +15,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <summary>
         /// Тип привычки
         /// </summary>
-        public string Type { get; set; }
+        public string Type { get; set; } 
 
         /// <summary>
         /// Описание привычки
@@ -25,7 +25,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <summary>
         /// Даты выполнения привычки
         /// </summary>
-        public ReminderDate Date { get; set; }
+        public ReminderDate Date { get; set; } = null;
 
     }
 }

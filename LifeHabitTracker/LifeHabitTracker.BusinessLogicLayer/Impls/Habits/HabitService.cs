@@ -1,5 +1,8 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTracker.DataAccessLayer.Interfaces;
+using LifeHabitTracker.BusinessLogicLayer.Entities;
+using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 {
@@ -39,14 +42,21 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
        
 
         /// <inheritdoc/>
-        public bool AddHabit(Habit habit)
+        public async Task<bool> AddHabitAsync(Habit habit, long chatId)
         {
             var name = habit.Name;
             var desc = habit.Description;
             var type = () => (habit.Type == "хорошая") ? 1 : 0;
-            var times = habit.Date.time;
-            var days = habit.Date.day;
+            var isGood = type();
+            IReadOnlyCollection<string> days = null;
+            IReadOnlyCollection<string> times = null;
 
+            if (isGood== 1)
+            {
+                days = habit.Date.day;
+                times = habit.Date.time;
+            }
+            
             var daysAndReminds = new Dictionary<string, int>()
             {
                 {"monday", 0 },
@@ -58,19 +68,52 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
                 {"sunday", 0 }
             };
 
-
-
             foreach(var day in days)
             {
-                if(_daysTypesOfNames.ContainsKey(day));
+                if (_daysTypesOfNames.ContainsKey(day))
+                {
+                    daysAndReminds[_daysTypesOfNames[day]] = 1;
+                }
+                else if (day == DayOfWeekInfo.Weekdays)
+                {
+                    daysAndReminds.Clear();
+                    daysAndReminds = new Dictionary<string, int>()
+                    {
+                        {"monday", 1 },
+                        {"tuesday", 1 },
+                        {"wednesday", 1 },
+                        {"thursday", 1 },
+                        {"friday", 1 },
+                        {"saturday", 0 },
+                        {"sunday", 0 }
+                    };
+                }
+                else if (day == DayOfWeekInfo.Weekend) 
+                {
+                    daysAndReminds["saturday"]= 1;
+                    daysAndReminds["sunday"] = 1;
+                }
+                else
+                {
+                    daysAndReminds.Clear();
+                    daysAndReminds = new Dictionary<string, int> {
+                        { "monday", 1 },
+                        { "tuesday", 1 },
+                        { "wednesday", 1 },
+                        { "thursday", 1 },
+                        { "friday", 1 },
+                        { "saturday", 1 },
+                        { "sunday", 1 }
+                    };
+                }
             }
 
 
+            return _dataManager.WriteHabitInfo(name, desc, chatId, isGood, daysAndReminds, times);
 
 
 
 
-            return true;
         } 
 
 
@@ -96,3 +139,15 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         }
     }
 }
+
+
+/*var times = "";
+foreach (var time in habit.Date.time)
+{
+    if (((IEnumerator<string>)habit.Date.time).MoveNext())
+    {
+        times = times + time + ",";
+
+    }
+    times = times + time;
+}*/

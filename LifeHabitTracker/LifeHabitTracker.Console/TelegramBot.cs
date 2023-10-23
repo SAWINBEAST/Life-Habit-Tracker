@@ -127,7 +127,7 @@ namespace LifeHabitTrackerConsole
             if (isFinish)
             {
                 await _bot.SendTextMessageAsync(chatInfo.ChatId, 
-                    _habitService.AddHabit(habit)
+                    await _habitService.AddHabitAsync(habit, chatInfo.ChatId)
                         ? "Привычка успешно добавлена!"
                         : "Не удалось добавить привычку", 
                     replyToMessageId: messageInfo.MessageId, 
@@ -147,7 +147,6 @@ namespace LifeHabitTrackerConsole
         {
             Console.WriteLine($"Произошла ошибка:\n{JsonConvert.SerializeObject(exception)}");
             await botClient.SendTextMessageAsync(botClient.BotId, "В нашей работе произошла ошибка. Мы уже решаем её");
-
         }
 
         /// <inheritdoc/>

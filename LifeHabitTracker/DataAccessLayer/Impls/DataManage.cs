@@ -34,8 +34,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
                 commandHabitTable.Parameters.Add(chatIdParam);
                 commandHabitTable.Parameters.Add(isGoodParam);
 
-                int habitId = commandHabitTable.ExecuteNonQuery();
-                //int habitId = (int)commandHabitTable.ExecuteScalar();
+                var habitId = (long)commandHabitTable.ExecuteScalar();
 
                 #endregion
 
@@ -43,7 +42,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
                 {
                     #region "Запись в таблицу days"
                     SqliteCommand commandDaysTable = new SqliteCommand(Expression.InsertDaysTable, connection);
-                    SqliteParameter idDaysParam = new SqliteParameter("@id", habitId);
+                    SqliteParameter idDaysParam = new SqliteParameter("@habit_id", habitId);
                     SqliteParameter mondayParam = new SqliteParameter("@monday", daysAndReminds["monday"]);
                     SqliteParameter tuesdayParam = new SqliteParameter("@tuesday", daysAndReminds["tuesday"]);
                     SqliteParameter wednesdayParam = new SqliteParameter("@wednesday", daysAndReminds["wednesday"]);
@@ -68,7 +67,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
                     foreach (var time in times)
                     {
                         SqliteCommand commandTimeTable = new SqliteCommand(Expression.InsertTimeTable, connection);
-                        SqliteParameter idTimeParam = new SqliteParameter("@id", habitId);
+                        SqliteParameter idTimeParam = new SqliteParameter("@habit_id", habitId);
                         SqliteParameter timeParam = new SqliteParameter("@time", time);
 
                         commandTimeTable.Parameters.Add(idTimeParam);

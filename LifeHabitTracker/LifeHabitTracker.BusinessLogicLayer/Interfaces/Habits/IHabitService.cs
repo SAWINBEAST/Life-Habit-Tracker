@@ -1,4 +1,5 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+using LifeHabitTracker.DataAccessLayer.Entities;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
 {
@@ -19,17 +20,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         /// </summary>
         /// <returns>Привычки</returns>
         public IReadOnlyCollection<Habit> GetHabits();
-
-        /// <summary>
-        /// Взятие привычки для её дальнейшего использования
-        /// </summary>
-        /// <param name="habit"></param>
-        public void TakeHabit(Habit habit);
-
-        /// <summary>
-        /// Рассказывает о привычке. Что она из себя представляет, какие есть составляющие
-        /// </summary>
-        string GetInfo();
 
     }
 }

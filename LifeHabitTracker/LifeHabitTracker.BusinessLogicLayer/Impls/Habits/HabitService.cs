@@ -1,8 +1,8 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTracker.DataAccessLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Entities;
-using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
-
+using LifeHabitTracker.DataAccessLayer.Entities;
+using System.Transactions;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 {
@@ -10,13 +10,43 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
     public class HabitService : IHabitService
     {
         /// <summary>
-        /// Текущая привычка для дальнейшей обработки
+        /// Объект выполнения записи данных в БД, в таблицу days
         /// </summary>
-        public Habit CurrentHabit = new Habit();
+        private readonly IHabitsTableRepository _habitsManager;
 
+        /// <summary>
+        /// Объект выполнения записи данных в БД, в таблицу habits
+        /// </summary>
+        private readonly IDaysTableRepository _daysManager;
 
-        private readonly IDataManage _dataManager;
+        /// <summary>
+        /// Объект выполнения записи данных в БД, в таблицу times
+        /// </summary>
+        private readonly ITimesTableRepository _timesManager;
 
+        /// <summary>
+        /// Информация о подключаемой БД
+        /// </summary>
+        public static DataBaseConnect _dBConfig;
+
+        /// <summary>
+        /// Объект подготовленных данных для таблицы habits
+        /// </summary>
+        private PreparedHabitsTableData _habitsTableData = new PreparedHabitsTableData();
+
+        /// <summary>
+        /// Объект подготовленных данных для таблицы days
+        /// </summary>
+        private PreparedDaysTableData _daysTableData = new PreparedDaysTableData();
+
+        /// <summary>
+        /// Объект подготовленных данных для таблицы times
+        /// </summary>
+        private PreparedTimesTableData _timesTableData = new PreparedTimesTableData();
+
+        /// <summary>
+        /// Объединение одинаковых названий дней
+        /// </summary>
         private readonly Dictionary<string, string> _daysTypesOfNames = new Dictionary<string, string>()
         {
             {"пн", "monday"},
@@ -35,119 +65,107 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
             {"воскресенье", "sunday"}
         };
 
-        public HabitService(IDataManage dataManager)
+        public HabitService(IHabitsTableRepository habitsManager, IDaysTableRepository daysManager, ITimesTableRepository timesManager, DataBaseConnect dBConfig)
         {
-            _dataManager = dataManager;
+            _habitsManager = habitsManager;
+            _daysManager = daysManager;
+            _timesManager = timesManager;
+            _dBConfig = dBConfig;
         }
-       
+
 
         /// <inheritdoc/>
         public async Task<bool> AddHabitAsync(Habit habit, long chatId)
         {
-            var name = habit.Name;
-            var desc = habit.Description;
+            var dbName = _dBConfig.DBName;
+
+            PrepareDataForTable(habit);
+
+            //TODO: Сделать работу в одной транзакции. На уровне DataAccess
+            var habitId = await _habitsManager.InsertIntoHabitsTableAsync(_habitsTableData, dbName);
+
+            if (_habitsTableData.IsGood)
+            {
+                var resultOfDaysInsert = await _daysManager.InsertIntoDaysTableAsync(_daysTableData, dbName, habitId);
+                var resultOfTimesInsert = await _timesManager.InsertIntoTimesTableAsync(_timesTableData, dbName, habitId);
+
+                if (resultOfDaysInsert == true && resultOfTimesInsert == true)
+                {
+                    return true;
+                }
+                else return false;
+
+            }
+            else if (habitId != null) return true;
+            else return false;
+
+        }
+
+        /// <summary>
+        /// Подготовка данных к записи в таблицу.
+        /// </summary>
+        /// <param name="habit"> Привычка уровня бизнесЛогики </param>
+        private void PrepareDataForTable(Habit habit)
+        {
+
+            _habitsTableData.Name = habit.Name;
+            _habitsTableData.Description = habit.Description;
+
             var type = () => (habit.Type == "хорошая") ? 1 : 0;
-            var isGood = type();
-            IReadOnlyCollection<string> days = null;
-            IReadOnlyCollection<string> times = null;
+            _habitsTableData.IsGood = Convert.ToBoolean(type());
 
-            if (isGood== 1)
-            {
-                days = habit.Date.day;
-                times = habit.Date.time;
-            }
-            
-            var daysAndReminds = new Dictionary<string, int>()
-            {
-                {"monday", 0 },
-                {"tuesday", 0 },
-                {"wednesday", 0 },
-                {"thursday", 0 },
-                {"friday", 0 },
-                {"saturday", 0 },
-                {"sunday", 0 }
-            };
 
-            foreach(var day in days)
+            if (_habitsTableData.IsGood)
             {
-                if (_daysTypesOfNames.ContainsKey(day))
+                _timesTableData.Times = habit.Date.time;
+
+                foreach (var day in habit.Date.day)
                 {
-                    daysAndReminds[_daysTypesOfNames[day]] = 1;
-                }
-                else if (day == DayOfWeekInfo.Weekdays)
-                {
-                    daysAndReminds.Clear();
-                    daysAndReminds = new Dictionary<string, int>()
+                    if (_daysTypesOfNames.ContainsKey(day))
                     {
-                        {"monday", 1 },
-                        {"tuesday", 1 },
-                        {"wednesday", 1 },
-                        {"thursday", 1 },
-                        {"friday", 1 },
-                        {"saturday", 0 },
-                        {"sunday", 0 }
-                    };
-                }
-                else if (day == DayOfWeekInfo.Weekend) 
-                {
-                    daysAndReminds["saturday"]= 1;
-                    daysAndReminds["sunday"] = 1;
-                }
-                else
-                {
-                    daysAndReminds.Clear();
-                    daysAndReminds = new Dictionary<string, int> {
-                        { "monday", 1 },
-                        { "tuesday", 1 },
-                        { "wednesday", 1 },
-                        { "thursday", 1 },
-                        { "friday", 1 },
-                        { "saturday", 1 },
-                        { "sunday", 1 }
-                    };
+                        _daysTableData.DaysAndReminds[_daysTypesOfNames[day]] = 1;
+                    }
+                    else if (day == DayOfWeekInfo.Weekdays)
+                    {
+                        _daysTableData.DaysAndReminds.Clear();
+                        _daysTableData.DaysAndReminds = new Dictionary<string, int>()
+                        {
+                            {"monday", 1 },
+                            {"tuesday", 1 },
+                            {"wednesday", 1 },
+                            {"thursday", 1 },
+                            {"friday", 1 },
+                            {"saturday", 0 },
+                            {"sunday", 0 }
+                        };
+                    }
+                    else if (day == DayOfWeekInfo.Weekend)
+                    {
+                        _daysTableData.DaysAndReminds["saturday"] = 1;
+                        _daysTableData.DaysAndReminds["sunday"] = 1;
+                    }
+                    else
+                    {
+                        _daysTableData.DaysAndReminds.Clear();
+                        _daysTableData.DaysAndReminds = new Dictionary<string, int>
+                        {
+                            { "monday", 1 },
+                            { "tuesday", 1 },
+                            { "wednesday", 1 },
+                            { "thursday", 1 },
+                            { "friday", 1 },
+                            { "saturday", 1 },
+                            { "sunday", 1 }
+                        };
+                    }
                 }
             }
 
-
-            return _dataManager.WriteHabitInfo(name, desc, chatId, isGood, daysAndReminds, times);
-
-
-
-
-        } 
-
-
-
-
-
+        }
 
 
         /// <inheritdoc/>
         public IReadOnlyCollection<Habit> GetHabits() => new Habit[] { new Habit() };
 
-        /// <inheritdoc/>
-        public void TakeHabit(Habit habit)
-        {
-            CurrentHabit = habit;
-        }
-
-        /// <inheritdoc/>
-        public string GetInfo()
-        {
-            var info = $"-{CurrentHabit.Name}-\n-{CurrentHabit.Description}-\n-{CurrentHabit.Type}-\n-{CurrentHabit.Date}-";
-            return info;
-        }
     }
 }
-
-
-/*var times = "";
-foreach (var time in habit.Date.time)
-{
-    if (((IEnumerator<string>)habit.Date.time).MoveNext())
-    {
-        times = times + time + ",";
-
-    }
-    times = times + time;
-}*/

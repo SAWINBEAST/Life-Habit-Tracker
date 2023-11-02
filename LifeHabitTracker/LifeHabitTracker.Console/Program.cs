@@ -1,22 +1,29 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Impls.State;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
-using LifeHabitTracker.BusinessLogicLayer;
 using LifeHabitTracker.DataAccessLayer.Impls;
 using LifeHabitTracker.DataAccessLayer.Interfaces;
 using LifeHabitTrackerConsole;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-
+using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
+using LifeHabitTracker.DataAccessLayer.Impls.Repositories;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
+using LifeHabitTracker.BusinessLogicLayer.Impls;
+using LifeHabitTracker.BusinessLogicLayer.Entities;
 
 class Program
 {
+    /// <summary>
+    /// Строка доступа к БД
+    /// </summary>
     private static DataBaseConnect _dBConfig;
 
     static async Task Main(string[] args)
     {
         Console.WriteLine($"Приложение запущено.");
 
+        //TODO:Вывести в отдельный метод
         var config = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                 .AddJsonFile("appsettings.json").Build();
@@ -29,7 +36,7 @@ class Program
 
         using var serviceProvider = services.BuildServiceProvider();
        
-        var botService = serviceProvider.GetService<IBot>();
+        var botService = serviceProvider.GetService<ITelegramBot>();
         await botService.LaunchAsync();
 
         Console.ReadLine();
@@ -41,8 +48,8 @@ class Program
     /// <returns>Коллекция сервисов, осуществляющие работу трекера</returns>
     private static IServiceCollection GetServiceCollection() =>
             new ServiceCollection()
-                .AddSingleton<IBot, TelegramBot>()
-                .AddTransient<IHabitContextCaretaker, ContextsCaretaker>()
+                .AddSingleton<ITelegramBot, TelegramBot>()
+                .AddTransient<IContextCaretaker, ContextsCaretaker>()
                 .AddTransient<IHabitService, HabitService>()
                 .AddTransient<NameState>()
                 .AddTransient<TypeState>()
@@ -51,6 +58,7 @@ class Program
                 .AddTransient<IHabitsTableRepository, HabitsTableRepository>()
                 .AddTransient<IDaysTableRepository, DaysTableRepository>()
                 .AddTransient<ITimesTableRepository, TimesTableRepository>()
+                .AddTransient<IInsertHabitService, InsertHabitService>()
                 .AddSingleton(_dBConfig);
 
 

@@ -2,12 +2,12 @@
 using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
+namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
 {
     /// <summary>
     /// Хранитель контекстов по созданию привычки
     /// </summary>
-    public interface IHabitContextCaretaker
+    public interface IContextCaretaker
     {
         /// <summary>
         /// Добавление нового состояния определенного юзера в словарь

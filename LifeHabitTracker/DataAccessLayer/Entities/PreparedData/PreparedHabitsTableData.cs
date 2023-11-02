@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LifeHabitTracker.DataAccessLayer.Entities
+namespace LifeHabitTracker.DataAccessLayer.Entities.PreparedData
 {
     /// <summary>
     /// Класс подготовленной информации для таблицы habits
@@ -29,7 +29,7 @@ namespace LifeHabitTracker.DataAccessLayer.Entities
         /// <summary>
         /// Идентификатор чата клиента, пользующего привычкой
         /// </summary>
-        public int ChatId { get; set; }
+        public long ChatId { get; set; }
 
         /// <summary>
         /// Тип привычки

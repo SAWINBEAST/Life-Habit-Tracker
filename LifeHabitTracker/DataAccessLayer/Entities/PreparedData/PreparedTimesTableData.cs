@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LifeHabitTracker.DataAccessLayer.Entities
+namespace LifeHabitTracker.DataAccessLayer.Entities.PreparedData
 {
     /// <summary>
     /// Класс подготовленной информации для таблицы times

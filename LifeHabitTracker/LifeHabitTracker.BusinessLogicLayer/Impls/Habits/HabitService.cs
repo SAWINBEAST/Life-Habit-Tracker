@@ -1,8 +1,7 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTracker.DataAccessLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Entities;
-using LifeHabitTracker.DataAccessLayer.Entities;
-using System.Transactions;
+using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 {
@@ -10,19 +9,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
     public class HabitService : IHabitService
     {
         /// <summary>
-        /// Объект выполнения записи данных в БД, в таблицу days
+        /// Объект сервиса добавления привычки в БД
         /// </summary>
-        private readonly IHabitsTableRepository _habitsManager;
-
-        /// <summary>
-        /// Объект выполнения записи данных в БД, в таблицу habits
-        /// </summary>
-        private readonly IDaysTableRepository _daysManager;
-
-        /// <summary>
-        /// Объект выполнения записи данных в БД, в таблицу times
-        /// </summary>
-        private readonly ITimesTableRepository _timesManager;
+        private IInsertHabitService _habitInserter;
 
         /// <summary>
         /// Информация о подключаемой БД
@@ -65,12 +54,10 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
             {"воскресенье", "sunday"}
         };
 
-        public HabitService(IHabitsTableRepository habitsManager, IDaysTableRepository daysManager, ITimesTableRepository timesManager, DataBaseConnect dBConfig)
+        public HabitService(DataBaseConnect dBConfig, IInsertHabitService habitInserter)
         {
-            _habitsManager = habitsManager;
-            _daysManager = daysManager;
-            _timesManager = timesManager;
             _dBConfig = dBConfig;
+            _habitInserter = habitInserter;
         }
 
 
@@ -79,25 +66,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         {
             var dbName = _dBConfig.DBName;
 
-            PrepareDataForTable(habit);
+            PrepareDataForTable(habit, chatId);
 
-            //TODO: Сделать работу в одной транзакции. На уровне DataAccess
-            var habitId = await _habitsManager.InsertIntoHabitsTableAsync(_habitsTableData, dbName);
-
-            if (_habitsTableData.IsGood)
-            {
-                var resultOfDaysInsert = await _daysManager.InsertIntoDaysTableAsync(_daysTableData, dbName, habitId);
-                var resultOfTimesInsert = await _timesManager.InsertIntoTimesTableAsync(_timesTableData, dbName, habitId);
-
-                if (resultOfDaysInsert == true && resultOfTimesInsert == true)
-                {
-                    return true;
-                }
-                else return false;
-
-            }
-            else if (habitId != null) return true;
-            else return false;
+            return await _habitInserter.InsertHabitAsync(_habitsTableData, _daysTableData, _timesTableData, dbName);
 
         }
 
@@ -105,11 +76,13 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// Подготовка данных к записи в таблицу.
         /// </summary>
         /// <param name="habit"> Привычка уровня бизнесЛогики </param>
-        private void PrepareDataForTable(Habit habit)
+        /// <param name="chatId">ID чата, из которого добавляют привычку</param>
+        private void PrepareDataForTable(Habit habit, long chatId)
         {
 
             _habitsTableData.Name = habit.Name;
             _habitsTableData.Description = habit.Description;
+            _habitsTableData.ChatId = chatId;
 
             var type = () => (habit.Type == "хорошая") ? 1 : 0;
             _habitsTableData.IsGood = Convert.ToBoolean(type());

@@ -1,5 +1,6 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
 using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTrackerConsole.Entities;
 using Newtonsoft.Json;
@@ -10,8 +11,8 @@ using Telegram.Bot.Types;
 
 namespace LifeHabitTrackerConsole
 {
-    /// <inheritdoc cref="IBot"/>.
-    public class TelegramBot : IBot
+    /// <inheritdoc cref="ITelegramBot"/>.
+    public class TelegramBot : ITelegramBot
     {
         /// <summary>
         /// API-токен бота телеграм
@@ -26,14 +27,14 @@ namespace LifeHabitTrackerConsole
         /// <summary>
         /// Хранитель контекстов
         /// </summary>
-        private readonly IHabitContextCaretaker _habitContextCaretaker;
+        private readonly IContextCaretaker _habitContextCaretaker;
 
         /// <summary>
         /// Сервис привычек
         /// </summary>
         private readonly IHabitService _habitService;
 
-        public TelegramBot(IHabitContextCaretaker habitContextCaretaker, IHabitService habitService)
+        public TelegramBot(IContextCaretaker habitContextCaretaker, IHabitService habitService)
         {
             _habitContextCaretaker = habitContextCaretaker;
             _habitService = habitService;

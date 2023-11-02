@@ -3,7 +3,7 @@
     /// <summary>
     /// Интерфейс функционала бота
     /// </summary>
-    internal interface IBot
+    internal interface ITelegramBot
     {
         /// <summary>
         /// Запуск Бота

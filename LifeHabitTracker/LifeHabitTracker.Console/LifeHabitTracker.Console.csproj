@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -10,11 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Habits.db" />
+    <None Remove="Entities\Habits.db" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Habits.db">
+    <Content Include="Resources\LifeHabitTracker.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -1,11 +1,14 @@
-﻿namespace LifeHabitTracker.DataAccessLayer.Entities
+﻿namespace LifeHabitTracker.DataAccessLayer.Entities.PreparedData
 {
     /// <summary>
     /// Класс подготовленной информации для таблицы days
     /// </summary>
     public class PreparedDaysTableData
     {
-        public Dictionary<string, int> DaysAndReminds { get; set; } = new Dictionary<string, int>()
+        /// <summary>
+        /// Схема День <-> Истинность напоминания для записи в таблицу 
+        /// </summary>
+        public IDictionary<string, int> DaysAndReminds { get; set; } = new Dictionary<string, int>()
             {
                 {"monday", 0 },
                 {"tuesday", 0 },

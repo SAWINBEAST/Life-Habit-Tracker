@@ -1,12 +1,13 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
+using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Impls.State;
-using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
+using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
-namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
+namespace LifeHabitTracker.BusinessLogicLayer.Impls
 {
-    /// <inheritdoc cref="IHabitContextCaretaker"/>
-    public class ContextsCaretaker : IHabitContextCaretaker
+    /// <inheritdoc cref="IContextCaretaker"/>
+    public class ContextsCaretaker : IContextCaretaker
     {
         /// <summary>
         /// Словарь контекстов по созданию привычки по пользователям

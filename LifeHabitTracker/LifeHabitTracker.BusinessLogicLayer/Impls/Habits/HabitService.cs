@@ -1,12 +1,12 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTracker.DataAccessLayer.Interfaces;
-using LifeHabitTracker.BusinessLogicLayer.Entities;
-using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
+using LifeHabitTracker.Entities.PreparedData;
+using LifeHabitTracker.Entities;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
 {
     /// <inheritdoc cref="IHabitService"/>.
-    public class HabitService : IHabitService
+    internal class HabitService : IHabitService
     {
         /// <summary>
         /// Объект сервиса добавления привычки в БД
@@ -14,49 +14,35 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         private IInsertHabitService _habitInserter;
 
         /// <summary>
-        /// Информация о подключаемой БД
-        /// </summary>
-        public static DataBaseConnect _dBConfig;
-
-        /// <summary>
-        /// Объект подготовленных данных для таблицы habits
-        /// </summary>
-        private PreparedHabitsTableData _habitsTableData = new PreparedHabitsTableData();
-
-        /// <summary>
-        /// Объект подготовленных данных для таблицы days
-        /// </summary>
-        private PreparedDaysTableData _daysTableData = new PreparedDaysTableData();
-
-        /// <summary>
-        /// Объект подготовленных данных для таблицы times
-        /// </summary>
-        private PreparedTimesTableData _timesTableData = new PreparedTimesTableData();
-
-        /// <summary>
         /// Объединение одинаковых названий дней
         /// </summary>
         private readonly Dictionary<string, string> _daysTypesOfNames = new Dictionary<string, string>()
         {
-            {"пн", "monday"},
-            {"понедельник", "monday"},
-            {"вт", "tuesday"},
-            {"вторник", "tuesday"},
-            {"ср", "wednesday"},
-            {"среда", "wednesday"},
-            {"чт", "thursday"},
-            {"четверг", "thursday"},
-            {"пт", "friday"},
-            {"пятница", "friday"},
-            {"сб", "saturday"},
-            {"суббота", "saturday"},
-            {"вс", "sunday"},
-            {"воскресенье", "sunday"}
+            {RussianDays.Monday, EnglishDays.Monday},
+            {RussianDays.MondayFull, EnglishDays.Monday},
+
+            {RussianDays.Tuesday, EnglishDays.Tuesday},
+            {RussianDays.TuesdayFull, EnglishDays.Tuesday},
+
+            {RussianDays.Wednesday, EnglishDays.Wednesday},
+            {RussianDays.WednesdayFull, EnglishDays.Wednesday},
+
+            {RussianDays.Thursday, EnglishDays.Thursday},
+            {RussianDays.ThursdayFull, EnglishDays.Thursday},
+
+            {RussianDays.Friday, EnglishDays.Friday},
+            {RussianDays.FridayFull, EnglishDays.Friday},
+
+            {RussianDays.Saturday, EnglishDays.Saturday},
+            {RussianDays.SaturdayFull, EnglishDays.Saturday},
+
+            {RussianDays.Sunday, EnglishDays.Sunday},
+            {RussianDays.SundayFull, EnglishDays.Sunday},
+
         };
 
-        public HabitService(DataBaseConnect dBConfig, IInsertHabitService habitInserter)
+        public HabitService(IInsertHabitService habitInserter)
         {
-            _dBConfig = dBConfig;
             _habitInserter = habitInserter;
         }
 
@@ -64,44 +50,55 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <inheritdoc/>
         public async Task<bool> AddHabitAsync(Habit habit, long chatId)
         {
-            var dbName = _dBConfig.DBName;
+            var habitsTableData = PrepareHabitsData(habit, chatId);
+            var daysTableData = PrepareDaysData(habit, habitsTableData.IsGood);
+            var timesTableData = PrepareTimesData(habit, habitsTableData.IsGood);
 
-            PrepareDataForTable(habit, chatId);
-
-            return await _habitInserter.InsertHabitAsync(_habitsTableData, _daysTableData, _timesTableData, dbName);
+            return await _habitInserter.InsertHabitAsync(habitsTableData, daysTableData, timesTableData);
 
         }
 
         /// <summary>
-        /// Подготовка данных к записи в таблицу.
+        /// Подготовка данных к записи в таблицу habits.
         /// </summary>
-        /// <param name="habit"> Привычка уровня бизнесЛогики </param>
+        /// <param name="habit"> Привычка уровня бизнес-логики </param>
         /// <param name="chatId">ID чата, из которого добавляют привычку</param>
-        private void PrepareDataForTable(Habit habit, long chatId)
+        /// <returns> Сущность основных данных о привычке </returns>
+        private DbHabits PrepareHabitsData(Habit habit, long chatId)
         {
+            var habitsTableData = new DbHabits();
 
-            _habitsTableData.Name = habit.Name;
-            _habitsTableData.Description = habit.Description;
-            _habitsTableData.ChatId = chatId;
+            habitsTableData.Name = habit.Name;
+            habitsTableData.Description = habit.Description;
+            habitsTableData.ChatId = chatId;
+            habitsTableData.IsGood = habit.Type == FundamentalConcept.Good;
 
-            var type = () => (habit.Type == "хорошая") ? 1 : 0;
-            _habitsTableData.IsGood = Convert.ToBoolean(type());
+            return habitsTableData;
+        }
 
 
-            if (_habitsTableData.IsGood)
+        /// <summary>
+        /// Подготовка данных к записи в таблицу days
+        /// </summary>
+        /// <param name="habit"> Привычка уровня бизнес-логики </param>
+        /// <param name="isGood"> Тип привычки, его булевая интерпретация </param>
+        /// <returns> Сущность данных о днях </returns>
+        private DbDays PrepareDaysData (Habit habit, bool isGood)
+        {
+            var daysTableData = new DbDays();
+
+            if (isGood)
             {
-                _timesTableData.Times = habit.Date.time;
-
                 foreach (var day in habit.Date.day)
                 {
                     if (_daysTypesOfNames.ContainsKey(day))
                     {
-                        _daysTableData.DaysAndReminds[_daysTypesOfNames[day]] = 1;
+                        daysTableData.DaysAndReminds[_daysTypesOfNames[day]] = 1;
                     }
-                    else if (day == DayOfWeekInfo.Weekdays)
+                    else if (day == RussianDays.Weekdays)
                     {
-                        _daysTableData.DaysAndReminds.Clear();
-                        _daysTableData.DaysAndReminds = new Dictionary<string, int>()
+                        daysTableData.DaysAndReminds.Clear();
+                        daysTableData.DaysAndReminds = new Dictionary<string, int>()
                         {
                             {"monday", 1 },
                             {"tuesday", 1 },
@@ -112,15 +109,15 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
                             {"sunday", 0 }
                         };
                     }
-                    else if (day == DayOfWeekInfo.Weekend)
+                    else if (day == RussianDays.Weekend)
                     {
-                        _daysTableData.DaysAndReminds["saturday"] = 1;
-                        _daysTableData.DaysAndReminds["sunday"] = 1;
+                        daysTableData.DaysAndReminds["saturday"] = 1;
+                        daysTableData.DaysAndReminds["sunday"] = 1;
                     }
                     else
                     {
-                        _daysTableData.DaysAndReminds.Clear();
-                        _daysTableData.DaysAndReminds = new Dictionary<string, int>
+                        daysTableData.DaysAndReminds.Clear();
+                        daysTableData.DaysAndReminds = new Dictionary<string, int>
                         {
                             { "monday", 1 },
                             { "tuesday", 1 },
@@ -134,6 +131,26 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
                 }
             }
 
+            return daysTableData;
+
+        }
+
+        /// <summary>
+        /// Подготовка данных для записи в таблицу times
+        /// </summary>
+        /// <param name="habit"> Привычка уровня бизнес-логики </param>
+        /// <param name="isGood"> Тип привычки, его булевая интерпретация </param>
+        /// <returns> Сущность данных о времени </returns>
+        private DbTimes PrepareTimesData (Habit habit, bool isGood)
+        {
+            var timesTableData = new DbTimes ();
+
+            if (isGood)
+            {
+                timesTableData.Times = habit.Date.time;
+            }
+
+            return timesTableData;
         }
 
 

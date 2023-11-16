@@ -7,13 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".filenesting.json" />
     <None Remove="Entities\Habits.db" />
     <None Remove="Habits.db" />
     <None Remove="LifeHabitTracker.db" />
+    <None Remove="Resources\LifeHabitTracker.db" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="LifeHabitTracker.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\LifeHabitTracker.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -21,6 +26,26 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.12" />
     <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="7.0.12" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LifeHabitTracker.Entities\LifeHabitTracker.Entities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

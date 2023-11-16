@@ -7,21 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\Саша\source\repos\Life-Habit-Tracker-Refactor\LifeHabitTracker\LifeHabitTracker.BusinessLogicLayer\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="C:\Users\Саша\source\repos\Life-Habit-Tracker-Refactor\LifeHabitTracker\LifeHabitTracker.BusinessLogicLayer\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\DataAccessLayer\LifeHabitTracker.DataAccessLayer.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <ProjectReference Include="..\LifeHabitTracker.Entities\LifeHabitTracker.Entities.csproj" />
   </ItemGroup>
 
 </Project>

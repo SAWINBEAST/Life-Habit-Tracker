@@ -1,68 +1,71 @@
 ﻿using LifeHabitTracker.DataAccessLayer.Interfaces;
 using Microsoft.Data.Sqlite;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
-using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
+using LifeHabitTracker.Entities.PreparedData;
+using LifeHabitTracker.Entities;
 
 namespace LifeHabitTracker.DataAccessLayer.Impls
 {
     ///<inheritdoc cref="IInsertHabitService"/>
-    public class InsertHabitService :IInsertHabitService
+    internal class InsertHabitService :IInsertHabitService
     {
+        /// <summary>
+        /// Информация о подключаемой БД
+        /// </summary>
+        public static DataBaseConnect _dBConfig;
+
         /// <summary>
         /// Объект выполнения записи данных в БД, в таблицу days
         /// </summary>
-        private readonly IHabitsTableRepository _habitsManager;
+        private readonly IHabitsRepository _habitsRepository;
 
         /// <summary>
         /// Объект выполнения записи данных в БД, в таблицу habits
         /// </summary>
-        private readonly IDaysTableRepository _daysManager;
+        private readonly IDaysRepository _daysRepository;
 
         /// <summary>
         /// Объект выполнения записи данных в БД, в таблицу times
         /// </summary>
-        private readonly ITimesTableRepository _timesManager;
+        private readonly ITimesRepository _timesRepository;
 
-        public InsertHabitService(IHabitsTableRepository habitsManager, IDaysTableRepository daysManager, ITimesTableRepository timesManager)
+        public InsertHabitService(IHabitsRepository habitsRepository, IDaysRepository daysRepository, ITimesRepository timesRepository, DataBaseConnect dBConfig)
         {
-            _habitsManager = habitsManager;
-            _daysManager = daysManager;
-            _timesManager = timesManager;
+            _habitsRepository = habitsRepository;
+            _daysRepository = daysRepository;
+            _timesRepository = timesRepository;
+            _dBConfig = dBConfig;
         }
 
         ///<inheritdoc/>
-        public async Task<bool> InsertHabitAsync(PreparedHabitsTableData preparedHabits, PreparedDaysTableData preparedDays, PreparedTimesTableData preparedTimes, string dbName)
+        public async Task<bool> InsertHabitAsync(DbHabits preparedHabits, DbDays preparedDays, DbTimes preparedTimes)
         {
-            string connectionString = $"Data Source={dbName}";
 
-            await using (var connection = new SqliteConnection(connectionString))
-            {
-                connection.Open();
-                var transaction = connection.BeginTransaction();
+            using var connection = new SqliteConnection(_dBConfig.DBName);
+            connection.Open();
+            var transaction = connection.BeginTransaction();
 
-                //TODO:Оптимизировать систему проверки и не использольвать временную переменную.
-                var insertResult = new bool();
+            //TODO:Оптимизировать систему проверки и не использольвать временную переменную.
+            var insertResult = false;
  
-                var habitId = await _habitsManager.InsertIntoHabitsTableAsync(preparedHabits, connection, transaction);
+            var habitId = await _habitsRepository.InsertIntoHabitsTableAsync(preparedHabits, connection, transaction);
 
+            if (habitId != null)
+            {
                 if (preparedHabits.IsGood)
                 {
-                    var resultOfDaysInsert = await _daysManager.InsertIntoDaysTableAsync(preparedDays, habitId, connection, transaction);
-                    var resultOfTimesInsert = await _timesManager.InsertIntoTimesTableAsync(preparedTimes, habitId, connection, transaction);
+                    var resultOfDaysInsert = _daysRepository.InsertIntoDaysTableAsync(preparedDays, habitId, connection, transaction);
+                    var resultOfTimesInsert = _timesRepository.InsertIntoTimesTableAsync(preparedTimes, habitId, connection, transaction);
 
-                    if (resultOfDaysInsert == true && resultOfTimesInsert == true)
-                    {
-                        insertResult = true;
-                    }
-                    else insertResult = false;
-
+                    insertResult = await resultOfDaysInsert && await resultOfTimesInsert;
                 }
-                else if (habitId != null) insertResult = true;
-                else insertResult = false;
-
-                transaction.Commit();
-                return insertResult;
+                else 
+                    insertResult = true;
             }
+
+            transaction.Commit();
+            return insertResult;
+            
         }
     }
 }

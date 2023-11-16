@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeHabitTracker.BusinessLo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeHabitTracker.DataAccessLayer", "DataAccessLayer\LifeHabitTracker.DataAccessLayer.csproj", "{6A18B40E-975B-4A5A-887F-0037AE44C802}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeHabitTracker.Entities", "LifeHabitTracker.Entities\LifeHabitTracker.Entities.csproj", "{001FD9C3-DC47-4328-AAF8-2D3A316FCC6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +32,10 @@ Global
 		{6A18B40E-975B-4A5A-887F-0037AE44C802}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A18B40E-975B-4A5A-887F-0037AE44C802}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6A18B40E-975B-4A5A-887F-0037AE44C802}.Release|Any CPU.Build.0 = Release|Any CPU
+		{001FD9C3-DC47-4328-AAF8-2D3A316FCC6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{001FD9C3-DC47-4328-AAF8-2D3A316FCC6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{001FD9C3-DC47-4328-AAF8-2D3A316FCC6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{001FD9C3-DC47-4328-AAF8-2D3A316FCC6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

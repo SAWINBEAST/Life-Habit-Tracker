@@ -1,5 +1,4 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
-using LifeHabitTracker.DataAccessLayer.Entities;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
 {

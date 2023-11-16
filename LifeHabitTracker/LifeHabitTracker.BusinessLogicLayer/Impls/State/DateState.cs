@@ -1,28 +1,29 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 using LifeHabitTracker.BusinessLogicLayer.Entities;
+using LifeHabitTracker.Entities;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {    
     /// <summary>
     /// Состояние получения даты напоминания привычки
     /// </summary>
-    public class DateState : HabitCreationState
+    internal class DateState : HabitCreationState
     {
         /// <summary>
         /// Шаблоны названий дней для напоминания
         /// </summary>
         private readonly IList<string> _dayTemplates = new List<string>
         {
-            DayOfWeekInfo.Monday, DayOfWeekInfo.MondayFull,
-            DayOfWeekInfo.Tuesday, DayOfWeekInfo.TuesdayFull,
-            DayOfWeekInfo.Wednesday, DayOfWeekInfo.WednesdayFull,
-            DayOfWeekInfo.Thursday, DayOfWeekInfo.ThursdayFull,
-            DayOfWeekInfo.Friday, DayOfWeekInfo.FridayFull,
-            DayOfWeekInfo.Saturday, DayOfWeekInfo.SaturdayFull,
-            DayOfWeekInfo.Sunday, DayOfWeekInfo.SundayFull,
-            DayOfWeekInfo.Weekdays, DayOfWeekInfo.Weekend,
-            DayOfWeekInfo.Daily, DayOfWeekInfo.Everyday
+            RussianDays.Monday, RussianDays.MondayFull,
+            RussianDays.Tuesday, RussianDays.TuesdayFull,
+            RussianDays.Wednesday, RussianDays.WednesdayFull,
+            RussianDays.Thursday, RussianDays.ThursdayFull,
+            RussianDays.Friday, RussianDays.FridayFull,
+            RussianDays.Saturday, RussianDays.SaturdayFull,
+            RussianDays.Sunday, RussianDays.SundayFull,
+            RussianDays.Weekdays, RussianDays.Weekend,
+            RussianDays.Daily, RussianDays.Everyday
         };
 
 

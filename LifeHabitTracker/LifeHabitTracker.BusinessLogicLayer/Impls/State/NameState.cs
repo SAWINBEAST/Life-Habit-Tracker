@@ -6,7 +6,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
     /// <summary>
     /// Состояние получения наименования привычки
     /// </summary>
-    public class NameState : HabitCreationState
+    internal class NameState : HabitCreationState
     {
         public NameState() => DataRequestMessage = "Ввведите наименование привычки.";
 

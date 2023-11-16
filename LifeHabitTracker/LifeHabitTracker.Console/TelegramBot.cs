@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
+﻿using LifeHabitTracker.Entities;
 using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
@@ -98,8 +98,9 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         /// <param name="chat">Информация по чату</param>
         /// <param name="username">Имя пользователя</param>
+ 
         private async Task HandleStartCommandAsync(Chat chat, string username)
-            => await _bot.SendTextMessageAsync(chat, $"Добро пожаловать в Привычковную, {username}");
+            => await _bot.SendTextMessageAsync(chat, $"Добро пожаловать в Привычковную, {username}");       //TODO: Подробная инструкция по работе с ботом 
 
         /// <summary>
         /// Обработать команду по созданию привычки <see cref="Habit"/>

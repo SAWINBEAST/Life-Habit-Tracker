@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
+﻿using LifeHabitTracker.Entities;
 using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 
@@ -8,7 +8,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
     /// Контекст определяет интерфейс, представляющий интерес для клиентов. 
     /// Он также хранит ссылку на экземпляр подкласса Состояния, который отображает текущее состояние Контекста.
     /// </summary>
-    public class ContextHabitCreation : IContextHabitCreation
+    internal class ContextHabitCreation : IContextHabitCreation
     {
 
         /// <summary>

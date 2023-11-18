@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.Entities;
+﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
 using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
@@ -7,7 +7,6 @@ using Newtonsoft.Json;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
-
 
 namespace LifeHabitTrackerConsole
 {

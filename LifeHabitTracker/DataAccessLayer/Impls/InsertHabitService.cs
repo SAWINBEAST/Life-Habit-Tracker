@@ -1,8 +1,8 @@
-﻿using LifeHabitTracker.DataAccessLayer.Interfaces;
-using Microsoft.Data.Sqlite;
+﻿using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
+using LifeHabitTracker.DataAccessLayer.Interfaces;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
-using LifeHabitTracker.Entities.PreparedData;
-using LifeHabitTracker.Entities;
+using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Options;
 
 namespace LifeHabitTracker.DataAccessLayer.Impls
 {
@@ -29,12 +29,12 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
         /// </summary>
         private readonly ITimesRepository _timesRepository;
 
-        public InsertHabitService(IHabitsRepository habitsRepository, IDaysRepository daysRepository, ITimesRepository timesRepository, DataBaseConnect dBConfig)
+        public InsertHabitService(IHabitsRepository habitsRepository, IDaysRepository daysRepository, ITimesRepository timesRepository, IOptions<DataBaseConnect> options)
         {
             _habitsRepository = habitsRepository;
             _daysRepository = daysRepository;
             _timesRepository = timesRepository;
-            _dBConfig = dBConfig;
+            _dBConfig = options.Value;
         }
 
         ///<inheritdoc/>

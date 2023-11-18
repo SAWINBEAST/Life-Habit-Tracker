@@ -3,12 +3,11 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DataAccessLayer\LifeHabitTracker.DataAccessLayer.csproj" />
-    <ProjectReference Include="..\LifeHabitTracker.Entities\LifeHabitTracker.Entities.csproj" />
   </ItemGroup>
 
 </Project>

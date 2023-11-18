@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.Entities;
+﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
 using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Impls.State;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces;

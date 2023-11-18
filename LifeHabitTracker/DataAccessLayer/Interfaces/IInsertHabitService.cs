@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.Entities.PreparedData;
+﻿using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 
 namespace LifeHabitTracker.DataAccessLayer.Interfaces
 {
@@ -15,7 +15,5 @@ namespace LifeHabitTracker.DataAccessLayer.Interfaces
         /// <param name="preparedTimes">Подготовленные данные о времени напоминания</param>
         /// <returns>Результат выполнения транзакции записи</returns>
         public Task<bool> InsertHabitAsync(DbHabits preparedHabits, DbDays preparedDays, DbTimes preparedTimes);
-
-
     }
 }

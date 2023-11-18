@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.Entities.PreparedData;
+﻿using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 using Microsoft.Data.Sqlite;
 
 namespace LifeHabitTracker.DataAccessLayer.Interfaces.Repositories
@@ -18,7 +18,4 @@ namespace LifeHabitTracker.DataAccessLayer.Interfaces.Repositories
         /// <returns>Оценка результата выполнения записи</returns>
         public Task<bool> InsertIntoTimesTableAsync(DbTimes timesTableData, long habitId, SqliteConnection connection, SqliteTransaction transaction);
     }
-    ///         
-
-
 }

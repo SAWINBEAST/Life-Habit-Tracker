@@ -1,9 +1,7 @@
-﻿using LifeHabitTracker.Entities.PreparedData;
+﻿using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 using LifeHabitTracker.DataAccessLayer.Entities.SqlFunctions;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
 using Microsoft.Data.Sqlite;
-using LifeHabitTracker.Entities;
-
 
 namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
 {
@@ -14,18 +12,17 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
         /// <inheritdoc/>
         public async Task<bool> InsertIntoDaysTableAsync(DbDays daysTableData, long habitId, SqliteConnection connection, SqliteTransaction transaction)
         {
-
             using var commandDaysTable = new SqliteCommand(DaysSqlFunctions.InsertDays, connection);
             commandDaysTable.Transaction = transaction;
 
             var idDaysParam = new SqliteParameter("@habit_id", habitId);
-            var mondayParam = new SqliteParameter("@monday", daysTableData.DaysAndReminds[EnglishDays.Monday]);
-            var tuesdayParam = new SqliteParameter("@tuesday", daysTableData.DaysAndReminds[EnglishDays.Tuesday]);
-            var wednesdayParam = new SqliteParameter("@wednesday", daysTableData.DaysAndReminds[EnglishDays.Wednesday]);
-            var thursdayParam = new SqliteParameter("@thursday", daysTableData.DaysAndReminds[EnglishDays.Thursday]);
-            var fridayParam = new SqliteParameter("@friday", daysTableData.DaysAndReminds[EnglishDays.Friday]);
-            var saturdayParam = new SqliteParameter("@saturday", daysTableData.DaysAndReminds[EnglishDays.Saturday]);
-            var sundayParam = new SqliteParameter("@sunday", daysTableData.DaysAndReminds[EnglishDays.Sunday]);
+            var mondayParam = new SqliteParameter("@monday", daysTableData.OnMonday);
+            var tuesdayParam = new SqliteParameter("@tuesday", daysTableData.OnTuesday);
+            var wednesdayParam = new SqliteParameter("@wednesday", daysTableData.OnWednesday);
+            var thursdayParam = new SqliteParameter("@thursday", daysTableData.OnThursday);
+            var fridayParam = new SqliteParameter("@friday", daysTableData.OnFriday);
+            var saturdayParam = new SqliteParameter("@saturday", daysTableData.OnSaturday);
+            var sundayParam = new SqliteParameter("@sunday", daysTableData.OnSunday);
 
             commandDaysTable.Parameters.Add(idDaysParam);
             commandDaysTable.Parameters.Add(mondayParam);
@@ -43,6 +40,5 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
             else return false;
 
         }
-
     }
 }

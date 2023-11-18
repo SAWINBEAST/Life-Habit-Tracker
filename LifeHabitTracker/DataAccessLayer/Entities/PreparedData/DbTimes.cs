@@ -1,5 +1,5 @@
 ﻿
-namespace LifeHabitTracker.Entities.PreparedData
+namespace LifeHabitTracker.DataAccessLayer.Entities.PreparedData
 {
     /// <summary>
     /// Класс подготовленной информации для таблицы times
@@ -10,6 +10,5 @@ namespace LifeHabitTracker.Entities.PreparedData
         /// Коллекция времени напоминания о привычке
         /// </summary>
         public IReadOnlyCollection<string> Times { get; set; }
-
     }
 }

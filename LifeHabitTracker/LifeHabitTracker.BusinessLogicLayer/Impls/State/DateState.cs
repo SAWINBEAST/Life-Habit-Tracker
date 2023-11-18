@@ -1,10 +1,10 @@
-﻿using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
+﻿using LifeHabitTracker.BusinessLogicLayer.Entities;
+using LifeHabitTracker.BusinessLogicLayer.Helpers;
+using LifeHabitTracker.BusinessLogicLayer.Impls.Habits;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
-using LifeHabitTracker.BusinessLogicLayer.Entities;
-using LifeHabitTracker.Entities;
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
-{    
+{
     /// <summary>
     /// Состояние получения даты напоминания привычки
     /// </summary>
@@ -25,7 +25,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
             RussianDays.Weekdays, RussianDays.Weekend,
             RussianDays.Daily, RussianDays.Everyday
         };
-
 
         public DateState() => DataRequestMessage = "\nВвведите Дни недели (через запятую) и Время напоминания о привычке." +
                                                     "\nСначала введите Дни, используя ключевое слово \"Дни:\"." +
@@ -62,8 +61,10 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
                 if (!TryParseTimes(daysAndTime[1].ToLower().Replace(patternTime, string.Empty), out var times))
                     return ("Проверьте корректность введённого времени.\nНапоминаем, что время нужно ввести по шаблону.\nНапример 18:38 или 9:00", false);
 
-                habit.Date = new ReminderDate(days, times);
-                return ($"Дни напоминания о привычке: {string.Join(',', days)}.\nВремя напоминания о привычке: {string.Join(',', times)}", true);
+                var daysAtSystemFormat = days.ConvertDaysToSystemFormat();
+
+                habit.Date = new ReminderDate(daysAtSystemFormat, times);
+                return ($"Дни напоминания о привычке: {string.Join(',', daysAtSystemFormat.ConvertDaysToUserFormat())}.\nВремя напоминания о привычке: {string.Join(',', times)}", true);
             }
 
             return ("Похоже, что вы забыли ввести время напоминания. " +
@@ -81,9 +82,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
             days = resultDay.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             days = days.Distinct().ToArray();
             foreach (var day in days)
-                if (!_dayTemplates.Contains(day))
-                    return false;
-          
+                if (!_dayTemplates.Contains(day)  // только по заданным вариантам
+                    || ((day == RussianDays.Daily || day == RussianDays.Everyday || day == RussianDays.Weekdays || day == RussianDays.Weekend) && days.Count > 1)) // если задано "Каждый день", "Ежедневно", "Будни", "Выходные" - больше значений быть не должно
+                    return false;     
             return true;
         }
 
@@ -107,5 +108,3 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         protected override IHabitCreationState TransitionToNewState() => throw new NotImplementedException("Продолжение Не реализовано. Это последнее звено.");
     }
 }
-
-

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace LifeHabitTracker.Entities.PreparedData
+﻿namespace LifeHabitTracker.DataAccessLayer.Entities.PreparedData
 {
     /// <summary>
     /// Класс подготовленной информации для таблицы habits
@@ -33,6 +29,5 @@ namespace LifeHabitTracker.Entities.PreparedData
         /// Тип привычки
         /// </summary>
         public bool IsGood { get; set; }
-
     }
 }

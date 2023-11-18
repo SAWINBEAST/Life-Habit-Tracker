@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.Entities.PreparedData;
+﻿using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 using Microsoft.Data.Sqlite;
 
 namespace LifeHabitTracker.DataAccessLayer.Interfaces.Repositories

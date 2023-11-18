@@ -1,29 +1,18 @@
 ﻿using LifeHabitTracker.BusinessLogicLayer;
 using LifeHabitTracker.DataAccessLayer;
-using LifeHabitTracker.Entities;
 using LifeHabitTrackerConsole;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 class Program
 {
-    /// <summary>
-    /// Строка доступа к БД
-    /// </summary>
-    private static DataBaseConnect _dBConfig;
+    public static IConfiguration Configuration => new ConfigurationBuilder()
+        .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+        .AddJsonFile("appsettings.json").Build();
 
     static async Task Main(string[] args)
     {
         Console.WriteLine($"Приложение запущено.");
-
-        //TODO:Вывести в отдельный метод
-        var config = new ConfigurationBuilder()
-                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                .AddJsonFile("appsettings.json").Build();
-
-        var section = config.GetSection("DataBaseConnect");
-        _dBConfig = section.Get<DataBaseConnect>();
-
 
         var services = GetServiceCollection();
 
@@ -43,7 +32,6 @@ class Program
             new ServiceCollection()
                 .AddSingleton<ITelegramBot, TelegramBot>()
                 .AddBusinessLogicServices()
-                .AddDataAccessServices()
-                .AddSingleton(_dBConfig);
+                .AddDataAccessServices(Configuration);
 
 }

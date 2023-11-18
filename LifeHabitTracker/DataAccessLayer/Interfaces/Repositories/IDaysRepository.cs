@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.Entities.PreparedData;
+﻿using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 using Microsoft.Data.Sqlite;
 
 
@@ -19,5 +19,4 @@ namespace LifeHabitTracker.DataAccessLayer.Interfaces.Repositories
         /// <returns>Оценка результата выполнения записи</returns>
         public Task<bool> InsertIntoDaysTableAsync(DbDays daysTableData, long habitId, SqliteConnection connection, SqliteTransaction transaction);
     }
-
 }  

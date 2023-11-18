@@ -1,4 +1,4 @@
-﻿namespace LifeHabitTracker.Entities
+﻿namespace LifeHabitTracker.BusinessLogicLayer.Entities
 {
     /// <summary>
     /// Информация по чату

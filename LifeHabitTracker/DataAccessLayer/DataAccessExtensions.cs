@@ -3,6 +3,7 @@ using LifeHabitTracker.DataAccessLayer.Impls;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
 using LifeHabitTracker.DataAccessLayer.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace LifeHabitTracker.DataAccessLayer
 {
@@ -16,8 +17,9 @@ namespace LifeHabitTracker.DataAccessLayer
         /// </summary>
         /// <param name="services"> Внешний объект ServiceCollection, к которому применяется добавление зависимостей </param>
         /// <returns> Коллекция предоставляемых сервисов </returns>
-        public static IServiceCollection AddDataAccessServices(this IServiceCollection services)
+        public static IServiceCollection AddDataAccessServices(this IServiceCollection services, IConfiguration configuration)
             => services
+                .Configure<DataBaseConnect>(configuration.GetSection(nameof(DataBaseConnect)))
                 .AddTransient<IHabitsRepository, HabitsRepository>()
                 .AddTransient<IDaysRepository, DaysRepository>()
                 .AddTransient<ITimesRepository, TimesRepository>()

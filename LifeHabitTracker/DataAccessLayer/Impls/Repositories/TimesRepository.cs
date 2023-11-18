@@ -1,4 +1,4 @@
-﻿using LifeHabitTracker.Entities.PreparedData;
+﻿using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 using LifeHabitTracker.DataAccessLayer.Entities.SqlFunctions;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
 using Microsoft.Data.Sqlite;
@@ -28,10 +28,6 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
             }
 
             return numberOfRecorders == timesTableData.Times.Count;
-
-
-
         }
-
     }
 }

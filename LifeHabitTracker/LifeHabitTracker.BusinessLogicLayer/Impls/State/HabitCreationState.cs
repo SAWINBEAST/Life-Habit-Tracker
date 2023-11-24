@@ -4,7 +4,7 @@ using LifeHabitTracker.BusinessLogicLayer.Interfaces.State;
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 {
     /// <inheritdoc cref="IHabitCreationState"/>
-    public abstract class HabitCreationState : IHabitCreationState
+    internal abstract class HabitCreationState : IHabitCreationState
     {
         /// <summary>
         /// Сообщение на запрос необходимых данных

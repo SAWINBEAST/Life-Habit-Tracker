@@ -6,8 +6,11 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeHabitTracker.Console", "LifeHabitTracker.Console\LifeHabitTracker.Console.csproj", "{4459D373-3A6C-4246-9CDF-1ECED8D20B1E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeHabitTracker.BusinessLogicLayer", "LifeHabitTracker.BusinessLogicLayer\LifeHabitTracker.BusinessLogicLayer.csproj", "{DDF5A297-5347-4854-A111-6F68A1629E55}"
+	ProjectSection(ProjectDependencies) = postProject
+		{6A18B40E-975B-4A5A-887F-0037AE44C802} = {6A18B40E-975B-4A5A-887F-0037AE44C802}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LifeHabitTracker.DataAccessLayer", "DataAccessLayer\LifeHabitTracker.DataAccessLayer.csproj", "{6A18B40E-975B-4A5A-887F-0037AE44C802}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LifeHabitTracker.DataAccessLayer", "DataAccessLayer\LifeHabitTracker.DataAccessLayer.csproj", "{6A18B40E-975B-4A5A-887F-0037AE44C802}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

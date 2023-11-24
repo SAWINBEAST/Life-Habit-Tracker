@@ -14,7 +14,6 @@
         /// Запустить работу контекста
         /// </summary>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
         public Task StartContextAsync(CancellationToken cancellationToken);
 
         /// <summary>
@@ -22,7 +21,6 @@
         /// </summary>
         /// <param name="userResponse">Ответ пользователя</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        /// <returns></returns>
         public Task HandleUserResponseAsync(string userResponse, CancellationToken cancellationToken);
     }
 }

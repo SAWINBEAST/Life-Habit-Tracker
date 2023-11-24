@@ -3,12 +3,11 @@
     /// <summary>
     /// Интерфейс функционала бота
     /// </summary>
-    internal interface IBot
+    internal interface ITelegramBot
     {
         /// <summary>
         /// Запуск Бота
         /// </summary>
-        /// <returns></returns>
         Task LaunchAsync();
     }
 }

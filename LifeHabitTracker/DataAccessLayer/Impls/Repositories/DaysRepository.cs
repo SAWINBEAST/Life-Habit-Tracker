@@ -33,12 +33,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
             commandDaysTable.Parameters.Add(saturdayParam);
             commandDaysTable.Parameters.Add(sundayParam);
 
-            if (await commandDaysTable.ExecuteNonQueryAsync() != 0)
-            {
-                return true;
-            }
-            else return false;
-
+            return await commandDaysTable.ExecuteNonQueryAsync() != 0 ? true : false;
         }
     }
 }

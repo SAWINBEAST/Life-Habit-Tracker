@@ -8,7 +8,8 @@ class Program
 {
     public static IConfiguration Configuration => new ConfigurationBuilder()
         .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-        .AddJsonFile("appsettings.json").Build();
+        .AddJsonFile("appsettings.json")
+        .Build();
 
     static async Task Main(string[] args)
     {

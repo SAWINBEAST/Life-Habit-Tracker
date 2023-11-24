@@ -103,10 +103,10 @@ internal static class DaysHelper
         if (days.Count == 7)
             return new string[] { RussianDays.Everyday };
 
-        if (days.Count == 5 && ItWeekdays(days))
+        if (days.Count == 5 && IsWeekdays(days))
             return new string[] { RussianDays.Weekdays };
 
-        if (days.Count == 2 && ItWeekend(days))
+        if (days.Count == 2 && IsWeekend(days))
             return new string[] { RussianDays.Weekend };
 
         return days
@@ -119,7 +119,7 @@ internal static class DaysHelper
     /// </summary>
     /// <param name="days">Дни</param>
     /// <returns>Соответствуют будням или нет</returns>
-    private static bool ItWeekdays(IReadOnlyCollection<string> days)
+    private static bool IsWeekdays(IReadOnlyCollection<string> days)
         => days
             .Intersect(new string[]
             {
@@ -136,7 +136,7 @@ internal static class DaysHelper
     /// </summary>
     /// <param name="days">Дни</param>
     /// <returns>Соответствуют выходным или нет</returns>
-    private static bool ItWeekend(IReadOnlyCollection<string> days)
+    private static bool IsWeekend(IReadOnlyCollection<string> days)
         => days
             .Intersect(new string[]
             {

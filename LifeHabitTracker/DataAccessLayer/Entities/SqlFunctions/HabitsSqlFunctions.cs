@@ -12,6 +12,5 @@ namespace LifeHabitTracker.DataAccessLayer.Entities.SqlFunctions
         public const string InsertAllFields = "INSERT INTO habits (name, desc, chat_id, is_good) " +
                                                   "VALUES (@name, @desc, @chatid, @isgood); " +
                                                   "SELECT last_insert_rowid();";
-
     }
 }

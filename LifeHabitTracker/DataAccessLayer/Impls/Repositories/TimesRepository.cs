@@ -5,7 +5,6 @@ using Microsoft.Data.Sqlite;
 
 namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
 {
-
     /// <inheritdoc cref="ITimesRepository"/>.
     internal class TimesRepository : ITimesRepository
     {
@@ -24,7 +23,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
                 commandTimeTable.Parameters.Add(idTimeParam);
                 commandTimeTable.Parameters.Add(timeParam);
 
-                numberOfRecorders +=  await commandTimeTable.ExecuteNonQueryAsync();
+                numberOfRecorders += await commandTimeTable.ExecuteNonQueryAsync();
             }
 
             return numberOfRecorders == timesTableData.Times.Count;

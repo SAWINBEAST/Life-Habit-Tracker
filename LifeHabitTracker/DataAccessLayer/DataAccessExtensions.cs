@@ -16,6 +16,7 @@ namespace LifeHabitTracker.DataAccessLayer
         /// Предоставление зависимостей уровня проекта DataAccess для внешних внедрений
         /// </summary>
         /// <param name="services"> Внешний объект ServiceCollection, к которому применяется добавление зависимостей </param>
+        /// <param name="configuration"></param>
         /// <returns> Коллекция предоставляемых сервисов </returns>
         public static IServiceCollection AddDataAccessServices(this IServiceCollection services, IConfiguration configuration)
             => services

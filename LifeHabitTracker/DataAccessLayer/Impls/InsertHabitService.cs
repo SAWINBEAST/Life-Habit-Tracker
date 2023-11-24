@@ -40,7 +40,6 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
         ///<inheritdoc/>
         public async Task<bool> InsertHabitAsync(DbHabits preparedHabits, DbDays preparedDays, DbTimes preparedTimes)
         {
-
             using var connection = new SqliteConnection(_dBConfig.DBName);
             connection.Open();
             var transaction = connection.BeginTransaction();

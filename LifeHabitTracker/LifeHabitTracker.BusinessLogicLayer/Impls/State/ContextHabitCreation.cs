@@ -10,7 +10,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
     /// </summary>
     internal class ContextHabitCreation : IContextHabitCreation
     {
-
         /// <summary>
         /// Создаваемая привычка
         /// </summary>

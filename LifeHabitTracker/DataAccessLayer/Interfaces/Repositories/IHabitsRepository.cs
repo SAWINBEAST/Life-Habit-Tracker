@@ -16,6 +16,12 @@ namespace LifeHabitTracker.DataAccessLayer.Interfaces.Repositories
         /// <param name="transaction">Объект текущей транзакции</param>
         /// <returns>Идентификатор привычки, для дальнейго использования</returns>
         public Task<long> InsertIntoHabitsTableAsync(DbHabits habitsTableData, SqliteConnection connection, SqliteTransaction transaction);
-    }
 
+        /// <summary>
+        /// Выгрузить все привычки данного пользователя
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns>Привычки и информация о них</returns>
+        public Task<IReadOnlyCollection<DbHabits>> SelectAllUserHabits (long chatId, SqliteConnection connection);
+    }
 }

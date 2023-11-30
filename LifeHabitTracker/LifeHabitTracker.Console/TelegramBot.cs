@@ -77,8 +77,7 @@ namespace LifeHabitTrackerConsole
                         await HandleCreateHabitCommandAsync(message.Chat, username, cancellationToken);
                         break;
                     case Command.Habits:
-                        var habitNames = _habitService.GetHabits().Select(x => x.Name);
-                        await botClient.SendTextMessageAsync(message.Chat, $"Привычки:\n{string.Join("\n", habitNames)}");
+                        await HandleViewHabitCommandAsync(message.Chat, cancellationToken);
                         break;
                     default:
                         if (context is not null)
@@ -136,6 +135,32 @@ namespace LifeHabitTrackerConsole
 
                 _habitContextCaretaker.RemoveContext(chatInfo.UserName);
             }
+        }
+
+        /// <summary>
+        /// Обработать команду по выдаче всех привычек клиента
+        /// </summary>
+        /// <param name="chat">Информация по чату</param>
+        /// <param name="cancellationToken">Токен отмены</param>
+        private async Task HandleViewHabitCommandAsync(Chat chat, CancellationToken cancellationToken)
+        {
+            var habitNames = await _habitService.GetHabitsAsync(chat.Id);
+            string message;
+
+            if (habitNames != null && habitNames.Count() > 0)
+            {
+                //TODO: Использовать LINQ (Пытался, но не вышло. Буду пробовать ещё)
+                message = $"Ваши Привычки:\n";
+                foreach (var habitName in habitNames)
+                {
+                    message += $"\n- {habitName.Name} -" +
+                                $"\n- {habitName.Type} привычка -" +
+                                $"\n- Что делать: {habitName.Description} -\n";
+                }
+            }
+            else message = "Вы еще не завели привычки.\nВоспользуйтесь командой \\createHabit и заведите новую привычку :)";
+
+            await _bot.SendTextMessageAsync(chat, message );
         }
 
         /// <summary>

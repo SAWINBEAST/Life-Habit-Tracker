@@ -12,11 +12,17 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <summary>
         /// Объект сервиса добавления привычки в БД
         /// </summary>
-        private IInsertHabitService _insertHabitService;
+        private IDBHabitProvider _dbHabitProvider;
 
-        public HabitService(IInsertHabitService insertHabitService)
+        /// <summary>
+        /// Список привычек пользователя
+        /// </summary>
+        private static IList<Habit> _clientHabits;
+
+        public HabitService(IDBHabitProvider insertHabitService)
         {
-            _insertHabitService = insertHabitService;
+            _clientHabits = new List<Habit>();
+            _dbHabitProvider = insertHabitService;
         }
 
         /// <inheritdoc/>
@@ -25,7 +31,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
             var habitsTableData = PrepareHabitsData(habit, chatId);
             var daysTableData = PrepareDaysData(habit);
             var timesTableData = PrepareTimesData(habit);
-            return await _insertHabitService.InsertHabitAsync(habitsTableData, daysTableData, timesTableData);
+            return await _dbHabitProvider.InsertHabitAsync(habitsTableData, daysTableData, timesTableData);
         }
 
         /// <summary>
@@ -73,6 +79,35 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
             : null;
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<Habit> GetHabits() => new Habit[] { new Habit() };
+        public async Task<IList<Habit>> GetHabitsAsync(long chatId)
+        {
+            var selectedHabits = await _dbHabitProvider.SelectHabitsAsync(chatId);
+            if (selectedHabits != null)
+                PrepareClientHabit(selectedHabits);
+
+            return _clientHabits;
+        }
+
+        /// <summary>
+        /// Подготовка вида данных для выдачи 
+        /// </summary>
+        /// <param name="selectedHabits">Привычки вида Уровня данных</param>
+        /// <returns>Коллекция привычек пользовательского вида</returns>
+        private static IReadOnlyCollection<Habit> PrepareClientHabit(IReadOnlyCollection<DbHabits> selectedHabits)
+        {
+            List<Habit> habits = new List<Habit>();
+
+            foreach(var dbHabit in selectedHabits)
+            {
+                _clientHabits.Add(new()
+                {
+                    Name = dbHabit.Name,
+                    Description = dbHabit.Description,
+                    Type = dbHabit.IsGood == true ? "Хорошая" : "Плохая"
+                });
+            }
+
+            return habits;
+        }
     }
 }

@@ -23,7 +23,6 @@ class Program
         await botService.LaunchAsync();
 
         Console.ReadLine();
-        //hello, body
     }
 
     /// <summary>

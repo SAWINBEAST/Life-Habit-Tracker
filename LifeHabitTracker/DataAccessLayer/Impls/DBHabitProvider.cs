@@ -6,8 +6,8 @@ using Microsoft.Extensions.Options;
 
 namespace LifeHabitTracker.DataAccessLayer.Impls
 {
-    ///<inheritdoc cref="IInsertHabitService"/>
-    internal class InsertHabitService :IInsertHabitService
+    ///<inheritdoc cref="IDBHabitProvider"/>
+    internal class DBHabitProvider :IDBHabitProvider
     {
         /// <summary>
         /// Информация о подключаемой БД
@@ -29,7 +29,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
         /// </summary>
         private readonly ITimesRepository _timesRepository;
 
-        public InsertHabitService(IHabitsRepository habitsRepository, IDaysRepository daysRepository, ITimesRepository timesRepository, IOptions<DataBaseConnect> options)
+        public DBHabitProvider(IHabitsRepository habitsRepository, IDaysRepository daysRepository, ITimesRepository timesRepository, IOptions<DataBaseConnect> options)
         {
             _habitsRepository = habitsRepository;
             _daysRepository = daysRepository;
@@ -64,7 +64,16 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
 
             transaction.Commit();
             return insertResult;
-            
         }
+
+        ///<inheritdoc/>
+        public async Task<IReadOnlyCollection<DbHabits>> SelectHabitsAsync(long chatId)
+        {
+            using var connection = new SqliteConnection(_dBConfig.DBName);
+            connection.Open();
+
+            return await _habitsRepository.SelectAllUserHabits(chatId, connection);
+        }
+
     }
 }

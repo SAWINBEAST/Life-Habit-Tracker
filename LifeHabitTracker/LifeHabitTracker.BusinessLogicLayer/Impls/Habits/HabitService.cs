@@ -79,13 +79,12 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
             : null;
 
         /// <inheritdoc/>
-        public async Task<IList<Habit>> GetHabitsAsync(long chatId)
+        public async Task<IReadOnlyCollection<Habit>> GetHabitsAsync(long chatId)
         {
             var selectedHabits = await _dbHabitProvider.SelectHabitsAsync(chatId);
-            if (selectedHabits != null)
-                PrepareClientHabit(selectedHabits);
+            return selectedHabits != null ? PrepareClientHabit(selectedHabits) : null;
 
-            return _clientHabits;
+            
         }
 
         /// <summary>
@@ -94,20 +93,12 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <param name="selectedHabits">Привычки вида Уровня данных</param>
         /// <returns>Коллекция привычек пользовательского вида</returns>
         private static IReadOnlyCollection<Habit> PrepareClientHabit(IReadOnlyCollection<DbHabits> selectedHabits)
-        {
-            List<Habit> habits = new List<Habit>();
+            => selectedHabits.Select(x => new Habit
+                                        { Name = x.Name, 
+                                        Description = x.Description, 
+                                        Type = x.IsGood == true ? "Хорошая" : "Плохая" })
+                             .ToArray();
 
-            foreach(var dbHabit in selectedHabits)
-            {
-                _clientHabits.Add(new()
-                {
-                    Name = dbHabit.Name,
-                    Description = dbHabit.Description,
-                    Type = dbHabit.IsGood == true ? "Хорошая" : "Плохая"
-                });
-            }
-
-            return habits;
-        }
+        
     }
 }

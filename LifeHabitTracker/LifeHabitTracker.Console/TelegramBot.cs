@@ -4,6 +4,7 @@ using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTrackerConsole.Entities;
 using Newtonsoft.Json;
+using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -77,7 +78,10 @@ namespace LifeHabitTrackerConsole
                         await HandleCreateHabitCommandAsync(message.Chat, username, cancellationToken);
                         break;
                     case Command.Habits:
-                        await HandleViewHabitCommandAsync(message.Chat, cancellationToken);
+                        await HandleViewHabitsCommandAsync(message.Chat, cancellationToken);
+                        break;
+                    case Command.CertainHabit:
+                        await HandleViewCertainHabitCommandAsync(message.Chat, cancellationToken);
                         break;
                     default:
                         if (context is not null)
@@ -109,7 +113,7 @@ namespace LifeHabitTrackerConsole
         private async Task HandleCreateHabitCommandAsync(Chat chat, string username, CancellationToken cancellationToken)
         {
             var chatInfo = new ChatInfo(chat.Id, username);
-            var context = _habitContextCaretaker.CreateContext(chatInfo, HandleHabitCreationInfoAsync);
+            var context = _habitContextCaretaker.MakeHabitCreationContext(chatInfo, HandleHabitCreationInfoAsync);
             await context.StartContextAsync(cancellationToken);
         }
 
@@ -142,25 +146,36 @@ namespace LifeHabitTrackerConsole
         /// </summary>
         /// <param name="chat">Информация по чату</param>
         /// <param name="cancellationToken">Токен отмены</param>
-        private async Task HandleViewHabitCommandAsync(Chat chat, CancellationToken cancellationToken)
+        private async Task HandleViewHabitsCommandAsync(Chat chat, CancellationToken cancellationToken)
         {
-            var habitNames = await _habitService.GetHabitsAsync(chat.Id);
-            string message;
+            var habits = await _habitService.GetHabitsAsync(chat.Id);
+            var message = new StringBuilder();
 
-            if (habitNames != null && habitNames.Count() > 0)
+            if (habits != null && habits.Count > 0)
             {
                 //TODO: Использовать LINQ (Пытался, но не вышло. Буду пробовать ещё)
-                message = $"Ваши Привычки:\n";
-                foreach (var habitName in habitNames)
+                message.Append("Ваши Привычки:\n");
+                foreach (var habit in habits)
                 {
-                    message += $"\n- {habitName.Name} -" +
-                                $"\n- {habitName.Type} привычка -" +
-                                $"\n- Что делать: {habitName.Description} -\n";
+                    message.Append(@"\n- {habit.Name} - 
+                                \n- {habit.Type} привычка - 
+                                \n- Что делать: {habit.Description} -\n");
                 }
             }
-            else message = "Вы еще не завели привычки.\nВоспользуйтесь командой \\createHabit и заведите новую привычку :)";
+            else message.Append("Вы еще не завели привычки.\nВоспользуйтесь командой \\createHabit и заведите новую привычку :)");
 
-            await _bot.SendTextMessageAsync(chat, message );
+            await _bot.SendTextMessageAsync(chat, message.ToString() );
+        }
+
+        /// <summary>
+        /// Обработать команду по выводу информации о конкретной привычке
+        /// </summary>
+        /// <param name="chat"></param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        private async Task HandleViewCertainHabitCommandAsync(Chat chat, CancellationToken cancellationToken)
+        {
+            
         }
 
         /// <summary>

@@ -15,17 +15,15 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
         private readonly IDictionary<string, IContextHabitCreation> _usersHabitContexts = new Dictionary<string, IContextHabitCreation>();
 
         /// <inheritdoc/>
-        public IContextHabitCreation CreateContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc)
+        public IContextHabitCreation MakeHabitCreationContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc)
         {
             var newContext = new ContextHabitCreation(chatInfo, handleRequestFunc);
-
             _usersHabitContexts.Add(chatInfo.UserName, newContext);
-
             Console.WriteLine($"Для {chatInfo.UserName} создан контекст процесса создания привычки. Идентификатор чата, в рамках которого существует контекст: {chatInfo.ChatId}.");
-
             return newContext;
         }
 
+        public IContextCaretaker MakeCertainHabitInfoContext() { return null; }
         /// <inheritdoc/>
         public IContextHabitCreation? GetContext(string username)
             => _usersHabitContexts.ContainsKey(username)

@@ -9,7 +9,7 @@ namespace LifeHabitTracker.DataAccessLayer.Entities.SqlFunctions
         /// <summary>
         /// Ввод данных о времени
         /// </summary>
-        public const string InsertTime = "INSERT INTO times (habit_id, time) " +
-                                      "VALUES (@habit_id, @time); ";
+        public const string InsertTime = @"INSERT INTO times (habit_id, time)
+                                           VALUES (@habit_id, @time); ";
     }
 }

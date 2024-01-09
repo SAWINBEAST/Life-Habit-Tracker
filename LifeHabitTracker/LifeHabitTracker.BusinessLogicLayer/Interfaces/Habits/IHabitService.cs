@@ -19,7 +19,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         /// Получить привычки
         /// </summary>
         /// <returns>Привычки пользователя</returns>
-        public Task<IList<Habit>> GetHabitsAsync(long chatId);
+        public Task<IReadOnlyCollection<Habit>> GetHabitsAsync(long chatId);
 
     }
 }

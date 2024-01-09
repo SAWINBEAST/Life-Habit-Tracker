@@ -15,7 +15,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
         /// <param name="chatInfo">Данные чата, в рамках которого будет существовать контекст</param>
         /// <param name="handleRequestFunc">Ссылка на обработчка запроса со стороны сервера, который будет вызываться после обработки полученных от пользователя данных</param>
         /// <returns>Созданный контекст</returns>
-        public IContextHabitCreation CreateContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc);
+        public IContextHabitCreation MakeHabitCreationContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc);
+
+        public IContextCaretaker MakeCertainHabitInfoContext();
 
         /// <summary>
         /// Получить текущий контекст пользователя

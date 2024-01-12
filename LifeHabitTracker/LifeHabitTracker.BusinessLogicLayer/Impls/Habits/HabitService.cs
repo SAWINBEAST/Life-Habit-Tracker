@@ -14,14 +14,8 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// </summary>
         private IDBHabitProvider _dbHabitProvider;
 
-        /// <summary>
-        /// Список привычек пользователя
-        /// </summary>
-        private static IList<Habit> _clientHabits;
-
         public HabitService(IDBHabitProvider insertHabitService)
         {
-            _clientHabits = new List<Habit>();
             _dbHabitProvider = insertHabitService;
         }
 
@@ -81,10 +75,8 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Habit>> GetHabitsAsync(long chatId)
         {
-            var selectedHabits = await _dbHabitProvider.SelectHabitsAsync(chatId);
+            var selectedHabits = await _dbHabitProvider.SelectHabitsInfoAsync(chatId);
             return selectedHabits != null ? PrepareClientHabit(selectedHabits) : null;
-
-            
         }
 
         /// <summary>
@@ -99,6 +91,13 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
                                         Type = x.IsGood == true ? "Хорошая" : "Плохая" })
                              .ToArray();
 
-        
+        ///<inheritdoc/>
+        public async Task<Habit> GetCertainHabitAsync(long chatId, string requestedHabit)
+        {
+            var selectedHabit = await _dbHabitProvider.SelectCertainHabitInfoAsync(chatId, requestedHabit);
+            return selectedHabit != null ? PrepareClientHabit(selectedHabit) : null;
+        }
+
+
     }
 }

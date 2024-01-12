@@ -3,7 +3,7 @@
 namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
 {
     /// <summary>
-    /// Описывает функционал Привычки
+    /// Описывает функционал работы с Привычкой
     /// </summary>
     public interface IHabitService
     {
@@ -16,10 +16,18 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         public Task<bool> AddHabitAsync(Habit habit, long chatId);
 
         /// <summary>
-        /// Получить привычки
+        /// Получить все привычки клиента
         /// </summary>
+        /// <param name="chatId">ID чата, из которого запрашивают все привычки</param>
         /// <returns>Привычки пользователя</returns>
         public Task<IReadOnlyCollection<Habit>> GetHabitsAsync(long chatId);
 
+        /// <summary>
+        /// Получить определённую привычку клиента
+        /// </summary>
+        /// <param name="requestedHabit">Название запрашиваемой привычки</param>
+        /// <param name="chatId">ID чата, из которого запрашивают определённую привычку</param>
+        /// <returns></returns>
+        public Task<Habit> GetCertainHabitAsync(long chatId ,string requestedHabit);
     }
 }

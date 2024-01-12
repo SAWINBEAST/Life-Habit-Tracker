@@ -12,10 +12,16 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
         /// <summary>
         /// Словарь контекстов по созданию привычки по пользователям
         /// </summary>
-        private readonly IDictionary<string, IContextHabitCreation> _usersHabitContexts = new Dictionary<string, IContextHabitCreation>();
+        private readonly IDictionary<string, IContext> _usersHabitContexts = new Dictionary<string, IContext>();
+
+        /// <summary>
+        /// Cписок контекстов клиентов, которые хотят получить инфу по определённой привычке
+        /// </summary>
+        private readonly IDictionary<string, IContext> _userCertainHabitContexts = new Dictionary<string, IContext>();
+
 
         /// <inheritdoc/>
-        public IContextHabitCreation MakeHabitCreationContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc)
+        public IContext MakeHabitCreationContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, Habit, CancellationToken, Task> handleRequestFunc)
         {
             var newContext = new ContextHabitCreation(chatInfo, handleRequestFunc);
             _usersHabitContexts.Add(chatInfo.UserName, newContext);
@@ -23,12 +29,19 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
             return newContext;
         }
 
-        public IContextCaretaker MakeCertainHabitInfoContext() { return null; }
         /// <inheritdoc/>
-        public IContextHabitCreation? GetContext(string username)
+        public IContext MakeCertainHabitInfoContext(ChatInfo chatInfo, Func<ChatInfo, string, CancellationToken, Task> handleRequestFunc) 
+        {
+            var newContext = new ContextCertainHabitReading(chatInfo, handleRequestFunc);
+            _userCertainHabitContexts.Add(chatInfo.UserName, newContext);
+            Console.WriteLine($"Для {chatInfo.UserName} создан контекст процесса чтения информации о конкретной привычке. Идентификатор чата, в рамках которого существует контекст: {chatInfo.ChatId}.");
+            return newContext;
+        }
+        /// <inheritdoc/>
+        public IContext? GetContext(string username)
             => _usersHabitContexts.ContainsKey(username)
                 ? _usersHabitContexts[username]
-                : null;
+                : _userCertainHabitContexts.ContainsKey(username) ? _userCertainHabitContexts[username] : null;
 
         /// <inheritdoc/>
         public void RemoveContext(string username)

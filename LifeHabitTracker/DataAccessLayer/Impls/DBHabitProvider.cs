@@ -3,6 +3,7 @@ using LifeHabitTracker.DataAccessLayer.Interfaces;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
+using System.Transactions;
 
 namespace LifeHabitTracker.DataAccessLayer.Impls
 {
@@ -67,12 +68,25 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
         }
 
         ///<inheritdoc/>
-        public async Task<IReadOnlyCollection<DbHabits>> SelectHabitsAsync(long chatId)
+        public async Task<IReadOnlyCollection<DbHabits>> SelectHabitsInfoAsync(long chatId)
         {
             using var connection = new SqliteConnection(_dBConfig.DBName);
             connection.Open();
 
             return await _habitsRepository.SelectAllUserHabits(chatId, connection);
+        }
+
+        ///TODO: Продолжить. Я остановился тут. Создать селекты в репозиториях таблиц
+        ///<inheritdoc/>
+        public async Task<(DbHabits, DbDays, DbTimes)> SelectCertainHabitInfoAsync(long chatId, string requestedHabit)
+        {
+            using var connection = new SqliteConnection(_dBConfig.DBName);
+            connection.Open();
+            //так как транзакция используется только для записи, а для чтения не используется, то её здесь нет. Помню, ты объяснял мне этот важный фактор. этот комментарий я удалю
+            var dbHabit = await _habitsRepository.SelectFromHabitsTableAsync(chatId, requestedHabit);
+            if (dbHabit != null && dbHabit.IsGood)        
+                return (dbHabit, await _daysRepository.SelectFromDaysTableAsync(dbHabit.Id), await _tableRepository.SelectFromTimesTableAsync(dbHabit.Id));
+            return (dbHabit, null, null);
         }
 
     }

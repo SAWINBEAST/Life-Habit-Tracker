@@ -21,6 +21,14 @@ namespace LifeHabitTracker.DataAccessLayer.Interfaces
         /// </summary>
         /// <param name="chatId">Идентификатор пользователя</param>
         /// <returns>Массив привычек и информацией о них</returns>
-        public Task<IReadOnlyCollection<DbHabits>> SelectHabitsAsync(long chatId);
+        public Task<IReadOnlyCollection<DbHabits>> SelectHabitsInfoAsync(long chatId);
+
+        /// <summary>
+        /// Выгрузка определённой привычки пользователя
+        /// </summary>
+        /// <param name="chatId">Идентификатор пользователя</param>
+        /// <param name="requestedHabit">Название запрашеваемой привычки</param>
+        /// <returns>Данные о привычки вида Базы Данных</returns>
+        public Task<(DbHabits,DbDays,DbTimes)> SelectCertainHabitInfoAsync(long chatId, string requestedHabit);
     }
 }

@@ -8,7 +8,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
     /// </summary>
     internal class DescState : HabitCreationState
     {
-        public DescState() => DataRequestMessage = "Ввведите Описание привычки.";
+        public DescState() => DataRequestMessage = "Введите Описание привычки.";
 
         /// <inheritdoc/>
         public override (string infoMessage, bool isFinish) HandleData(IContextHabitCreation context, string data, Habit habit)

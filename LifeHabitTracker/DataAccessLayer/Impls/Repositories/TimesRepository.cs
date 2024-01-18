@@ -8,6 +8,11 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
     /// <inheritdoc cref="ITimesRepository"/>.
     internal class TimesRepository : ITimesRepository
     {
+        /// <summary>
+        /// Обьект времени напоминания привычки вида БД
+        /// </summary>
+        private DbTimes _dBTimes = new();
+
         ///<inheritdoc/>
         public async Task<bool> InsertIntoTimesTableAsync(DbTimes timesTableData, long habitId, SqliteConnection connection, SqliteTransaction transaction)
         {
@@ -25,8 +30,27 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
 
                 numberOfRecorders += await commandTimeTable.ExecuteNonQueryAsync();
             }
-
             return numberOfRecorders == timesTableData.Times.Count;
         }
+
+        ///<inheritdoc/>
+        public async Task<DbTimes> SelectFromTimesTableAsync(int habitId, SqliteConnection connection)
+        {
+            using var commandHabitTable = new SqliteCommand(TimesSqlFunctions.SelectTimes, connection);
+            var habitIdParam = new SqliteParameter("@habit_id", habitId); 
+
+            using var reader = await commandHabitTable.ExecuteReaderAsync();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    _dBTimes.Times.Add((string)reader["time"]);
+                }
+                return _dBTimes;
+            }
+            return null;
+        }
+
     }
 }

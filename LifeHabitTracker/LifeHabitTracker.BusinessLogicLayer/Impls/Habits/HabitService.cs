@@ -69,14 +69,14 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <returns> Сущность данных о времени </returns>
         private static DbTimes PrepareTimesData(Habit habit)
             => habit.Date is not null && habit.Date.Times.Any()
-            ? new() { Times = habit.Date.Times }
+            ? new() { Times = (ICollection<string>)habit.Date.Times }
             : null;
 
         /// <inheritdoc/>
         public async Task<IReadOnlyCollection<Habit>> GetHabitsAsync(long chatId)
         {
             var selectedHabits = await _dbHabitProvider.SelectHabitsInfoAsync(chatId);
-            return selectedHabits != null ? PrepareClientHabit(selectedHabits) : null;
+            return selectedHabits != null ? PrepareClientHabits(selectedHabits) : null;
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// </summary>
         /// <param name="selectedHabits">Привычки вида Уровня данных</param>
         /// <returns>Коллекция привычек пользовательского вида</returns>
-        private static IReadOnlyCollection<Habit> PrepareClientHabit(IReadOnlyCollection<DbHabits> selectedHabits)
+        private static IReadOnlyCollection<Habit> PrepareClientHabits(IReadOnlyCollection<DbHabits> selectedHabits)
             => selectedHabits.Select(x => new Habit
                                         { Name = x.Name, 
                                         Description = x.Description, 
@@ -94,10 +94,33 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         ///<inheritdoc/>
         public async Task<Habit> GetCertainHabitAsync(long chatId, string requestedHabit)
         {
-            var selectedHabit = await _dbHabitProvider.SelectCertainHabitInfoAsync(chatId, requestedHabit);
-            return selectedHabit != null ? PrepareClientHabit(selectedHabit) : null;
+            var selectedHabit = await _dbHabitProvider.SelectCertainHabitInfoAsync(chatId, requestedHabit.ToLower());
+            return selectedHabit.Item1 != null ? PrepareCertainHabit(selectedHabit) : null;
         }
 
+        /// <summary>
+        /// Подготовка данных Привычки к виду клиента
+        /// </summary>
+        /// <param name="selectedHabit">Кортеж данных о привычке вида БД</param>
+        /// <returns>Привычка вида клиента</returns>
+        private static Habit PrepareCertainHabit((DbHabits, DbDays, DbTimes) selectedHabit)
+            => new()
+            {
+                Name = selectedHabit.Item1.Name,
+                Description = selectedHabit.Item1.Description,
+                Type = selectedHabit.Item1.IsGood ? FundamentalConcept.Good : FundamentalConcept.Bad,
+                Date = PrepareHabitDate(selectedHabit.Item2, selectedHabit.Item3)
+            };
 
+        /// <summary>
+        /// Подготовка данных Даты и Времени напоминания о привычке к виду клиента
+        /// </summary>
+        /// <param name="dbDays">Дни вида БД</param>
+        /// <param name="dbTimes">Время вида БД</param>
+        /// <returns>Полная запись даты для напоминания</returns>
+        private static ReminderDate PrepareHabitDate (DbDays dbDays, DbTimes dbTimes)
+        {
+
+        }
     }
 }

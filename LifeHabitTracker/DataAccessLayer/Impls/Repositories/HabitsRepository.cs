@@ -39,28 +39,56 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
         public async Task<IReadOnlyCollection<DbHabits>> SelectAllUserHabits (long chatId, SqliteConnection connection)
         {
             using var commandHabitTable = new SqliteCommand(HabitsSqlFunctions.SelectAllHabits, connection);
-            var chatIdParam = new SqliteParameter("@chatid", chatId);  //$"{chatId}"
+            var chatIdParam = new SqliteParameter("@chatid", chatId); 
             commandHabitTable.Parameters.Add(chatIdParam);
 
-            using (var reader = await commandHabitTable.ExecuteReaderAsync())
+            using var reader = await commandHabitTable.ExecuteReaderAsync();
+            
+            if (reader.HasRows)
             {
-                if (reader.HasRows)
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        var name = reader["name"];
-                        var desc = reader["desc"];
-                        var isGood = reader["is_good"];
+                    var name = reader["name"];
+                    var desc = reader["desc"];
+                    var isGood = reader["is_good"];
 
-                        _dbHabits.Add(new() {
-                            Name = (string)name,
-                            Description = (string)desc,
-                            IsGood = Convert.ToBoolean((long)isGood) });
-                    }
+                    _dbHabits.Add(new() {
+                        Name = (string)name,
+                        Description = (string)desc,
+                        IsGood = Convert.ToBoolean((long)isGood) });
                 }
             }
-
+           
             return _dbHabits; 
+        }
+
+        ///<inheritdoc/>
+        public async Task<DbHabits> SelectFromHabitsTableAsync(long chatId, string requestedHabit, SqliteConnection connection)
+        {
+            using var commandHabitTable = new SqliteCommand(HabitsSqlFunctions.SelectCertainHabit, connection);
+            var chatIdParam = new SqliteParameter("@chatid", chatId);
+            var nameParam = new SqliteParameter("@name", requestedHabit);
+
+            using var reader = await commandHabitTable.ExecuteReaderAsync();
+
+            if (reader.HasRows)
+            {
+                //TODO: поставить защиту против создания одноименных привычек.
+                var id = reader["id"];
+                var name = reader["name"];
+                var desc = reader["desc"];
+                var isGood = reader["is_good"];
+
+                return new DbHabits()
+                {
+                    Id = (int)id,
+                    Name = (string)name,
+                    Description = (string)desc,
+                    IsGood = Convert.ToBoolean((long)isGood)
+                };
+            }
+            return null;
+
         }
     }
 }

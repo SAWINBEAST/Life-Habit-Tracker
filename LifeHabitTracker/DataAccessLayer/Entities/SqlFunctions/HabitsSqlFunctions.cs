@@ -19,5 +19,12 @@ namespace LifeHabitTracker.DataAccessLayer.Entities.SqlFunctions
         public const string SelectAllHabits = @"SELECT name, desc, is_good 
                                                 FROM habits
                                                 WHERE chat_id = @chatid";
+
+        /// <summary>
+        /// Вывод определённой привычки пользователя
+        /// </summary>
+        public const string SelectCertainHabit = @"SELECT id, name, desc, is_good
+                                                   FROM habits
+                                                   WHERE chat_id =@chatid AND name = @name";
     }
 }

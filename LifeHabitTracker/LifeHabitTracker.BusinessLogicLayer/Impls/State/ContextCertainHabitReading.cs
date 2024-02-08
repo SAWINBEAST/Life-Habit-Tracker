@@ -22,14 +22,14 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
         /// </summary>
         public ChatInfo ChatInfo { get; }
 
-        const string DataRequestMessage = "Отлично!\nКакую привычку вы бы хотели посмотреть?\nВведите её НАЗВАНИЕ:...";
+        const string DataRequestMessage = "Отлично!\nКакую привычку вы бы хотели посмотреть?\nВведите её Название:";
 
         /// <summary>
         /// Ссылка на обработчика запроса со стороны сервера, который будет вызываться после обработки полученных от пользователя данных
         /// </summary>
-        private event Func<ChatInfo,string, CancellationToken, Task> DataCompleted;
+        private event Func<ChatInfo,string, bool, CancellationToken, Task> DataCompleted;
 
-        public ContextCertainHabitReading(ChatInfo chatInfo, Func<ChatInfo, string, CancellationToken, Task> handleRequestFunc)
+        public ContextCertainHabitReading(ChatInfo chatInfo, Func<ChatInfo, string, bool, CancellationToken, Task> handleRequestFunc)
         {
             //_habitService = new HabitService();
             ChatInfo = chatInfo;
@@ -38,12 +38,12 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.State
 
         /// <inheritdoc/>
         public async Task StartContextAsync(CancellationToken cancellationToken)
-            => await DataCompleted(ChatInfo, DataRequestMessage, cancellationToken);
+            => await DataCompleted(ChatInfo, DataRequestMessage, false, cancellationToken);
 
         /// <inheritdoc/>
         public async Task HandleUserResponseAsync(string userResponse, CancellationToken cancellationToken)
         {
-            await DataCompleted(ChatInfo, userResponse, cancellationToken);
+            await DataCompleted(ChatInfo, userResponse, true, cancellationToken);
         }
         ///TODO:Мне не нравится, что StartContextAsync и HandleUserResponseAsync почти что одинаковые. Наверное, надо их как-то объединить, меняя в зависимости от ситуации 1 и 2 параметры
 

@@ -3,7 +3,7 @@
 namespace LifeHabitTracker.DataAccessLayer.Interfaces
 {
     /// <summary>
-    /// Интерфейс добавления всех данных о привычке
+    /// Интерфейс работы с БД Habit и данными о привычке
     /// </summary>
     public interface IDBHabitProvider
     {

@@ -192,21 +192,15 @@ namespace LifeHabitTrackerConsole
         /// <param name="habit">Данные по создаваемой привычке</param>
         /// <param name="cancellationToken">Токен отмены</param>
         /// <returns></returns>
-        private async Task HandleCertainHabitReadingAsync(ChatInfo chatInfo, string requestedHabit, CancellationToken cancellationToken)
+        private async Task HandleCertainHabitReadingAsync(ChatInfo chatInfo, string serviceSolution, bool IsSelected, CancellationToken cancellationToken)
         {
-            /*            var messageInfo = await _bot.SendTextMessageAsync(chatInfo.ChatId, message, cancellationToken: cancellationToken);
-                        if (!isRecieved)
-                        {
-                            _habitService.GetCertainHabit()
-                        }
-                        else
-                        {
-                            if (habit != null)
-                            {*/
-
-            var recievedHabit = await _habitService.GetCertainHabitAsync(chatInfo.ChatId, requestedHabit);
-            if (recievedHabit != null)
+            if (IsSelected != true) await _bot.SendTextMessageAsync(chatInfo.ChatId, serviceSolution, cancellationToken: cancellationToken);
+            else
             {
+                var recievedHabit = await _habitService.GetCertainHabitAsync(chatInfo.ChatId, serviceSolution);
+                if (recievedHabit != null)
+                {
+
                     await _bot.SendTextMessageAsync(chatInfo.ChatId,
                             @$"\n- {recievedHabit.Name} - 
                             \n- {recievedHabit.Type} привычка - 
@@ -214,11 +208,10 @@ namespace LifeHabitTrackerConsole
                             \n- Когда напомнить: {recievedHabit.Date} -\n",
                             replyToMessageId: (int)chatInfo.ChatId,
                             cancellationToken: cancellationToken);
+                }
+                else await _bot.SendTextMessageAsync(chatInfo.ChatId, "\nВы еще не завели такую привычку");
             }
-            else await _bot.SendTextMessageAsync(chatInfo.ChatId, "\nВы еще не завели такую привычку");
-
-                //_habitContextCaretaker.RemoveContext(chatInfo.UserName);
-            
+                _habitContextCaretaker.RemoveContext(chatInfo.UserName);
         }
 
         /// <summary>

@@ -23,14 +23,14 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
         /// </summary>
         /// <param name="chatInfo"></param>
         /// <returns></returns>
-        public IContext MakeCertainHabitInfoContext(ChatInfo chatInfo, Func<ChatInfo, string, CancellationToken, Task> handleRequestFunc);
+        public IContext MakeCertainHabitInfoContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, CancellationToken, Task> handleRequestFunc);
 
         /// <summary>
         /// Получить текущий контекст пользователя
         /// </summary>
         /// <param name="username">Имя пользователя</param>
         /// <returns>Текущий контекст пользователя (если такой существует)</returns>
-        public IContext? GetContext(string username);
+        public IContext GetContext(string username);
 
         /// <summary>
         /// Удалить контекст пользователя

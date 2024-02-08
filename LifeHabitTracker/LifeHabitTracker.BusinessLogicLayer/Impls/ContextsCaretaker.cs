@@ -30,7 +30,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
         }
 
         /// <inheritdoc/>
-        public IContext MakeCertainHabitInfoContext(ChatInfo chatInfo, Func<ChatInfo, string, CancellationToken, Task> handleRequestFunc) 
+        public IContext MakeCertainHabitInfoContext(ChatInfo chatInfo, Func<ChatInfo, string, bool, CancellationToken, Task> handleRequestFunc) 
         {
             var newContext = new ContextCertainHabitReading(chatInfo, handleRequestFunc);
             _userCertainHabitContexts.Add(chatInfo.UserName, newContext);

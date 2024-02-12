@@ -44,13 +44,9 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls
                 : _userCertainHabitContexts.ContainsKey(username) ? _userCertainHabitContexts[username] : null;
 
         /// <inheritdoc/>
-        public void RemoveContext(string username)
-        {
-            if (_usersHabitContexts.ContainsKey(username))
-            {
-                _usersHabitContexts.Remove(username);
-                Console.WriteLine($"Удалён контекст процесса создания привычки для пользователя {username}.");
-            }
-        }
+        public bool RemoveContext(string username)
+            => _usersHabitContexts.ContainsKey(username)
+                ? _usersHabitContexts.Remove(username)
+                : _userCertainHabitContexts.ContainsKey(username) ? _userCertainHabitContexts.Remove(username) : true;    
     }
 }

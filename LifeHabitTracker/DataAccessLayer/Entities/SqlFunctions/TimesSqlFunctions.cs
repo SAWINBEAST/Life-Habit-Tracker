@@ -16,6 +16,7 @@ namespace LifeHabitTracker.DataAccessLayer.Entities.SqlFunctions
         /// Вывод времени напоминания о привычке
         /// </summary>
         public const string SelectTimes = @"SELECT time
+                                            FROM times
                                             WHERE habit_id = @habit_id";
     }
 }

@@ -36,6 +36,6 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces
         /// Удалить контекст пользователя
         /// </summary>
         /// <param name="username">Имя пользователя</param>
-        public void RemoveContext(string username);
+        public bool RemoveContext(string username);
     }
 }

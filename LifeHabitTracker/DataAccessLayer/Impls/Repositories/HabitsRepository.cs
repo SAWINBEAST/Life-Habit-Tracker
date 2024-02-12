@@ -2,6 +2,7 @@
 using LifeHabitTracker.DataAccessLayer.Entities.SqlFunctions;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
 using Microsoft.Data.Sqlite;
+using System.Data;
 using System.Transactions;
 using System.Xml.Linq;
 
@@ -68,8 +69,15 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
             using var commandHabitTable = new SqliteCommand(HabitsSqlFunctions.SelectCertainHabit, connection);
             var chatIdParam = new SqliteParameter("@chatid", chatId);
             var nameParam = new SqliteParameter("@name", requestedHabit);
+            commandHabitTable.Parameters.Add(chatIdParam);
+            commandHabitTable.Parameters.Add(nameParam);
 
             using var reader = await commandHabitTable.ExecuteReaderAsync();
+
+            //TODO:Пробовать и искать проблему.
+            Console.WriteLine(reader.GetFieldValue<string>(1));
+            //reader.GetTextReader(requestedHabit).Read();
+
 
             if (reader.HasRows)
             {

@@ -66,7 +66,7 @@ namespace LifeHabitTrackerConsole
                 if (messageText.StartsWith("/") && context is not null)   
                 {
                     _habitContextCaretaker.RemoveContext(username);
-                    await botClient.SendTextMessageAsync(message.Chat, "Вы вышли из процесса.");
+                    await botClient.SendTextMessageAsync(message.Chat, "Вы вышли из процесса.", cancellationToken: cancellationToken);
                 }
 
                 switch (messageText)
@@ -90,7 +90,7 @@ namespace LifeHabitTrackerConsole
                             await context.HandleUserResponseAsync(messageText, cancellationToken);
                             return;
                         }
-                        await botClient.SendTextMessageAsync(message.Chat, "Команда не распознана.");
+                        await botClient.SendTextMessageAsync(message.Chat, "Команда не распознана.", cancellationToken: cancellationToken);
                         break;
                 }
             }
@@ -153,16 +153,16 @@ namespace LifeHabitTrackerConsole
                 message.Append("Ваши Привычки:\n");
                 foreach (var habit in habits)
                 {
-                    message.Append(@"\n- {habit.Name} - 
-                                \n- {habit.Type} привычка - 
-                                \n- Что делать: {habit.Description} -\n");
+                    message.Append(@$"- {habit.Name} - 
+                    - {habit.Type} привычка - 
+                    - Что делать: {habit.Description} -");
                 }
             }
             else message.Append("Вы еще не завели привычки.\nВоспользуйтесь командой \\createHabit и заведите новую привычку :)");
 
             await _bot.SendTextMessageAsync(chat, 
                 message.ToString(),
-                replyToMessageId: (int)chat.Id,
+                /*replyToMessageId: (int)chat.Id,*/
                 cancellationToken: cancellationToken);
         }
 
@@ -222,14 +222,14 @@ namespace LifeHabitTrackerConsole
                 {
 
                     await _bot.SendTextMessageAsync(chatInfo.ChatId,
-                            @$"\n- {recievedHabit.Name} - 
-                            \n- {recievedHabit.Type} привычка - 
-                            \n- Что делать: {recievedHabit.Description} -\n
-                            \n- Когда напомнить: {recievedHabit.Date} -\n",
-                            replyToMessageId: (int)chatInfo.ChatId,
+                            @$"- {recievedHabit.Name} - 
+                            - {recievedHabit.Type} привычка - 
+                            - Что делать: {recievedHabit.Description} -
+                            - Когда напомнить: {recievedHabit.Date} -",
+                           /* replyToMessageId: (int)chatInfo.ChatId,*/
                             cancellationToken: cancellationToken);
                 }
-                else await _bot.SendTextMessageAsync(chatInfo.ChatId, "\nВы еще не завели такую привычку");
+                else await _bot.SendTextMessageAsync(chatInfo.ChatId, "\nВы еще не завели такую привычку", cancellationToken: cancellationToken);
                 _habitContextCaretaker.RemoveContext(chatInfo.UserName);
             }
         }
@@ -242,9 +242,9 @@ namespace LifeHabitTrackerConsole
         /// <param name="cancellationToken"></param>
         private async Task HandleErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
-            await botClient.SendTextMessageAsync(botClient.BotId, "В нашей работе произошла ошибка. Мы уже решаем её");
+            //TODO: Сделать, чтобы сообщение клиенту отправлялось. Сейчас не отправляется, как выдается не ID чата с клиентом, а ID бота. Пока что захардкодил своим ID (и он работает)
+            await botClient.SendTextMessageAsync(/*botClient.BotId*/722520401, "В нашей работе произошла ошибка. Мы уже решаем её", cancellationToken: cancellationToken);
             Console.WriteLine($"Произошла ошибка:\n{JsonConvert.SerializeObject(exception)}");
-            //TODO: Сделать, чтобы сообщение клиенту отправлялось. Сейчас не отправляется. Попробовать try catch
         }
 
         /// <inheritdoc/>

@@ -2,9 +2,6 @@
 using LifeHabitTracker.DataAccessLayer.Entities.SqlFunctions;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
 using Microsoft.Data.Sqlite;
-using System.Data;
-using System.Transactions;
-using System.Xml.Linq;
 
 namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
 {
@@ -74,26 +71,33 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
 
             using var reader = await commandHabitTable.ExecuteReaderAsync();
 
-            //TODO:Пробовать и искать проблему.
-            Console.WriteLine(reader.GetFieldValue<string>(1));
-            //reader.GetTextReader(requestedHabit).Read();
-
-
             if (reader.HasRows)
             {
                 //TODO: поставить защиту против создания одноименных привычек.
-                var id = reader["id"];
-                var name = reader["name"];
-                var desc = reader["desc"];
-                var isGood = reader["is_good"];
-
-                return new DbHabits()
+                while (reader.Read())
                 {
-                    Id = (int)id,
-                    Name = (string)name,
-                    Description = (string)desc,
-                    IsGood = Convert.ToBoolean((long)isGood)
-                };
+                    /*var id = reader["id"];
+                    var name = reader["name"];
+                    var desc = reader["desc"];
+                    var isGood = reader["is_good"];*/
+
+                    var dbHabit = new DbHabits()
+                    {
+                        Id = (int)reader["id"],
+                        Name = (string)reader["name"],
+                        Description = (string)reader["desc"],
+                        IsGood = Convert.ToBoolean((long)reader["is_good"])       
+                    };
+
+                    //объект не создаётся. и прога падает в HandleErrorAsync
+                    return dbHabit; /*new DbHabits()
+                    {
+                        Id = (int)id,
+                        Name = (string)name,
+                        Description = (string)desc,
+                        IsGood = Convert.ToBoolean((long)isGood)       *//*(bool)isGood *//*
+                    };*/
+                }
             }
             return null;
 

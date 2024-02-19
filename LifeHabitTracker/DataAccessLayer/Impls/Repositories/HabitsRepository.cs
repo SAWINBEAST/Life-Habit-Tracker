@@ -16,6 +16,8 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
         /// <inheritdoc/>
         public async Task<long> InsertIntoHabitsTableAsync(DbHabits habitsTableData, SqliteConnection connection, SqliteTransaction transaction)
         {
+            //TODO: поставить защиту против создания одноименных привычек.
+
             using var commandHabitTable = new SqliteCommand(HabitsSqlFunctions.InsertAllFields, connection);
             commandHabitTable.Transaction = transaction;
 
@@ -53,7 +55,8 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
                     _dbHabits.Add(new() {
                         Name = (string)name,
                         Description = (string)desc,
-                        IsGood = Convert.ToBoolean((long)isGood) });
+                        IsGood = Convert.ToBoolean((long)isGood)
+                    });
                 }
             }
            
@@ -73,29 +76,29 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
 
             if (reader.HasRows)
             {
-                //TODO: поставить защиту против создания одноименных привычек.
                 while (reader.Read())
                 {
-                    /*var id = reader["id"];
+                    var id = reader["id"];
                     var name = reader["name"];
                     var desc = reader["desc"];
-                    var isGood = reader["is_good"];*/
+                    var isGood = reader["is_good"];
 
-                    var dbHabit = new DbHabits()
+                    _dbHabits.Add(new()
                     {
-                        Id = (int)reader["id"],
-                        Name = (string)reader["name"],
-                        Description = (string)reader["desc"],
-                        IsGood = Convert.ToBoolean((long)reader["is_good"])       
-                    };
-
-                    //объект не создаётся. и прога падает в HandleErrorAsync
-                    return dbHabit; /*new DbHabits()
-                    {
-                        Id = (int)id,
+                        Id = Convert.ToInt32((long)id),
                         Name = (string)name,
                         Description = (string)desc,
-                        IsGood = Convert.ToBoolean((long)isGood)       *//*(bool)isGood *//*
+                        IsGood = Convert.ToBoolean((long)isGood)
+                    });
+
+                    return _dbHabits.First();
+
+                    /*  new DbHabits()
+                    {
+                        Id = Convert.ToInt32((long)id),
+                        Name = (string)name,
+                        Description = (string)desc,
+                        IsGood = Convert.ToBoolean((long)isGood)
                     };*/
                 }
             }

@@ -4,7 +4,6 @@ using LifeHabitTracker.BusinessLogicLayer.Interfaces;
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTrackerConsole.Entities;
 using Newtonsoft.Json;
-using System.Linq;
 using System.Text;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
@@ -153,9 +152,11 @@ namespace LifeHabitTrackerConsole
                 message.Append("Ваши Привычки:\n");
                 foreach (var habit in habits)
                 {
-                    message.Append(@$"- {habit.Name} - 
-                    - {habit.Type} привычка - 
-                    - Что делать: {habit.Description} -");
+                    message.Append(
+                        @$"- {habit.Name} - 
+                        - {habit.Type} привычка - 
+                        - Что делать: {habit.Description} -");
+                    message.Append("\n");
                 }
             }
             else message.Append("Вы еще не завели привычки.\nВоспользуйтесь командой \\createHabit и заведите новую привычку :)");
@@ -223,9 +224,28 @@ namespace LifeHabitTrackerConsole
 
                     await _bot.SendTextMessageAsync(chatInfo.ChatId,
                             @$"- {recievedHabit.Name} - 
-                            - {recievedHabit.Type} привычка - 
-                            - Что делать: {recievedHabit.Description} -
-                            - Когда напомнить: {recievedHabit.Date} -",
+                - {recievedHabit.Type} привычка - 
+                - Что делать: {recievedHabit.Description} -
+                - Когда напомнить: 
+                Дни:{()=> {
+                    var days = new StringBuilder();
+                    foreach (var day in recievedHabit.Date.Days)
+                    {
+                        days.Append(day + "; ");
+                    }
+                    days.Append("\n");
+                    return days.ToString();
+                }}  
+                Время:{() =>
+                {
+                    var times = new StringBuilder();
+                    foreach (var day in recievedHabit.Date.Times)
+                    {
+                        times.Append(day + "; ");
+                    }
+                    times.Append("\n");
+                    return times.ToString();
+                }}-",
                            /* replyToMessageId: (int)chatInfo.ChatId,*/
                             cancellationToken: cancellationToken);
                 }

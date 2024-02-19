@@ -37,7 +37,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         private static DbHabits PrepareHabitsData(Habit habit, long chatId)
             => new()
             {
-                Name = habit.Name,
+                Name = habit.Name.ToLower(),
                 Description = habit.Description,
                 ChatId = chatId,
                 IsGood = habit.Type == FundamentalConcept.Good
@@ -120,20 +120,22 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <returns>Полная запись даты для напоминания</returns>
         private static ReminderDate PrepareHabitDate(DbDays dbDays, DbTimes dbTimes)
         {
-            var days = new List<string>();
-            //TODO: тернарный оператор отказывается выполнять days.Add() и выполнять пропуск хода, хотя должен. Разобраться в этом.
-            if (dbDays.OnMonday) days.Add(RussianDays.MondayFull);
-            if (dbDays.OnTuesday) days.Add(RussianDays.TuesdayFull);
-            if (dbDays.OnWednesday) days.Add(RussianDays.WednesdayFull);
-            if (dbDays.OnThursday) days.Add(RussianDays.ThursdayFull);
-            if (dbDays.OnFriday) days.Add(RussianDays.FridayFull);
-            if (dbDays.OnSaturday) days.Add(RussianDays.SaturdayFull);
-            if (dbDays.OnSunday) days.Add(RussianDays.SundayFull);
+            if(dbDays != null)
+            {
+                var days = new List<string>();
+                //TODO: тернарный оператор отказывается выполнять days.Add() и выполнять пропуск хода, хотя должен. Разобраться в этом.
+                if (dbDays.OnMonday) days.Add(RussianDays.MondayFull);
+                if (dbDays.OnTuesday) days.Add(RussianDays.TuesdayFull);
+                if (dbDays.OnWednesday) days.Add(RussianDays.WednesdayFull);
+                if (dbDays.OnThursday) days.Add(RussianDays.ThursdayFull);
+                if (dbDays.OnFriday) days.Add(RussianDays.FridayFull);
+                if (dbDays.OnSaturday) days.Add(RussianDays.SaturdayFull);
+                if (dbDays.OnSunday) days.Add(RussianDays.SundayFull);
 
-
-            return new(days, (IReadOnlyCollection<string>)dbTimes.Times);
+                return new(days, (IReadOnlyCollection<string>)dbTimes.Times);
+            }
+            return new(new List<string> { "Не напоминать" }, new List<string> { "Никогда" });
                 
-            
         }
            
         

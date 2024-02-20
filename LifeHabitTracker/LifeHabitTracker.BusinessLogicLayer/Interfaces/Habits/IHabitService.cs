@@ -29,5 +29,21 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         /// <param name="chatId">ID чата, из которого запрашивают определённую привычку</param>
         /// <returns></returns>
         public Task<Habit> GetCertainHabitAsync(long chatId ,string requestedHabit);
+
+        /// <summary>
+        /// Подготовка строки дней для чата
+        /// </summary>
+        /// <param name="days">Коллекция дней</param>
+        /// <returns>Аккуратная строка</returns>
+        public string PrepareDaysForChat(IReadOnlyCollection<string> days);
+
+        /// <summary>
+        /// Подготовка строки времени для чата
+        /// </summary>
+        /// <param name="times">Коллекция времён</param>
+        /// <returns>Аккуратная строка</returns>
+        public string PrepareTimesForChat(IReadOnlyCollection<string> times);
+
+
     }
 }

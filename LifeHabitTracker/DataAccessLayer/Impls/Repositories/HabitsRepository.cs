@@ -8,6 +8,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
     /// <inheritdoc cref="IHabitsRepository"/>.
     internal class HabitsRepository : IHabitsRepository
     {
+        ///TODO: Удалить и избавиться от этого поля. Оно нужно не всегда. Но без него пока не работает
         /// <summary>
         /// Список привычек текущего пользователя
         /// </summary>

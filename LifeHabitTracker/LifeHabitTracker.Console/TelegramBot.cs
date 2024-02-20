@@ -227,25 +227,33 @@ namespace LifeHabitTrackerConsole
                 - {recievedHabit.Type} привычка - 
                 - Что делать: {recievedHabit.Description} -
                 - Когда напомнить: 
-                Дни:{()=> {
-                    var days = new StringBuilder();
-                    foreach (var day in recievedHabit.Date.Days)
+                    Дни: {_habitService.PrepareDaysForChat(recievedHabit.Date.Days)}  
+                    Время: {Convert.ToString(_habitService.PrepareTimesForChat(recievedHabit.Date.Times))} -",
+ /*                 не работает
+  *                 -Когда напомнить:
+                    Дни:{
+                        () => {
+                            var days = new StringBuilder();
+                            foreach (var day in recievedHabit.Date.Days)
+                            {
+                                days.Append(day + "; ");
+                            }
+                            days.Append("\n");
+                            return days.ToString();
+                        }}
+                    Время:
                     {
-                        days.Append(day + "; ");
-                    }
-                    days.Append("\n");
-                    return days.ToString();
-                }}  
-                Время:{() =>
-                {
-                    var times = new StringBuilder();
-                    foreach (var day in recievedHabit.Date.Times)
-                    {
-                        times.Append(day + "; ");
-                    }
-                    times.Append("\n");
-                    return times.ToString();
-                }}-",
+                        () =>
+                        {
+                            var times = new StringBuilder();
+                            foreach (var day in recievedHabit.Date.Times)
+                            {
+                                times.Append(day + "; ");
+                            }
+                            times.Append("\n");
+                            return times.ToString();
+                        }}
+                        -"*/
                            /* replyToMessageId: (int)chatInfo.ChatId,*/
                             cancellationToken: cancellationToken);
                 }

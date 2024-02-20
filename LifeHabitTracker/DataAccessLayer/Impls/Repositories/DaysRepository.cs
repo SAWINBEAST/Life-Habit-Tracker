@@ -47,24 +47,27 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
 
             if (reader.HasRows)
             {
-                var onMonday = reader["on_monday"]; 
-                var onTuesday = reader["on_tuesday"];
-                var onWednesday = reader["on_wednesday"];
-                var onThursday = reader["on_thursday"];
-                var onFriday = reader["on_friday"];
-                var onSaturday = reader["on_saturday"];
-                var onSunday = reader["on_sunday"];
-
-                return new DbDays()
+                while (reader.Read())
                 {
-                    OnMonday = (bool)onMonday, 
-                    OnTuesday = (bool)onTuesday,
-                    OnWednesday = (bool)onWednesday,
-                    OnThursday = (bool)onThursday,
-                    OnFriday = (bool)onFriday,
-                    OnSaturday = (bool)onSaturday,
-                    OnSunday = (bool)onSunday,
-                };
+                    var onMonday = reader["on_monday"];
+                    var onTuesday = reader["on_tuesday"];
+                    var onWednesday = reader["on_wednesday"];
+                    var onThursday = reader["on_thursday"];
+                    var onFriday = reader["on_friday"];
+                    var onSaturday = reader["on_saturday"];
+                    var onSunday = reader["on_sunday"];
+
+                    return new DbDays()
+                    {
+                        OnMonday = Convert.ToBoolean((long)onMonday),
+                        OnTuesday = Convert.ToBoolean((long)onTuesday),
+                        OnWednesday = Convert.ToBoolean((long)onWednesday),
+                        OnThursday = Convert.ToBoolean((long)onThursday),
+                        OnFriday = Convert.ToBoolean((long)onFriday),
+                        OnSaturday = Convert.ToBoolean((long)onSaturday),
+                        OnSunday = Convert.ToBoolean((long)onSunday),
+                    };
+                }
             }
             return null;
 

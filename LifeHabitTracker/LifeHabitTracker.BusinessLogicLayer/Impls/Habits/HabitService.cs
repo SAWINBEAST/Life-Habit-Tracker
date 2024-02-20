@@ -2,6 +2,8 @@
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 using LifeHabitTracker.DataAccessLayer.Interfaces;
+using System.Text;
+
 
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
@@ -137,7 +139,30 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
             return new(new List<string> { "Не напоминать" }, new List<string> { "Никогда" });
                 
         }
-           
-        
+         
+        ///<inheritdoc/>
+        public string PrepareDaysForChat (IReadOnlyCollection<string> days)
+        {
+            var answer = new StringBuilder();
+            foreach (var day in days)
+            {
+                answer.Append(day + "; ");
+            }
+            //answer.Append("\n");
+            return answer.ToString();
+        }
+
+        ///<inheritdoc/>
+        public string PrepareTimesForChat(IReadOnlyCollection<string> times)
+        {
+            var answer = new StringBuilder();
+            foreach (var day in times)
+            {
+                answer.Append(day + "; ");
+            }
+            //answer.Append("\n");
+            return answer.ToString();
+        }
+
     }
 }

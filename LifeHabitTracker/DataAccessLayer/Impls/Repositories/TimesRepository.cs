@@ -8,6 +8,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
     /// <inheritdoc cref="ITimesRepository"/>.
     internal class TimesRepository : ITimesRepository
     {
+        ///TODO: Удалить и избавиться от этого поля. Оно нужно не всегда. Но без него пока не работает
         /// <summary>
         /// Обьект времени напоминания привычки вида БД
         /// </summary>
@@ -38,19 +39,22 @@ namespace LifeHabitTracker.DataAccessLayer.Impls.Repositories
         {
             using var commandHabitTable = new SqliteCommand(TimesSqlFunctions.SelectTimes, connection);
             var habitIdParam = new SqliteParameter("@habit_id", habitId); 
+            commandHabitTable.Parameters.Add(habitIdParam);
 
             using var reader = await commandHabitTable.ExecuteReaderAsync();
 
             if (reader.HasRows)
             {
+                _dBTimes.Times = new List<string>();
+
                 while (reader.Read())
                 {
-                    _dBTimes.Times.Add((string)reader["time"]);
+                    var time = (string)reader["time"];
+                    _dBTimes.Times.Add(time);
                 }
                 return _dBTimes;
             }
             return null;
         }
-
     }
 }

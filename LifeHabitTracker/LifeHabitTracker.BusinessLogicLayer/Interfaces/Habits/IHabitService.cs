@@ -3,7 +3,7 @@
 namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
 {
     /// <summary>
-    /// Описывает функционал Привычки
+    /// Описывает функционал работы с Привычкой
     /// </summary>
     public interface IHabitService
     {
@@ -16,10 +16,34 @@ namespace LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits
         public Task<bool> AddHabitAsync(Habit habit, long chatId);
 
         /// <summary>
-        /// Получить привычки
+        /// Получить все привычки клиента
         /// </summary>
-        /// <returns>Привычки</returns>
-        public IReadOnlyCollection<Habit> GetHabits();
+        /// <param name="chatId">ID чата, из которого запрашивают все привычки</param>
+        /// <returns>Привычки пользователя</returns>
+        public Task<IReadOnlyCollection<Habit>> GetHabitsAsync(long chatId);
+
+        /// <summary>
+        /// Получить определённую привычку клиента
+        /// </summary>
+        /// <param name="requestedHabit">Название запрашиваемой привычки</param>
+        /// <param name="chatId">ID чата, из которого запрашивают определённую привычку</param>
+        /// <returns></returns>
+        public Task<Habit> GetCertainHabitAsync(long chatId ,string requestedHabit);
+
+        /// <summary>
+        /// Подготовка строки дней для чата
+        /// </summary>
+        /// <param name="days">Коллекция дней</param>
+        /// <returns>Аккуратная строка</returns>
+        public string PrepareDaysForChat(IReadOnlyCollection<string> days);
+
+        /// <summary>
+        /// Подготовка строки времени для чата
+        /// </summary>
+        /// <param name="times">Коллекция времён</param>
+        /// <returns>Аккуратная строка</returns>
+        public string PrepareTimesForChat(IReadOnlyCollection<string> times);
+
 
     }
 }

@@ -9,6 +9,6 @@ namespace LifeHabitTracker.DataAccessLayer.Entities.PreparedData
         /// <summary>
         /// Коллекция времени напоминания о привычке
         /// </summary>
-        public IReadOnlyCollection<string> Times { get; set; }
+        public ICollection<string> Times { get; set; }
     }
 }

@@ -20,11 +20,13 @@ namespace LifeHabitTracker.BusinessLogicLayer
         public static IServiceCollection AddBusinessLogicServices(this IServiceCollection services)
             => services
                 .AddTransient<IContextCaretaker, ContextsCaretaker>()
-                .AddTransient<IHabitService, HabitService>()
-                .AddTransient<NameState>()
+                .AddTransient<IHabitService, HabitService>();
+                /* TODO: Определиться с использованием этих зависимостей, ибо они нигде не внедряются.
+                 * 
+                .AddTransient<HabitCreationState, NameState>();
                 .AddTransient<TypeState>()
                 .AddTransient<DescState>()
-                .AddTransient<DateState>();
+                .AddTransient<DateState>();*/
 
     }
 }

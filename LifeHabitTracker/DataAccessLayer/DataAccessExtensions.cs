@@ -24,6 +24,6 @@ namespace LifeHabitTracker.DataAccessLayer
                 .AddTransient<IHabitsRepository, HabitsRepository>()
                 .AddTransient<IDaysRepository, DaysRepository>()
                 .AddTransient<ITimesRepository, TimesRepository>()
-                .AddTransient<IInsertHabitService, InsertHabitService>();
+                .AddTransient<IDBHabitProvider, DBHabitProvider>();
     }
 }

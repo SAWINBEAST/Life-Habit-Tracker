@@ -2,6 +2,8 @@
 using LifeHabitTracker.BusinessLogicLayer.Interfaces.Habits;
 using LifeHabitTracker.DataAccessLayer.Entities.PreparedData;
 using LifeHabitTracker.DataAccessLayer.Interfaces;
+using System.Text;
+
 
 
 namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
@@ -12,11 +14,11 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <summary>
         /// Объект сервиса добавления привычки в БД
         /// </summary>
-        private IInsertHabitService _insertHabitService;
+        private IDBHabitProvider _dbHabitProvider;
 
-        public HabitService(IInsertHabitService insertHabitService)
+        public HabitService(IDBHabitProvider insertHabitService)
         {
-            _insertHabitService = insertHabitService;
+            _dbHabitProvider = insertHabitService;
         }
 
         /// <inheritdoc/>
@@ -25,7 +27,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
             var habitsTableData = PrepareHabitsData(habit, chatId);
             var daysTableData = PrepareDaysData(habit);
             var timesTableData = PrepareTimesData(habit);
-            return await _insertHabitService.InsertHabitAsync(habitsTableData, daysTableData, timesTableData);
+            return await _dbHabitProvider.InsertHabitAsync(habitsTableData, daysTableData, timesTableData);
         }
 
         /// <summary>
@@ -37,7 +39,7 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         private static DbHabits PrepareHabitsData(Habit habit, long chatId)
             => new()
             {
-                Name = habit.Name,
+                Name = habit.Name.ToLower(),
                 Description = habit.Description,
                 ChatId = chatId,
                 IsGood = habit.Type == FundamentalConcept.Good
@@ -69,10 +71,98 @@ namespace LifeHabitTracker.BusinessLogicLayer.Impls.Habits
         /// <returns> Сущность данных о времени </returns>
         private static DbTimes PrepareTimesData(Habit habit)
             => habit.Date is not null && habit.Date.Times.Any()
-            ? new() { Times = habit.Date.Times }
+            ? new() { Times = (ICollection<string>)habit.Date.Times }
             : null;
 
         /// <inheritdoc/>
-        public IReadOnlyCollection<Habit> GetHabits() => new Habit[] { new Habit() };
+        public async Task<IReadOnlyCollection<Habit>> GetHabitsAsync(long chatId)
+        {
+            var selectedHabits = await _dbHabitProvider.SelectHabitsInfoAsync(chatId);
+            return selectedHabits != null ? PrepareClientHabits(selectedHabits) : null;
+        }
+
+        /// <summary>
+        /// Подготовка вида данных для выдачи 
+        /// </summary>
+        /// <param name="selectedHabits">Привычки вида Уровня данных</param>
+        /// <returns>Коллекция привычек пользовательского вида</returns>
+        private static IReadOnlyCollection<Habit> PrepareClientHabits(IReadOnlyCollection<DbHabits> selectedHabits)
+            => selectedHabits.Select(x => new Habit
+                                        { Name = x.Name, 
+                                        Description = x.Description, 
+                                        Type = x.IsGood == true ? "Хорошая" : "Плохая" })
+                             .ToArray();
+
+        ///<inheritdoc/>
+        public async Task<Habit> GetCertainHabitAsync(long chatId, string requestedHabit)
+        {
+            var selectedHabit = await _dbHabitProvider.SelectCertainHabitInfoAsync(chatId, requestedHabit.ToLower());
+            return selectedHabit.Item1 != null ? PrepareCertainHabit(selectedHabit) : null;
+        }
+
+        /// <summary>
+        /// Подготовка данных Привычки к виду клиента
+        /// </summary>
+        /// <param name="selectedHabit">Кортеж данных о привычке вида БД</param>
+        /// <returns>Привычка вида клиента</returns>
+        private static Habit PrepareCertainHabit((DbHabits, DbDays, DbTimes) selectedHabit)
+            => new()
+            {
+                Name = selectedHabit.Item1.Name,
+                Description = selectedHabit.Item1.Description,
+                Type = selectedHabit.Item1.IsGood ? FundamentalConcept.Good : FundamentalConcept.Bad,
+                Date = PrepareHabitDate(selectedHabit.Item2, selectedHabit.Item3)
+            };
+
+        /// <summary>
+        /// Подготовка данных Даты и Времени напоминания о привычке к виду клиента
+        /// </summary>
+        /// <param name="dbDays">Дни вида БД</param>
+        /// <param name="dbTimes">Время вида БД</param>
+        /// <returns>Полная запись даты для напоминания</returns>
+        private static ReminderDate PrepareHabitDate(DbDays dbDays, DbTimes dbTimes)
+        {
+            if(dbDays != null)
+            {
+                var days = new List<string>();
+                //TODO: тернарный оператор отказывается выполнять days.Add() и выполнять пропуск хода, хотя должен. Разобраться в этом.
+                if (dbDays.OnMonday) days.Add(RussianDays.MondayFull);
+                if (dbDays.OnTuesday) days.Add(RussianDays.TuesdayFull);
+                if (dbDays.OnWednesday) days.Add(RussianDays.WednesdayFull);
+                if (dbDays.OnThursday) days.Add(RussianDays.ThursdayFull);
+                if (dbDays.OnFriday) days.Add(RussianDays.FridayFull);
+                if (dbDays.OnSaturday) days.Add(RussianDays.SaturdayFull);
+                if (dbDays.OnSunday) days.Add(RussianDays.SundayFull);
+
+                return new(days, (IReadOnlyCollection<string>)dbTimes.Times);
+            }
+            return new(new List<string> { "Не напоминать" }, new List<string> { "Никогда" });
+                
+        }
+         
+        ///<inheritdoc/>
+        public string PrepareDaysForChat (IReadOnlyCollection<string> days)
+        {
+            var answer = new StringBuilder();
+            foreach (var day in days)
+            {
+                answer.Append(day + "; ");
+            }
+            //answer.Append("\n");
+            return answer.ToString();
+        }
+
+        ///<inheritdoc/>
+        public string PrepareTimesForChat(IReadOnlyCollection<string> times)
+        {
+            var answer = new StringBuilder();
+            foreach (var day in times)
+            {
+                answer.Append(day + "; ");
+            }
+            //answer.Append("\n");
+            return answer.ToString();
+        }
+
     }
 }

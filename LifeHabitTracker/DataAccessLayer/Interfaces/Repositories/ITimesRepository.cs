@@ -17,5 +17,14 @@ namespace LifeHabitTracker.DataAccessLayer.Interfaces.Repositories
         /// <param name="transaction">Объект текущей транзакции</param>
         /// <returns>Оценка результата выполнения записи</returns>
         public Task<bool> InsertIntoTimesTableAsync(DbTimes timesTableData, long habitId, SqliteConnection connection, SqliteTransaction transaction);
+
+        /// <summary>
+        /// Выгрузить Время напоминания определённой привычки
+        /// </summary>
+        /// <param name="habitId">ID привычки, к которой относится информация из таблицы days. (Внешний ключ)</param>
+        /// <param name="connection">Соединение с БД</param>
+        /// <returns>Объект дней напоминания</returns>
+        public Task<DbTimes> SelectFromTimesTableAsync(int habitId, SqliteConnection connection);
+
     }
 }

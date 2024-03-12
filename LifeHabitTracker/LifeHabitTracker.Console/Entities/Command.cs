@@ -19,5 +19,10 @@
         /// Получить привычки
         /// </summary>
         public const string Habits = "/habits";
+
+        /// <summary>
+        /// Получить информацию по конкретной привычке
+        /// </summary>
+        public const string CertainHabit = "/certainhabit";
     }
 }

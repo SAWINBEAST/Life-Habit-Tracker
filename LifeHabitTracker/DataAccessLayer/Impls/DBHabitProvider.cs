@@ -3,11 +3,12 @@ using LifeHabitTracker.DataAccessLayer.Interfaces;
 using LifeHabitTracker.DataAccessLayer.Interfaces.Repositories;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
+using System.Transactions;
 
 namespace LifeHabitTracker.DataAccessLayer.Impls
 {
-    ///<inheritdoc cref="IInsertHabitService"/>
-    internal class InsertHabitService :IInsertHabitService
+    ///<inheritdoc cref="IDBHabitProvider"/>
+    internal class DBHabitProvider :IDBHabitProvider
     {
         /// <summary>
         /// Информация о подключаемой БД
@@ -29,7 +30,7 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
         /// </summary>
         private readonly ITimesRepository _timesRepository;
 
-        public InsertHabitService(IHabitsRepository habitsRepository, IDaysRepository daysRepository, ITimesRepository timesRepository, IOptions<DataBaseConnect> options)
+        public DBHabitProvider(IHabitsRepository habitsRepository, IDaysRepository daysRepository, ITimesRepository timesRepository, IOptions<DataBaseConnect> options)
         {
             _habitsRepository = habitsRepository;
             _daysRepository = daysRepository;
@@ -64,7 +65,28 @@ namespace LifeHabitTracker.DataAccessLayer.Impls
 
             transaction.Commit();
             return insertResult;
-            
         }
+
+        ///<inheritdoc/>
+        public async Task<IReadOnlyCollection<DbHabits>> SelectHabitsInfoAsync(long chatId)
+        {
+            using var connection = new SqliteConnection(_dBConfig.DBName);
+            connection.Open();
+
+            return await _habitsRepository.SelectAllUserHabits(chatId, connection);
+        }
+
+        ///<inheritdoc/>
+        public async Task<(DbHabits, DbDays, DbTimes)> SelectCertainHabitInfoAsync(long chatId, string requestedHabit)
+        {
+            using var connection = new SqliteConnection(_dBConfig.DBName);
+            connection.Open();
+
+            var dbHabit = await _habitsRepository.SelectFromHabitsTableAsync(chatId, requestedHabit, connection);
+            if (dbHabit != null && dbHabit.IsGood)       
+                return (dbHabit, await _daysRepository.SelectFromDaysTableAsync(dbHabit.Id, connection), await _timesRepository.SelectFromTimesTableAsync(dbHabit.Id, connection));
+            return (dbHabit, null, null);
+        }
+
     }
 }
